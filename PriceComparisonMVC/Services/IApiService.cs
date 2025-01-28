@@ -6,5 +6,7 @@
         Task<T> PostAsync<T>(string endpoint, object data);
         Task<T> PutAsync<T>(string endpoint, object data);
         Task<bool> DeleteAsync(string endpoint);
+
+        public void SetAuthorizationHeader(string jwtToken);
     }
 }

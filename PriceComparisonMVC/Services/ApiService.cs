@@ -12,6 +12,11 @@ namespace PriceComparisonMVC.Services
             _httpClient = httpClient;
         }
 
+        public void SetAuthorizationHeader(string jwtToken)
+        {
+            _httpClient.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", jwtToken);
+        }
+
         public async Task<T> GetAsync<T>(string endpoint)
         {
             try
