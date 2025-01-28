@@ -1,7 +1,10 @@
+using PriceComparisonMVC.Infrastructure;
 using PriceComparisonMVC.Services;
 using System.Net.Http.Headers;
 
 var builder = WebApplication.CreateBuilder(args);
+
+ConfigurationService.ConfigureServices(builder);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
