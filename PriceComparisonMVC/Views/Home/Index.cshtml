@@ -2,7 +2,401 @@
     ViewData["Title"] = "Home Page";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
-</div>
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MarketMap</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="@Url.Content("~/css/style.css")">
+</head>
+
+<body>
+    <div class="container-fluid custom-header py-3">
+        <!-- Header -->
+        <header class="row align-items-center mb-4 custom-header">
+            <!-- LOGO -->
+            <div class="col-12 col-md-2 text-white text-center">
+                <h1 class="m-0 fs-4">LOGO</h1>
+            </div>
+            <!-- Search field -->
+            <div class="col-12 col-md-8 mt-3 mt-md-0">
+                <input type="text" class="form-control custom-search-field" placeholder="Пошук...">
+            </div>
+            <!-- Login field -->
+            <div class="col-6 col-md-1 d-flex align-items-center justify-content-center text-white mt-3 mt-md-0">
+                <img src="@Url.Content("~/images/user-icon.png")" alt="Користувач" class="rounded-circle me-2" width="24" height="24">
+                <a href="@Url.Action("Login", "Account")" class="text-white text-decoration-none">Кабінет</a>
+            </div>
+            <!-- Favorites field -->
+            <div class="col-6 col-md-1 d-flex align-items-center justify-content-center text-white mt-3 mt-md-0">
+                <img src="@Url.Content("~/images/favourite.png")" alt="Обране" class="rounded-circle me-2" width="24" height="24">
+                <a href="#" class="text-white text-decoration-none">Обране</a>
+            </div>
+        </header>
+
+
+        <div class="section-block py-4">
+            <div class="container-lg custom-inner-container">
+                <!-- Верхній ряд -->
+                <div class="custom-row upper-row">
+                    @for (int i = 0; i < 8; i++)
+                    {
+                        <div class="custom-box">
+                            <img src="@Url.Content("~/images/image-01.png")" alt="Іконка">
+                            <a href="#">Категорія @(i + 1)</a>
+                        </div>
+                    }
+                </div>
+                <!-- Нижній ряд -->
+                <div class="custom-row lower-row">
+                    @for (int i = 8; i < 14; i++)
+                    {
+                        <div class="custom-box">
+                            <img src="@Url.Content("~/images/image-01.png")" alt="Іконка">
+                            <a href="#">Категорія @(i + 1)</a>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+
+
+
+
+        <!-- Advertisement section -->
+        <div class="advertisement-section py-5">
+            <div class="container h-100">
+                <div class="row g-3 h-100">
+                    <!-- Лівий контейнер -->
+                    <div class="col-lg-3 col-md-4 col-12 d-flex flex-column gap-3">
+                        <div class="left-block"></div>
+                        <div class="left-block bg-warning d-flex align-items-center justify-content-center text-white fw-bold">
+                            Магазин 1
+                        </div>
+                        <div class="left-block bg-success d-flex align-items-center justify-content-center text-white fw-bold">
+                            Магазин 2
+                        </div>
+                        <div class="left-block bg-danger d-flex align-items-center justify-content-center text-white fw-bold">
+                            Магазин 3
+                        </div>
+                        <div class="left-block"></div>
+                    </div>
+
+                    <!-- Центральний контейнер -->
+                    <div class="col-lg-6 col-md-8 col-12 d-flex flex-column gap-3">
+                        <div class="center-block bg-primary d-flex align-items-center justify-content-center text-white fw-bold">
+                            Блок 1
+                        </div>
+
+                        <div class="center-block d-flex gap-3">
+                            <!-- Підблок 1 -->
+                            <div class="center-subblock d-flex flex-column align-items-stretch text-white fw-bold flex-fill">
+                                <div class="subblock-part bg-primary d-flex align-items-center justify-content-center">
+                                    Верхній блок
+                                </div>
+                                <div class="subblock-part bg-warning d-flex align-items-center justify-content-center">
+                                    Нижній блок
+                                </div>
+                            </div>
+
+                            <!-- Підблок 2 -->
+                            <div class="center-subblock flex-fill">
+                                Підблок 2
+                            </div>
+                        </div>
+
+                        <div class="center-block bg-danger d-flex align-items-center justify-content-center text-white fw-bold">
+                            Блок 4
+                        </div>
+                    </div>
+
+                    <!-- Правий контейнер -->
+                    <div class="col-lg-3 col-md-4 col-12 d-flex flex-column gap-3">
+                        <div class="right-block"></div>
+                        <div class="right-block bg-warning d-flex align-items-center justify-content-center text-white fw-bold">
+                            Магазин 4
+                        </div>
+                        <div class="right-block bg-success d-flex align-items-center justify-content-center text-white fw-bold">
+                            Магазин 5
+                        </div>
+                        <div class="right-block bg-danger d-flex align-items-center justify-content-center text-white fw-bold">
+                            Магазин 6
+                        </div>
+                        <div class="right-block"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+
+
+
+
+        <!-- Popular products section -->
+        <div class="popular-products-section py-4">
+            <!-- Заголовок -->
+            <h2 class="section-title text-center mb-4">Популярні товари для вас</h2>
+
+            <!-- Блок із посиланнями -->
+            <div class="container mb-4">
+                <div class="row row-cols-2 row-cols-md-3 row-cols-lg-5 g-3">
+                    @foreach (var category in new[] { "Смартфони", "Ноутбуки", "Планшети", "Смарт-Годинники", "Телевізори" })
+                    {
+                        <div class="col text-center">
+                            <a href="#" class="link">@category</a>
+                        </div>
+                    }
+                </div>
+            </div>
+
+            <!-- Блоки товарів -->
+            <div class="container">
+                <div class="row row-cols-1 row-cols-md-2 row-cols-lg-4 g-4">
+                    @foreach (var product in new[]
+                    {
+                    new { Image = "images/product1.jpg", Description = "Apple iPhone 16 Pro Max 256GB Desert Titanium (MYWX3SX/A)", Price = "₴1200" },
+                    new { Image = "images/product2.jpg", Description = "Apple iPhone 16 Pro Max 256GB Desert Titanium (MYWX3SX/A)", Price = "₴1500" },
+                    new { Image = "images/product3.jpg", Description = "Короткий опис товару 3", Price = "₴1700" },
+                    new { Image = "images/product4.jpg", Description = "Короткий опис товару 4", Price = "₴2000" }
+                    })
+                    {
+                        <div class="col">
+                            <div class="product-item">
+                                <div class="product-image-container">
+                                    <img src="@Url.Content($"~/{product.Image}")" alt="Товар" class="product-image">
+                                </div>
+                                <div class="product-description">@product.Description</div>
+                                <div class="product-price">@product.Price</div>
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+
+
+
+        <div class="trending-section py-5">
+            <!-- Заголовок -->
+            <h2 class="section-title text-center mb-4">Актуальне</h2>
+
+            <!-- Блок із посиланнями на категорії -->
+            <div class="container mb-4">
+                <div class="row row-cols-2 row-cols-md-3 row-cols-lg-6 g-3">
+                    @foreach (var category in new[] { "Категорія 1", "Категорія 2", "Категорія 3", "Категорія 4", "Категорія 5", "Категорія 6" })
+                    {
+                        <div class="col text-center">
+                            <a href="#" class="link">@category</a>
+                        </div>
+                    }
+                </div>
+            </div>
+
+            <!-- Блоки субкатегорій -->
+            <div class="container">
+                <div class="row row-cols-2 row-cols-md-3 row-cols-lg-6 g-3">
+                    @foreach (var subcategory in new[]
+                    {
+                    new { Image = "images/toy-train.jpg", Name = "Іграшкові потяги" },
+                    new { Image = "images/toy-stich.jpg", Name = "Конструктори" },
+                    new { Image = "images/subcategory3.jpg", Name = "Пазли" },
+                    new { Image = "images/subcategory4.jpg", Name = "Ляльки" },
+                    new { Image = "images/subcategory5.jpg", Name = "Субкатегорія 5" },
+                    new { Image = "images/subcategory6.jpg", Name = "Субкатегорія 6" }
+                    })
+                    {
+                        <div class="col">
+                            <div class="subcategory-item">
+                                <img src="@Url.Content($"~/{subcategory.Image}")" alt="@subcategory.Name" class="subcategory-image">
+                                <a href="#" class="subcategory-link">@subcategory.Name</a>
+                            </div>
+                        </div>
+                    }
+                </div>
+
+                <div class="row row-cols-2 row-cols-md-3 row-cols-lg-6 g-3 mt-0">
+                    @foreach (var subcategory in new[]
+                    {
+                    new { Image = "images/toy-train.jpg", Name = "Іграшкові потяги" },
+                    new { Image = "images/toy-stich.jpg", Name = "Конструктори" },
+                    new { Image = "images/subcategory3.jpg", Name = "Пазли" },
+                    new { Image = "images/subcategory4.jpg", Name = "Ляльки" },
+                    new { Image = "images/subcategory5.jpg", Name = "Субкатегорія 5" },
+                    new { Image = "images/subcategory6.jpg", Name = "Субкатегорія 6" }
+                    })
+                    {
+                        <div class="col">
+                            <div class="subcategory-item">
+                                <img src="@Url.Content($"~/{subcategory.Image}")" alt="@subcategory.Name" class="subcategory-image">
+                                <a href="#" class="subcategory-link">@subcategory.Name</a>
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+
+
+
+
+
+        <div class="recommended-videos-section py-5 bg-light">
+            <div class="container">
+                <!-- Заголовок -->
+                <h2 class="section-title text-center mb-4">Рекомендовані відео</h2>
+
+                <!-- Рядок із відео -->
+                <div class="row g-4">
+                    @foreach (var video in new[]
+                    {
+                    new { Link = "https://www.youtube.com/embed/VrjQgXIGX0I", Title = "Які зараз кращі пк в Україні? Як обрати якісний та надійний пк?", Price = "₴1200" },
+                    new { Link = "https://www.youtube.com/embed/o_yrBiHwYuY", Title = "Як правильно вибрати роутер?", Price = "₴1200" },
+                    new { Link = "https://www.youtube.com/embed/SmNGBOx2688", Title = "Як вибрати холодильник 2024", Price = "₴1200" },
+                    new { Link = "https://www.youtube.com/embed/M8Dke_dcAyU", Title = "ЯКИЙ ДРОН КУПИТИ ДЛЯ ДИТИНИ? ВІДПОВІДАЄМО - E99 PRO MAX!", Price = "₴1200" }
+                    })
+                    {
+                        <div class="col-lg-3 col-md-6">
+                            <div class="video-block h-100 d-flex flex-column">
+                                <!-- Відеоконтент -->
+                                <div class="ratio ratio-16x9 video-container">
+                                    <iframe src="@video.Link" frameborder="0"
+                                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                                            allowfullscreen></iframe>
+                                </div>
+                                <!-- Інформаційний блок -->
+                                <div class="video-info d-flex align-items-start p-3 bg-white">
+                                    <div class="video-rectangle flex-shrink-0 bg-secondary rounded me-3"></div>
+                                    <div class="video-details d-flex flex-column">
+                                        <div class="video-text">
+                                            <a href="@video.Link" target="_blank" class="text-decoration-none text-dark">@video.Title</a>
+                                        </div>
+                                        <div class="video-price">@video.Price</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+
+
+
+
+
+
+
+
+
+
+
+        <!-- СТАТТІ, ОГЛЯДИ  -->
+        <div class="articles-section py-5 bg-light">
+            <div class="container">
+                <!-- Заголовок секції -->
+                <div class="row align-items-center mb-4">
+                    <div class="col-9">
+                        <h2 class="mb-0">Статті, огляди, рекомендації</h2>
+                    </div>
+                    <div class="col-3 text-end">
+                        <a href="#" class="btn btn-link text-decoration-none">
+                            Усі матеріали <span class="arrow">→</span>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Основний блок із статтями -->
+                <div class="row g-3">
+                    @foreach (var article in new[]
+                    {
+                    new { Image = "https://gagadget.com/media/cache/15/89/15892b54ea78fdc83a301eb41dda9b8b.jpg", Title = "ASUS ExpertBook P5", Link = "https://gagadget.com/uk/asus-expertbook-p5/534695-ogliad-asus-expertbook-p5/", Text = "Ноутбук, який працює більше, ніж ви: огляд ASUS ExpertBook P5" },
+                    new { Image = "https://cdn.pixabay.com/photo/2015/01/21/14/14/apple-606761_1280.jpg", Title = "Найкращі ігрові комп’ютери", Link = "https://www.pcgamer.com/best-gaming-pcs/", Text = "Список топових ігрових комп'ютерів 2025 року для максимального задоволення від ігор." },
+                    new { Image = "https://cdn.pixabay.com/photo/2016/11/29/03/53/laptop-1867768_1280.jpg", Title = "Як вибрати ноутбук у 2025 році", Link = "https://www.techradar.com/how-to/how-to-choose-a-laptop", Text = "Дізнайтеся, які параметри важливі при виборі ноутбука: процесор, оперативна пам’ять, SSD та екран." },
+                    new { Image = "https://cdn.pixabay.com/photo/2016/11/29/03/53/laptop-1867768_1280.jpg", Title = "Як вибрати ноутбук у 2025 році", Link = "https://www.techradar.com/how-to/how-to-choose-a-laptop", Text = "Дізнайтеся, які параметри важливі при виборі ноутбука: процесор, оперативна пам’ять, SSD та екран." }
+                    })
+                    {
+                        <div class="col-lg-3 col-md-6">
+                            <div class="article-box">
+                                <!-- Картинка статті -->
+                                <div class="article-image">
+                                    <img src="@article.Image" alt="@article.Title" class="img-fluid">
+                                </div>
+                                <!-- Опис статті -->
+                                <div class="article-description">
+                                    <div class="article-title">
+                                        <a href="@article.Link" target="_blank">@article.Title</a>
+                                    </div>
+                                    <div class="article-text">@article.Text</div>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+
+
+
+
+
+
+
+
+
+        <!-- Footer -->
+        <footer class="footer bg-primary text-white py-5">
+            <div class="container-fluid">
+                <div class="row align-items-start">
+                    <!-- Логотип -->
+                    <div class="col-12 col-md-3 col-lg-2 text-center mb-4 mb-md-0">
+                        <div class="logo">LOGO</div>
+                    </div>
+
+                    <!-- Блоки категорій -->
+                    <div class="col-12 col-md-8 col-lg-9">
+                        <div class="row g-4">
+                            @foreach (var category in new[]
+                            {
+                            new { Title = "Про нас", Links = new[] { "Що таке MarketMap", "Як ми працюємо", "Партнери" } },
+                            new { Title = "Корисна інформація", Links = new[] { "Відгуки про товари", "Відгуки про магазин", "Як обрати товар", "Часті запитання" } },
+                            new { Title = "Контакти", Links = new[] { "Зв'язатися з нами", "Карта сайту" } },
+                            new { Title = "Правова інформація", Links = new[] { "Політика конфіденційності", "Умови використання" } },
+                            new { Title = "Соціальні мережі", Links = new[] { "Instagram", "Facebook", "YouTube", "Telegram" } }
+                            })
+                            {
+                                <div class="col-6 col-lg-2">
+                                    <div class="category-title">@category.Title</div>
+                                    <div class="d-flex flex-column">
+                                        @foreach (var link in category.Links)
+                                        {
+                                            <a href="#" class="category-link">@link</a>
+                                        }
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                    </div>
+
+                    <!-- Додатковий блок -->
+                    <div class="col-12 col-md-10 col-lg-1 text-center mt-4 mt-lg-0 position-relative">
+                        <div class="additional-box position-absolute top-0 end-0">
+                            <div class="arrow-icon">↑</div>
+                            <a href="#top" class="additional-link">Наверх</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </footer>
+
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+
+</html>
+
