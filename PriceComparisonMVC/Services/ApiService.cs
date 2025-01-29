@@ -1,92 +1,59 @@
 ﻿using System.Text.Json;
 using System.Text;
+using System.Net.Http.Headers;
 
 namespace PriceComparisonMVC.Services
 {
-    public class ApiService : IApiService
+    public class ApiService
     {
         private readonly HttpClient _httpClient;
+        private readonly TokenManager _tokenManager;
 
-        public ApiService(HttpClient httpClient)
+        public ApiService(HttpClient httpClient, TokenManager tokenManager)
         {
             _httpClient = httpClient;
-        }
-
-        public void SetAuthorizationHeader(string jwtToken)
-        {
-            _httpClient.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", jwtToken);
+            _tokenManager = tokenManager;
         }
 
         public async Task<T> GetAsync<T>(string endpoint)
         {
-            try
-            {
-                var response = await _httpClient.GetAsync(endpoint);
-                if (!response.IsSuccessStatusCode)
-                {
-                    throw new Exception($"Error {response.StatusCode}: {response.ReasonPhrase}");
-                }
-                var json = await response.Content.ReadAsStringAsync();
-                return JsonSerializer.Deserialize<T>(json, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
-            }
-            catch (Exception ex)
-            {
-                throw new Exception($"Failed to fetch data from endpoint {endpoint}. Error: {ex.Message}");
-            }
+            return await ExecuteRequestAsync<T>(() => _httpClient.GetAsync(endpoint));
         }
 
-        public async Task<T> PostAsync<T>(string endpoint, object data)
+        private async Task<T> ExecuteRequestAsync<T>(Func<Task<HttpResponseMessage>> requestFunc)
         {
             try
             {
-                var jsonData = JsonSerializer.Serialize(data);
-                var content = new StringContent(jsonData, Encoding.UTF8, "application/json");
-                var response = await _httpClient.PostAsync(endpoint, content);
-                if (!response.IsSuccessStatusCode)
+                SetAuthorizationHeader();
+                var response = await requestFunc();
+
+                if (response.StatusCode == System.Net.HttpStatusCode.Unauthorized)
                 {
-                    throw new Exception($"Error {response.StatusCode}: {response.ReasonPhrase}");
+                    var newToken = await _tokenManager.RefreshTokenAsync();
+                    if (!string.IsNullOrEmpty(newToken))
+                    {
+                        SetAuthorizationHeader();
+                        response = await requestFunc();
+                    }
                 }
+
+                response.EnsureSuccessStatusCode();
                 var json = await response.Content.ReadAsStringAsync();
-                return JsonSerializer.Deserialize<T>(json);
+                return JsonSerializer.Deserialize<T>(json, new JsonSerializerOptions { PropertyNameCaseInsensitive = true })!;
             }
             catch (Exception ex)
             {
-                throw new Exception($"Failed to post data to endpoint {endpoint}. Error: {ex.Message}");
+                throw new Exception($"Error during API request: {ex.Message}");
             }
         }
 
-        public async Task<T> PutAsync<T>(string endpoint, object data)
+        private void SetAuthorizationHeader()
         {
-            try
+            var token = _tokenManager.GetAccessToken();
+            if (!string.IsNullOrEmpty(token))
             {
-                var jsonData = JsonSerializer.Serialize(data);
-                var content = new StringContent(jsonData, Encoding.UTF8, "application/json");
-                var response = await _httpClient.PutAsync(endpoint, content);
-                if (!response.IsSuccessStatusCode)
-                {
-                    throw new Exception($"Error {response.StatusCode}: {response.ReasonPhrase}");
-                }
-                var json = await response.Content.ReadAsStringAsync();
-                return JsonSerializer.Deserialize<T>(json);
-            }
-            catch (Exception ex)
-            {
-                throw new Exception($"Failed to put data to endpoint {endpoint}. Error: {ex.Message}");
-            }
-        }
-
-        public async Task<bool> DeleteAsync(string endpoint)
-        {
-            try
-            {
-                var response = await _httpClient.DeleteAsync(endpoint);
-                return response.IsSuccessStatusCode;
-            }
-            catch (Exception ex)
-            {
-                throw new Exception($"Failed to delete data from endpoint {endpoint}. Error: {ex.Message}");
+                _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
             }
         }
     }
-
 }
