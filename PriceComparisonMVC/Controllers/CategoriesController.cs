@@ -17,7 +17,7 @@ namespace PriceComparisonMVC.Controllers
         {
             try
             {
-                var categories = await _apiService.GetAsync<List<CategoryDto>>("Categories");
+                var categories = await _apiService.GetAsync<List<CategoryDto>>("api/categories/getall");
                 return View(categories);
             }
             catch (Exception ex)
