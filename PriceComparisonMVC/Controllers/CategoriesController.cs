@@ -6,9 +6,9 @@ namespace PriceComparisonMVC.Controllers
 {
     public class CategoriesController : Controller
     {
-        private readonly ApiService _apiService;
+        private readonly IApiService _apiService;
 
-        public CategoriesController(ApiService apiService)
+        public CategoriesController(IApiService apiService)
         {
             _apiService = apiService;
         }

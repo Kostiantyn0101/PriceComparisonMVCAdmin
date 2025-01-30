@@ -4,7 +4,7 @@ using System.Net.Http.Headers;
 
 namespace PriceComparisonMVC.Services
 {
-    public class ApiService
+    public class ApiService : IApiService
     {
         private readonly HttpClient _httpClient;
         private readonly TokenManager _tokenManager;
