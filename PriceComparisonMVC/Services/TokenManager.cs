@@ -1,5 +1,7 @@
 ﻿using System.Text.Json;
 using System.Text;
+using PriceComparisonMVC.Models.Configuration;
+using Microsoft.Extensions.Options;
 
 namespace PriceComparisonMVC.Services
 {
@@ -7,20 +9,45 @@ namespace PriceComparisonMVC.Services
     {
         private readonly HttpClient _httpClient;
         private readonly IHttpContextAccessor _httpContextAccessor;
+        private readonly JwtConfiguration _options;
 
-        public TokenManager(HttpClient httpClient, IHttpContextAccessor httpContextAccessor)
+
+        public TokenManager(HttpClient httpClient, 
+            IHttpContextAccessor httpContextAccessor, 
+            IOptions<JwtConfiguration> options)
         {
             _httpClient = httpClient;
             _httpContextAccessor = httpContextAccessor;
+            _options = options.Value;
         }
 
         public string? GetAccessToken() => _httpContextAccessor.HttpContext?.Request.Cookies["token"];
-        public void SetToken(string accessToken, string refreshToken)
+        public void SetToken(string accessToken, string refreshToken, bool rememberMe)
         {
             var context = _httpContextAccessor.HttpContext;
 
-            context?.Response.Cookies.Append("token", accessToken, new CookieOptions { HttpOnly = true });
-            context?.Response.Cookies.Append("refreshToken", refreshToken, new CookieOptions { HttpOnly = true });
+            double refreshTokenLifetime = rememberMe ? 
+                _options.RememberMeRefreshTokenLifetimeHours :
+                _options.DefaultRefreshTokenLifetimeHours;
+
+            context?.Response.Cookies.Append("token", accessToken, new CookieOptions
+            {
+                HttpOnly = true,
+                Secure = true,
+                SameSite = SameSiteMode.Strict,
+                Expires = DateTime.UtcNow.AddMinutes(_options.AccessTokenLifetimeMin)
+            });
+            context?.Response.Cookies.Append("refreshToken", refreshToken, new CookieOptions { 
+                HttpOnly = true,
+                Secure = true,
+                SameSite = SameSiteMode.Strict,
+                Expires = DateTime.UtcNow.AddMinutes(refreshTokenLifetime)
+            });
+        }
+
+        public void SetToken(string accessToken, string refreshToken)
+        {
+            SetToken(accessToken, refreshToken, rememberMe: false);
         }
 
         public async Task<string?> RefreshTokenAsync()

@@ -1,32 +1,8 @@
-using Microsoft.AspNetCore.Authentication.OAuth;
 using PriceComparisonMVC.Infrastructure;
-using PriceComparisonMVC.Models.Configuration;
-using PriceComparisonMVC.Services;
-using System.Net.Http.Headers;
 
 var builder = WebApplication.CreateBuilder(args);
 
 ConfigurationService.ConfigureServices(builder);
-
-// Add services to the container.
-builder.Services.AddControllersWithViews();
-
-builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
-
-var jwtConfig = builder.Configuration.GetSection("Jwt").Get<JwtConfiguration>();
-builder.Services.AddHttpClient<IApiService, ApiService>(client =>
-{
-    client.BaseAddress = new Uri(jwtConfig.Issuer!);
-    client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-});
-
-builder.Services.AddHttpClient<AuthService>(client =>
-{
-    client.BaseAddress = new Uri(jwtConfig.Issuer!);
-});
-
-builder.Services.AddSingleton<TokenManager>();
-
 
 var app = builder.Build();
 

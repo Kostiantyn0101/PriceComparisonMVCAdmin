@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using PriceComparisonMVC.Models;
+using PriceComparisonMVC.Models.Response;
 using PriceComparisonMVC.Services;
 
 namespace PriceComparisonMVC.Controllers
@@ -8,9 +9,9 @@ namespace PriceComparisonMVC.Controllers
     public class AccountController : Controller
     {
 
-        private readonly AuthService _authService;
+        private readonly IAuthService _authService;
 
-        public AccountController(AuthService authService)
+        public AccountController(IAuthService authService)
         {
             _authService = authService;
         }

@@ -1,5 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using PriceComparisonMVC.Models;
+using PriceComparisonMVC.Models.Response;
 using PriceComparisonMVC.Services;
 
 namespace PriceComparisonMVC.Controllers
@@ -17,13 +17,13 @@ namespace PriceComparisonMVC.Controllers
         {
             try
             {
-                var categories = await _apiService.GetAsync<List<CategoryDto>>("api/categories/getall");
+                var categories = await _apiService.GetAsync<List<CategoryResponseModel>>("api/categories/getall");
                 return View(categories);
             }
             catch (Exception ex)
             {
                 ViewBag.Error = ex.Message;
-                return View(new List<CategoryDto>());
+                return View(new List<CategoryResponseModel>());
             }
         }
     }

@@ -5,11 +5,11 @@ using System.Text.Json;
 using System.Net.Http.Headers;
 using System.Text;
 using System.Threading.Tasks;
-using PriceComparisonMVC.Models;
+using PriceComparisonMVC.Models.Response;
 
 namespace PriceComparisonMVC.Services
 {
-    public class AuthService
+    public class AuthService : IAuthService
     {
         private readonly HttpClient _httpClient;
         private readonly TokenManager _tokenManager;
@@ -33,7 +33,7 @@ namespace PriceComparisonMVC.Services
             var token = responseData.GetProperty("token").GetString();
             var refreshToken = responseData.GetProperty("refreshToken").GetString();
 
-            _tokenManager.SetToken(token, refreshToken);
+            _tokenManager.SetToken(token, refreshToken, login.RememberMe);
             return true;
         }
     }
