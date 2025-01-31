@@ -1,4 +1,4 @@
-﻿namespace PriceComparisonMVC.Models
+﻿namespace PriceComparisonMVC.Models.Response
 {
     public class LoginResponseModel
     {

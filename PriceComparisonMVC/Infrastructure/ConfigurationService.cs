@@ -1,4 +1,5 @@
 ﻿using PriceComparisonMVC.Infrastructure.DependencyInjection;
+using PriceComparisonWebAPI.Infrastructure.DependencyInjection;
 
 namespace PriceComparisonMVC.Infrastructure
 {
@@ -9,6 +10,7 @@ namespace PriceComparisonMVC.Infrastructure
             try
             {
                 builder.AddConfiguration();
+                builder.AddServices();
                 builder.AddAuth();
             }
             catch (Exception ex)
