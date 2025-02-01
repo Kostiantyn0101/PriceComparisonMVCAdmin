@@ -6,35 +6,69 @@ using System.Net.Http.Headers;
 using System.Text;
 using System.Threading.Tasks;
 using PriceComparisonMVC.Models.Response;
+using PriceComparisonMVC.Models.Request;
 
 namespace PriceComparisonMVC.Services
 {
     public class AuthService : IAuthService
     {
-        private readonly HttpClient _httpClient;
+        private readonly IApiService _apiService;
         private readonly TokenManager _tokenManager;
 
-        public AuthService(HttpClient httpClient, TokenManager tokenManager)
+        public AuthService(IApiService apiService, TokenManager tokenManager)
         {
-            _httpClient = httpClient;
+            _apiService = apiService;
             _tokenManager = tokenManager;
         }
 
         public async Task<bool> LoginAsync(LoginResponseModel login)
         {
-            var requestPayload = login;
-            var content = new StringContent(JsonSerializer.Serialize(requestPayload), Encoding.UTF8, "application/json");
+            try
+            {
+                var response = await _apiService.PostAsync<LoginResponseModel, JsonElement>("api/Auth/login", login);
 
-            var response = await _httpClient.PostAsync("api/Auth/login", content);
-            if (!response.IsSuccessStatusCode) return false;
+                var token = response.GetProperty("token").GetString();
+                var refreshToken = response.GetProperty("refreshToken").GetString();
 
-            var responseData = await JsonSerializer.DeserializeAsync<JsonElement>(await response.Content.ReadAsStreamAsync());
+                _tokenManager.SetToken(token, refreshToken, login.RememberMe);
 
-            var token = responseData.GetProperty("token").GetString();
-            var refreshToken = responseData.GetProperty("refreshToken").GetString();
-
-            _tokenManager.SetToken(token, refreshToken, login.RememberMe);
-            return true;
+                return true;
+            }
+            catch (Exception)
+            {
+                return false; 
+            }
         }
+
+
+        public async Task LogoutAsync()
+        {
+            _tokenManager.ClearToken();
+        }
+
+
+        public async Task<string?> RegisterAsync(RegisterModel model)
+        {
+            try
+            {
+                Console.WriteLine($"📤 Відправляємо JSON: {JsonSerializer.Serialize(model)}");
+
+                var response = await _apiService.PostAsync<RegisterModel, JsonElement>("api/Auth/register", model);
+                return null; // Реєстрація успішна
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"❌ Помилка реєстрації: {ex.Message}");
+                return "Не вдалося зареєструватися. Можливо, email вже використовується або дані некоректні.";
+            }
+        }
+
+
+
+
+        //public string GetAuthToken()
+        //{
+        //    return _httpContextAccessor.HttpContext.Request.Cookies["AuthToken"];
+        //}
     }
 }

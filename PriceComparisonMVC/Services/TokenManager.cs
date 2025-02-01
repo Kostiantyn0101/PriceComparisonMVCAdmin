@@ -2,6 +2,8 @@
 using System.Text;
 using PriceComparisonMVC.Models.Configuration;
 using Microsoft.Extensions.Options;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
 
 namespace PriceComparisonMVC.Services
 {
@@ -21,7 +23,41 @@ namespace PriceComparisonMVC.Services
             _options = options.Value;
         }
 
+
+        public string? GetToken()
+        {
+            return _httpContextAccessor.HttpContext?.Request.Cookies["token"];
+        }
+
+        public string? GetUsernameFromToken()
+        {
+            var token = GetToken();
+            if (string.IsNullOrEmpty(token))
+                return null;
+
+            var handler = new JwtSecurityTokenHandler();
+            var jwtToken = handler.ReadJwtToken(token);
+
+            var usernameClaim = jwtToken.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Name);
+            return usernameClaim?.Value;
+        }
+
+        public async Task<string?> GetTokenAsync()
+        {
+            var accessToken = _httpContextAccessor.HttpContext?.Request.Cookies["token"];
+
+            if (!string.IsNullOrEmpty(accessToken))
+            {
+                return accessToken;
+            }
+
+            return await RefreshTokenAsync();
+        }
+
+
         public string? GetAccessToken() => _httpContextAccessor.HttpContext?.Request.Cookies["token"];
+
+
         public void SetToken(string accessToken, string refreshToken, bool rememberMe)
         {
             var context = _httpContextAccessor.HttpContext;
@@ -74,6 +110,13 @@ namespace PriceComparisonMVC.Services
         {
             public string Token { get; set; } = string.Empty;
             public string RefreshToken { get; set; } = string.Empty;
+        }
+
+        public void ClearToken()
+        {
+            var context = _httpContextAccessor.HttpContext;
+            context?.Response.Cookies.Delete("token");
+            context?.Response.Cookies.Delete("refreshToken");
         }
     }
 }

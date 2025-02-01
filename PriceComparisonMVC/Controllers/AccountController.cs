@@ -1,53 +1,56 @@
-﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
-using PriceComparisonMVC.Models;
+﻿using Microsoft.AspNetCore.Mvc;
 using PriceComparisonMVC.Models.Response;
 using PriceComparisonMVC.Services;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
+using PriceComparisonMVC.Models.Request;
 
 namespace PriceComparisonMVC.Controllers
 {
     public class AccountController : Controller
     {
-
         private readonly IAuthService _authService;
+        private readonly TokenManager _tokenManager;
 
-        public AccountController(IAuthService authService)
+
+        public AccountController(IAuthService authService, TokenManager tokenManager)
         {
             _authService = authService;
+            _tokenManager = tokenManager;
         }
 
         [HttpGet]
         public IActionResult Login()
         {
-            return View();
+            return View(new LoginResponseModel());
         }
 
         [HttpPost]
-        public async Task<IActionResult> Login(string email, string password)
+        public async Task<IActionResult> Login(LoginResponseModel model)
         {
-            var login = new LoginResponseModel();
-            login.Username = email;
-            login.Password = password;
-            var result = await _authService.LoginAsync(login);
+            if (!ModelState.IsValid)
+            {
+                return View(model);
+            }
 
-            var breakpoint = result;
-            //if (!result)
-            //    return View("Error");
+            var errorMessage = await _authService.LoginAsync(model);
+
+            if (!errorMessage)
+            {
+                ModelState.AddModelError(string.Empty, "Невірний логін чи пароль");
+                return View(model);
+            }
 
             return RedirectToAction("Index", "Home");
         }
 
 
-
         [HttpPost]
-        public IActionResult Register(string Name, string Password)
+        public IActionResult Logout()
         {
-            // Логіка авторизації
-
+            _tokenManager.ClearToken();
             return RedirectToAction("Index", "Home");
         }
-
-
 
 
         [HttpGet]
@@ -57,11 +60,25 @@ namespace PriceComparisonMVC.Controllers
         }
 
         [HttpPost]
-        public IActionResult Register(string Name, string Phone, string Email, string Password)
+        public async Task<IActionResult> Register(RegisterModel model)
         {
-            // Логіка реєстрації
-           
-            return RedirectToAction("Index", "Home");
+            if (!ModelState.IsValid)
+            {
+                return View(model);
+            }
+
+            var errorMessage = await _authService.RegisterAsync(model);
+
+            if (!string.IsNullOrEmpty(errorMessage))
+            {
+                ModelState.AddModelError(string.Empty, errorMessage);
+                return View(model);
+            }
+
+            return RedirectToAction("Login", "Account");
         }
+
+
+
     }
 }

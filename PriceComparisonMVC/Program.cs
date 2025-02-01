@@ -1,8 +1,14 @@
 using PriceComparisonMVC.Infrastructure;
+using PriceComparisonMVC.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
 ConfigurationService.ConfigureServices(builder);
+
+builder.Services.AddHttpClient<IApiService, ApiService>();
+builder.Services.AddSingleton<TokenManager>();
+builder.Services.AddTransient<IAuthService, AuthService>();
+
 
 var app = builder.Build();
 
@@ -25,6 +31,7 @@ app.UseStaticFiles();
 
 app.UseRouting();
 
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllerRoute(

@@ -1,4 +1,5 @@
-﻿using System.Text;
+﻿using System.Security.Claims;
+using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using PriceComparisonMVC.Models.Configuration;
@@ -32,6 +33,23 @@ namespace PriceComparisonMVC.Infrastructure.DependencyInjection
                     IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["JWT:Key"])),
                     
                     ClockSkew = TimeSpan.Zero
+                };
+
+                options.Events = new JwtBearerEvents
+                {
+                    OnTokenValidated = context =>
+                    {
+                        var identity = context.Principal.Identity as ClaimsIdentity;
+                        if (identity != null)
+                        {
+                            var usernameClaim = identity.FindFirst(ClaimTypes.Name);
+                            if (usernameClaim != null)
+                            {
+                                identity.AddClaim(new Claim("username", usernameClaim.Value));
+                            }
+                        }
+                        return Task.CompletedTask;
+                    }
                 };
 
             });
