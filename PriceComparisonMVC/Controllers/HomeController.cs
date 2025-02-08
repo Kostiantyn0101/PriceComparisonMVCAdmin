@@ -19,7 +19,7 @@ namespace PriceComparisonMVC.Controllers
 
         public IActionResult Index()
         {
-            ViewBag.Username = _tokenManager.GetUsernameFromToken();
+            ViewBag.Username = HttpContext?.User?.Identity?.Name;
             return View();
         }
 

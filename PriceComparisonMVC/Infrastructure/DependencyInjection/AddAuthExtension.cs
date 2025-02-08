@@ -37,21 +37,17 @@ namespace PriceComparisonMVC.Infrastructure.DependencyInjection
 
                 options.Events = new JwtBearerEvents
                 {
-                    OnTokenValidated = context =>
+                    OnMessageReceived = context =>
                     {
-                        var identity = context.Principal.Identity as ClaimsIdentity;
-                        if (identity != null)
+                        // Get token from the cookies if it wasn't sent in header
+                        var token = context.Request.Cookies["token"];
+                        if (!string.IsNullOrEmpty(token))
                         {
-                            var usernameClaim = identity.FindFirst(ClaimTypes.Name);
-                            if (usernameClaim != null)
-                            {
-                                identity.AddClaim(new Claim("username", usernameClaim.Value));
-                            }
+                            context.Token = token;
                         }
                         return Task.CompletedTask;
                     }
                 };
-
             });
 
             builder.Services.AddAuthorization(options =>

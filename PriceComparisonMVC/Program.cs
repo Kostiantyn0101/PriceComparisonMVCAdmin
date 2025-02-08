@@ -20,13 +20,14 @@ if (!app.Environment.IsDevelopment())
     app.UseHsts();
 }
 
-app.UseCookiePolicy(new CookiePolicyOptions
-{
-    MinimumSameSitePolicy = SameSiteMode.Strict,
-    Secure = CookieSecurePolicy.Always
-});
-
 app.UseHttpsRedirection();
+
+//app.UseCookiePolicy(new CookiePolicyOptions
+//{
+//    MinimumSameSitePolicy = SameSiteMode.Strict,
+//    Secure = CookieSecurePolicy.Always
+//});
+
 app.UseStaticFiles();
 
 app.UseRouting();

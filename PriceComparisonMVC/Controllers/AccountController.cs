@@ -1,8 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using PriceComparisonMVC.Models.Response;
 using PriceComparisonMVC.Services;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
 using PriceComparisonMVC.Models.Request;
 
 namespace PriceComparisonMVC.Controllers
@@ -33,9 +31,9 @@ namespace PriceComparisonMVC.Controllers
                 return View(model);
             }
 
-            var errorMessage = await _authService.LoginAsync(model);
+            var isSuccess = await _authService.LoginAsync(model);
 
-            if (!errorMessage)
+            if (!isSuccess)
             {
                 ModelState.AddModelError(string.Empty, "Невірний логін чи пароль");
                 return View(model);
