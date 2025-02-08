@@ -20,6 +20,14 @@ namespace PriceComparisonMVC.Services
             return await ExecuteRequestAsync<T>(() => _httpClient.GetAsync(endpoint));
         }
 
+
+        public async Task<TResponse> PostAsync<TRequest, TResponse>(string endpoint, TRequest requestData)
+        {
+            var content = new StringContent(JsonSerializer.Serialize(requestData), Encoding.UTF8, "application/json");
+            return await ExecuteRequestAsync<TResponse>(() => _httpClient.PostAsync(endpoint, content));
+        }
+
+
         private async Task<T> ExecuteRequestAsync<T>(Func<Task<HttpResponseMessage>> requestFunc)
         {
             try

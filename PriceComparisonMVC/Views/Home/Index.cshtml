@@ -29,7 +29,19 @@
             <!-- Login field -->
             <div class="col-6 col-md-1 d-flex align-items-center justify-content-center text-white mt-3 mt-md-0">
                 <img src="@Url.Content("~/images/user-icon.png")" alt="Користувач" class="rounded-circle me-2" width="24" height="24">
-                <a href="@Url.Action("Login", "Account")" class="text-white text-decoration-none">Кабінет</a>
+
+                @if (!string.IsNullOrEmpty(ViewBag.Username))
+                {
+                    <span class="text-white">@ViewBag.Username</span>
+                    <form asp-action="Logout" asp-controller="Account" method="post" class="d-inline">
+                        <button type="submit" class="btn btn-link text-white text-decoration-none ms-2 p-0">(Вийти)</button>
+                    </form>
+                }
+                else
+                {
+                    <a href="@Url.Action("Login", "Account")" class="text-white text-decoration-none">Кабінет</a>
+                }
+                              
             </div>
             <!-- Favorites field -->
             <div class="col-6 col-md-1 d-flex align-items-center justify-content-center text-white mt-3 mt-md-0">

@@ -1,5 +1,4 @@
-﻿@page
-@model PriceComparisonMVC.Views.Account.LoginModel
+﻿@model PriceComparisonMVC.Models.Request.RegisterModel
 @{
     Layout = null; // Якщо сторінка не використовує загальний макет
 }
@@ -21,30 +20,46 @@
 
         <div class="button-block">
             <a href="@Url.Action("Login", "Account")" class="btn btn-outline-secondary">Увійти</a>
-            <a href="@Url.Action("Register", "Account")" class="btn btn-primary">Зареєстуватись</a>
+            @* <a href="@Url.Action("Register", "Account")" class="btn btn-primary">Зареєстуватись</a> *@
+            <a href="@Url.Action("Index", "Home")" class="btn btn-outline-secondary">На головну</a>
         </div>
 
-        <form method="post" action="@Url.Action("Register", "Account")">
+
+        <!-- Вивід помилки -->
+        @if (!ViewData.ModelState.IsValid)
+        {
+            <div class="alert alert-danger">
+                @foreach (var error in ViewData.ModelState.Values.SelectMany(v => v.Errors))
+                {
+                    <p>@error.ErrorMessage</p>
+                }
+            </div>
+        }
+
+
+
+        <form method="post" asp-action="Register" asp-controller="Account">
             <div class="mb-3">
-                <input type="text" name="Name" class="form-control" id="name" placeholder="Ім'я" required>
+                <input asp-for="Username" class="form-control" placeholder="Ім'я користувача" required>
+                <span asp-validation-for="Username" class="text-danger"></span>
             </div>
 
             <div class="mb-3">
-                <input type="tel" name="Phone" class="form-control" id="phone" placeholder="Номер телефону" required>
-            </div>
-
-            <div class="mb-3">
-                <input type="email" name="Email" class="form-control" id="email" placeholder="E-Mail" required>
+                <input asp-for="Email" class="form-control" placeholder="E-Mail" required>
+                <span asp-validation-for="Email" class="text-danger"></span>
             </div>
 
             <div class="mb-4">
-                <input type="password" name="Password" class="form-control" id="password" placeholder="Пароль" required>
+                <input asp-for="Password" type="password" class="form-control" placeholder="Пароль" required>
+                <span asp-validation-for="Password" class="text-danger"></span>
             </div>
 
             <div class="mb-4 text-center">
                 <button type="submit" class="btn btn-primary">Зареєстуватись</button>
             </div>
         </form>
+
+
 
         <div class="text-center">
             <p class="text-muted">Продовжити через</p>

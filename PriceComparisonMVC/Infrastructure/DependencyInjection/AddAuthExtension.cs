@@ -1,4 +1,5 @@
-﻿using System.Text;
+﻿using System.Security.Claims;
+using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using PriceComparisonMVC.Models.Configuration;
@@ -34,6 +35,19 @@ namespace PriceComparisonMVC.Infrastructure.DependencyInjection
                     ClockSkew = TimeSpan.Zero
                 };
 
+                options.Events = new JwtBearerEvents
+                {
+                    OnMessageReceived = context =>
+                    {
+                        // Get token from the cookies if it wasn't sent in header
+                        var token = context.Request.Cookies["token"];
+                        if (!string.IsNullOrEmpty(token))
+                        {
+                            context.Token = token;
+                        }
+                        return Task.CompletedTask;
+                    }
+                };
             });
 
             builder.Services.AddAuthorization(options =>

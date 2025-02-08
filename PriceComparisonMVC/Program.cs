@@ -1,8 +1,14 @@
 using PriceComparisonMVC.Infrastructure;
+using PriceComparisonMVC.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
 ConfigurationService.ConfigureServices(builder);
+
+builder.Services.AddHttpClient<IApiService, ApiService>();
+builder.Services.AddSingleton<TokenManager>();
+builder.Services.AddTransient<IAuthService, AuthService>();
+
 
 var app = builder.Build();
 
@@ -14,17 +20,19 @@ if (!app.Environment.IsDevelopment())
     app.UseHsts();
 }
 
-app.UseCookiePolicy(new CookiePolicyOptions
-{
-    MinimumSameSitePolicy = SameSiteMode.Strict,
-    Secure = CookieSecurePolicy.Always
-});
-
 app.UseHttpsRedirection();
+
+//app.UseCookiePolicy(new CookiePolicyOptions
+//{
+//    MinimumSameSitePolicy = SameSiteMode.Strict,
+//    Secure = CookieSecurePolicy.Always
+//});
+
 app.UseStaticFiles();
 
 app.UseRouting();
 
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllerRoute(

@@ -1,4 +1,5 @@
-﻿using PriceComparisonMVC.Models.Configuration;
+﻿using Microsoft.IdentityModel.Tokens;
+using PriceComparisonMVC.Models.Configuration;
 using PriceComparisonMVC.Services;
 using System.Net.Http.Headers;
 
@@ -19,10 +20,28 @@ namespace PriceComparisonWebAPI.Infrastructure.DependencyInjection
                 client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
             });
 
-            builder.Services.AddHttpClient<IAuthService, AuthService>(client =>
+            builder.Services.AddHttpClient<IApiService, ApiService>();
+            builder.Services.AddSingleton<TokenManager>();
+
+
+            builder.Services.AddHttpClient<IAuthService, AuthService>(async (serviceProvider, client) =>
             {
                 client.BaseAddress = new Uri(jwtConfig?.Issuer!);
+
+                var tokenManager = serviceProvider.GetRequiredService<TokenManager>();
+                var token = await tokenManager.GetTokenAsync(); // Асинхронне отримання токена
+
+                if (!string.IsNullOrEmpty(token))
+                {
+                    client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
+                }
             });
+
+
+            //builder.Services.AddHttpClient<IAuthService, AuthService>(client =>
+            //{
+            //    client.BaseAddress = new Uri(jwtConfig?.Issuer!);
+            //});
 
             builder.Services.AddSingleton<TokenManager>();
         }
