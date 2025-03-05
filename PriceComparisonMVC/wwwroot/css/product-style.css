@@ -1,0 +1,1530 @@
+﻿/* Загальні стилі */
+body {
+    background-color: #f9f9f9;
+    font-family: 'Roboto', sans-serif;
+    margin: 0;
+    padding: 0;
+}
+
+/* Хедер */
+.custom-header {
+    background-color: #1F4E92;
+    padding: 1rem 0;
+    position: relative;
+    z-index: 10;
+}
+
+    .custom-header h1 {
+        font-size: 1.5rem;
+        font-weight: bold;
+        margin: 0;
+    }
+
+/* Поле пошуку */
+.custom-search-field {
+    border-radius: 0.25rem;
+    height: 3.375rem; /* 54px */
+    width: 100%;
+}
+
+/* Іконки */
+.icon {
+    width: 1.5rem;
+    height: 1.5rem;
+}
+
+/* Стилі для навігаційних посилань у хедері */
+.action-link {
+    display: flex;
+    align-items: center;
+    color: #fff;
+    text-decoration: none;
+    transition: text-decoration 0.3s;
+}
+
+    .action-link:hover {
+        text-decoration: underline;
+    }
+
+/* Секція категорій */
+.category-section {
+    background-color: #f9f9f9;
+    padding: 1.25rem;
+    text-align: center;
+}
+
+.breadcrumb-links {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 0.3125rem;
+    margin-top: 0.625rem;
+}
+
+    .breadcrumb-links a {
+        text-decoration: none;
+        color: #000;
+        font-weight: bold;
+        padding: 0.3125rem 0.625rem;
+    }
+
+/* Блок категорії */
+.custom-box {
+    width: 8.3125rem; /* 133px */
+    height: 6rem; /* 96px */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+}
+
+    .custom-box img {
+        width: 1.5rem;
+        height: 1.5rem;
+        margin-bottom: 0.5rem;
+    }
+
+    .custom-box a {
+        font-size: 0.875rem;
+        color: #333;
+        text-decoration: none;
+    }
+
+        .custom-box a:hover {
+            text-decoration: underline;
+        }
+
+
+/* Блок товару */
+.product-container {
+    width: 100%;
+    margin-top: 3.875rem;
+    border: 2px solid #000;
+    padding: 1rem 0;
+    box-sizing: border-box;
+}
+
+/* Прибираємо зайві відступи */
+.product-header {
+    padding: 1rem;
+    border-bottom: 2px solid #ddd;
+}
+
+/* Стилі для вкладок та навігації */
+.tab-content {
+    display: none; /* За замовчуванням всі вкладки приховані */
+    margin-top: 20px;
+    width: 100%;
+}
+
+.product-navigation {
+    display: flex;
+    gap: 10px;
+    border-bottom: 1px solid #e0e0e0;
+    padding-bottom: 5px;
+}
+
+    .product-navigation a.nav-item {
+        background: #F9F9F9;
+        padding: 0.75rem;
+        transition: background 0.3s, border-bottom 0.3s;
+        text-decoration: none;
+        color: #797979;
+        font-weight: 500;
+        font-size: 1rem;
+        position: relative;
+        cursor: pointer;
+    }
+
+        .product-navigation a.nav-item:hover {
+            border-bottom: 2px solid #1F4E92;
+            color: #000;
+        }
+
+        .product-navigation a.nav-item.active {
+            color: #1F4E92;
+            font-weight: 600;
+            border-bottom: 2px solid #1F4E92;
+        }
+
+/* Фільтри */
+.filter-box {
+    min-width: 13rem; /* 208px */
+    height: 3rem;
+    background: #D9D9D9;
+    /*    border: 1px solid #000;*/
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1rem;
+    padding: 0.75rem;
+    transition: background 0.3s;
+}
+
+    .filter-box:hover {
+        background: #fff;
+    }
+
+/* Основний контент */
+.main-content {
+    display: flex;
+    justify-content: space-between;
+    gap: 2.5rem;
+    padding: 1rem;
+}
+
+
+
+/* Контейнер із головним зображенням та каруселлю */
+.custom-image-section {
+    width: 726px;
+    height: 936px;
+    display: flex;
+    flex-direction: column;
+    gap: 40px; /* відступ між верхнім блоком і каруселлю */
+    box-sizing: border-box; /* враховуємо рамки й паддінги у загальний розмір */
+}
+
+/* Головне зображення */
+.custom-image-block {
+    width: 726px;
+    height: 677px;
+    box-sizing: border-box;
+    background-color: #f0f0f0;
+}
+
+    .custom-image-block img {
+        width: 100%;
+        height: 100%;
+        object-fit: contain;
+        object-position: center;
+        display: block;
+    }
+
+/* Контейнер каруселі */
+.custom-thumbs-container {
+    width: 726px; /* Фіксована ширина контейнера */
+    height: 223px; /* Фіксована висота контейнера */
+    padding-bottom: 12px; /* Відступ знизу */
+    box-sizing: border-box; /* Враховуємо рамки і паддінги */
+    position: relative; /* Для абсолютного позиціонування кнопок */
+    overflow: hidden; /* Приховуємо елементи, що виходять за межі */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Обгортка для треку каруселі */
+.custom-thumbs-wrapper {
+    width: 100%;
+    overflow: hidden;
+}
+
+
+
+
+
+
+/* Контейнер каруселі */
+.custom-thumbs-container {
+    width: 726px; /* Фіксована ширина контейнера */
+    height: 223px; /* Фіксована висота контейнера */
+    padding-bottom: 12px; /* Відступ знизу */
+    box-sizing: border-box; /* Враховуємо рамки і паддінги */
+    position: relative; /* Для абсолютного позиціонування кнопок */
+    overflow: hidden; /* Приховує елементи, що виходять за межі */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Обгортка для треку каруселі */
+.custom-thumbs-wrapper {
+    width: 100%;
+    overflow: hidden;
+}
+
+/* Трек каруселі */
+.custom-thumbs-track {
+    display: flex;
+    gap: 12px; /* Проміжок між слайдами */
+    transition: transform 0.3s ease-in-out; /* Плавна анімація при зсуві */
+}
+
+/* Контейнер кожного слайда з фіксованими розмірами */
+.custom-thumb-image-container {
+    width: 283px !important; /* Фіксована ширина */
+    height: 211px !important; /* Фіксована висота */
+    /*border: 2px solid #000;*/ /* Чорна рамка */
+    box-sizing: border-box;
+    overflow: hidden; /* Приховує надлишок */
+    flex: 0 0 auto; /* Забороняє стиснення чи розтягування у flex-контейнері */
+}
+
+
+    /* Зображення, яке вписується в контейнер */
+    .custom-thumb-image-container img {
+        width: 282px; /* Займає 100% ширини контейнера */
+        height: 210px; /* Займає 100% висоти контейнера */
+        object-fit: contain; /* Масштабування збереження пропорцій */
+        object-position: center; /* Центрування зображення */
+        display: block;
+    }
+
+/* Кнопки навігації для каруселі */
+.custom-thumb-prev,
+.custom-thumb-next {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background: rgba(0, 0, 0, 0.5);
+    color: #fff;
+    border: none;
+    padding: 0.5rem;
+    font-size: 1.5rem;
+    cursor: pointer;
+    z-index: 1;
+}
+
+.custom-thumb-prev {
+    left: 10px;
+}
+
+.custom-thumb-next {
+    right: 10px;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+/* Секція деталей товару */
+.product-details {
+    flex: 1;
+    max-width: 60rem; /* ~955px */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 1rem;
+}
+
+.product-title {
+    font-size: 2rem;
+    text-align: center;
+    margin: 2.5rem 0;
+}
+
+.price-range {
+    display: flex;
+    gap: 2.5rem;
+    margin: 1.25rem 0;
+}
+
+.price-box {
+    display: flex;
+    align-items: center;
+    gap: 0.3125rem;
+}
+
+.price-label {
+    font-size: 1.5rem;
+    color: #000;
+}
+
+.price-value {
+    font-size: 2.25rem;
+    font-weight: bold;
+    color: #000;
+}
+
+/* Блок дій */
+.action-container {
+    display: flex;
+    justify-content: center;
+    gap: 7.5rem;
+    padding: 1rem 0;
+}
+
+.parent-action-container {
+    display: flex;
+    gap: 2.5rem;
+}
+
+.parent-action-container-component {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1.75rem;
+    padding: 0.625rem;
+}
+
+.action-text {
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+}
+
+    .action-text p {
+        font-size: 1.5rem;
+        margin: 0;
+    }
+
+.action-button {
+    background: #1F4E92;
+    color: #fff;
+    font-size: 1.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+    border: none;
+    padding: 1rem;
+    cursor: pointer;
+    transition: background 0.3s;
+}
+
+    .action-button img {
+        width: 1.5rem;
+        height: 1.5rem;
+    }
+
+    .action-button:hover {
+        background: #163a6d;
+    }
+
+/* Інформаційний блок */
+.info-block {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    justify-content: flex-start;
+    margin-top: 1.875rem;
+}
+
+.info-item {
+    min-width: 5.4375rem; /* 87px */
+    height: 2.6875rem; /* 43px */
+    padding: 0.75rem;
+    font-weight: 600;
+    font-size: 1rem;
+    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Специфікації товару */
+.item-specs {
+    position: static;
+    margin-top: 1rem;
+    margin-left: 0;
+    padding-left: 0;
+    align-self: flex-start;
+}
+
+    .item-specs ul {
+        list-style-type: disc;
+        margin: 0;
+        padding-left: 0;
+    }
+
+    .item-specs li {
+        font-size: 1rem;
+        margin-bottom: 0.375rem;
+        display: flex;
+        align-items: center;
+    }
+
+        .item-specs li strong {
+            font-weight: bold;
+            margin-right: 0.5rem;
+        }
+
+.color-container {
+    display: flex;
+    gap: 0.75rem;
+}
+
+.color-box {
+    width: 1.75rem;
+    height: 1.75rem;
+    border-radius: 0.25rem;
+    border: 1px solid #000;
+}
+
+/* Секція порівняння */
+.comparison-container {
+    display: flex;
+    justify-content: flex-start;
+    padding: 1.25rem 0;
+}
+
+.comparison-inner {
+    background-color: #f8f9fa;
+    border: 1px solid #ddd;
+    padding: 1.25rem;
+    border-radius: 0.5rem;
+    width: 100%;
+}
+
+.comparison-title {
+    font-size: 1.5rem;
+    font-weight: bold;
+    text-align: center;
+    margin-bottom: 0.75rem;
+}
+
+.comparison-content {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+    gap: 0.75rem;
+    border-bottom: 1px solid #000;
+    padding-bottom: 1rem;
+}
+
+.comparison-item {
+    display: flex;
+    align-items: center;
+    background-color: #fff;
+    border-radius: 0.25rem;
+    padding: 0.75rem;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+}
+
+.comparison-checkbox {
+    width: 1.25rem;
+    height: 1.25rem;
+    cursor: pointer;
+}
+
+.parameter-box {
+    min-width: 3rem;
+    padding: 0.75rem;
+    border: 1px solid #F2F2F2;
+    background: rgba(246, 246, 246, 0.49);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 0.5rem;
+}
+
+.price-range-box {
+    width: 14.25rem; /* 228px */
+    padding: 0.75rem;
+    border: 1px solid #F2F2F2;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #0B8E00;
+    border-radius: 0.5rem;
+}
+
+.compare-box {
+    width: 16.5625rem; /* 265px */
+    padding: 0.75rem;
+    border: 1px solid #F2F2F2;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    color: #1F4E92;
+    background: rgba(246, 246, 246, 0.49);
+    font-size: 1.25rem;
+    cursor: pointer;
+    border-radius: 0.5rem;
+}
+
+.compare-arrow {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.compare-price {
+    font-size: 1.25rem;
+    font-weight: bold;
+}
+
+.compare-arrow-icon {
+    font-size: 1.25rem;
+    font-weight: bold;
+}
+
+
+
+/* Секція повних параметрів */
+.full-parameter-section {
+    display: flex; /* Змушуємо елемент бути flex контейнером */
+    gap: 0.75rem;
+    padding: 0 5rem;
+    background-color: #fff;
+    border: 1px solid #E0E0E0;
+    flex-wrap: wrap;
+    margin-top: 1rem;
+}
+
+/* Контейнер для двох колонок - змінюємо flex-direction */
+.specs-columns-container {
+    display: flex !important;
+    flex-direction: row !important;
+    flex-wrap: wrap;
+    width: 100%;
+    gap: 1.5rem;
+    justify-content: space-between;
+}
+
+.section-box {
+    flex: 1 1 calc(50% - 1.5rem);
+    min-width: 20rem;
+    display: flex;
+    flex-direction: column;
+}
+
+.d-flex {
+    display: flex !important;
+}
+
+.category-title-box {
+    display: flex;
+    align-items: center;
+    font-size: 1rem;
+    font-weight: bold;
+    padding-left: 0.75rem;
+    background-color: #f8f9fa;
+    border-radius: 0.25rem;
+    margin-bottom: 0.5rem;
+}
+
+.category-type-box,
+.category-value-box {
+    padding: 0.75rem;
+    font-size: 1rem;
+}
+
+.category-separator {
+    border-top: 1px solid #E0E0E0;
+    margin: 0.5rem 0;
+}
+
+.characteristic-box {
+    background: #fff;
+    border-radius: 0.5rem;
+    margin-bottom: 1rem;
+}
+
+.characteristic-title {
+    font-size: 1rem;
+    font-weight: bold;
+    padding: 0.75rem;
+    border-bottom: 1px solid #f0f0f0;
+    margin-bottom: 0.5rem;
+}
+
+.characteristic-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 1rem;
+}
+
+    .characteristic-table td {
+        padding: 0.5rem 0.75rem;
+        border-bottom: 1px solid #f0f0f0;
+    }
+
+    .characteristic-table tr:last-child td {
+        border-bottom: none;
+    }
+
+    .characteristic-table td:first-child {
+        font-weight: bold;
+        width: 16.25rem;
+    }
+
+/* Адаптивність для різних розмірів екранів */
+@media (max-width: 1200px) {
+    .full-parameter-section {
+        padding: 0 2rem;
+    }
+
+    .section-box {
+        max-width: 100%;
+    }
+}
+
+/* Додаємо новий брейкпоінт для дуже малих екранів */
+@media (max-width: 900px) {
+    .specs-columns-container {
+        flex-direction: column; /* Перемикаємо на колонки лише для дуже малих екранів */
+    }
+}
+
+@media (max-width: 768px) {
+    .full-parameter-section {
+        padding: 0 1rem;
+    }
+
+    .characteristic-table td:first-child {
+        width: 10rem;
+    }
+}
+
+
+
+
+
+
+/* Секція магазинів */
+.store-cards-container {
+    width: 100%;
+    background-color: #fff;
+    border-top: 1px solid #E0E0E0;
+    padding: 20px 20px;
+    border: 1px solid #E0E0E0;
+}
+
+.store-cards-header {
+    font-size: 2rem;
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.store-sort-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    padding-bottom: 15px;
+}
+
+.store-sort-btn {
+    font-size: 1rem;
+    background: #F9F9F9;
+    border: 1px solid #E0E0E0;
+    border-radius: 4px;
+    cursor: pointer;
+    padding: 10px 20px;
+    transition: background 0.3s, border 0.3s;
+}
+
+    .store-sort-btn:hover {
+        background: #1F4E92;
+        color: #fff;
+    }
+
+.store-cards-content {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 20px;
+    padding: 20px 0;
+}
+
+.store-card {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #fff;
+    border-bottom: 1px solid #E0E0E0;
+    padding: 20px;
+    flex-wrap: nowrap;
+}
+
+.store-card-left {
+    display: flex;
+    align-items: center;
+    flex: 1.3;
+    justify-content: flex-start;
+    gap: 15px;
+}
+
+.store-card-left-image {
+    position: relative;
+    width: 207px;
+    height: 201px;
+    min-width: 207px;
+    max-width: 207px;
+}
+
+    .store-card-left-image img {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        object-fit: contain;
+    }
+
+.store-card-left-info {
+    /*    display: flex;*/
+    flex-direction: column;
+    gap: 8px;
+}
+
+.store-card-info-box-1 {
+    display: flex;
+    gap: 10px;
+}
+
+.info-icon {
+    width: 40px;
+    height: 40px;
+    background: #EBF0F6;
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+    .info-icon img {
+        width: 20px;
+        height: 20px;
+    }
+
+.store-card-info-box-2 {
+    background: #F9F9F9;
+    border-radius: 4px;
+    padding: 8px 12px;
+    font-size: 16px;
+}
+
+.store-card-info-box-3 a {
+    text-decoration: none;
+    color: #000;
+    transition: color 0.3s;
+}
+
+    .store-card-info-box-3 a:hover {
+        color: #007BFF;
+    }
+
+.store-card-info-box-4 {
+    position: relative;
+    max-height: 4.5em; /* Приблизно 3 рядки */
+    overflow: hidden;
+    transition: max-height 0.5s ease;
+}
+
+    .store-card-info-box-4.expanded {
+        max-height: 1000px; /* Достатньо велике значення для будь-якого тексту */
+    }
+
+.description-more-btn {
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    color: #1F4E92;
+    cursor: pointer;
+    font-weight: bold;
+    background: linear-gradient(to right, transparent 0%, white 30%);
+    padding-left: 20px;
+}
+
+.store-card-info-box-4.expanded .description-more-btn {
+    position: static;
+    display: block;
+    text-align: right;
+    padding-top: 5px;
+    background: none;
+}
+
+.store-card-right {
+    display: flex;
+    align-items: center;
+    flex: 0.7;
+    justify-content: flex-end;
+    gap: 20px;
+}
+
+.store-card-right-text {
+    width: 140px;
+    height: 40px;
+    padding: 8px;
+    font-family: 'Roboto', sans-serif;
+    font-weight: 500;
+    font-size: 18px;
+    text-align: center;
+    background: #F9F9F9;
+    border-radius: 4px;
+}
+
+.store-card-right-link {
+    width: 180px;
+    height: 48px;
+    padding: 12px;
+    background: #1F4E92;
+    color: #FFFFFF;
+    font-family: 'Roboto', sans-serif;
+    font-weight: 500;
+    font-size: 18px;
+    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+    border-radius: 4px;
+    transition: background 0.3s ease;
+}
+
+    .store-card-right-link:hover {
+        background: #163b6c;
+    }
+
+.store-card-right-box {
+    width: 140px;
+    height: 70px;
+    background: #FFFFFF;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 4px;
+    border: 1px solid #E0E0E0;
+    overflow: hidden;
+}
+
+.store-logo {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+}
+
+
+
+
+
+/* Секція популярних товарів */
+.popular-products-section {
+    background-color: #f9f9f9; /* Світлий фон */
+    padding: 20px 80px; /* Відступи секції */
+}
+
+/* Заголовок */
+.section-title {
+    font-family: 'Roboto', sans-serif;
+    font-size: 24px;
+    font-weight: bold;
+    margin-bottom: 20px;
+}
+
+/* Посилання */
+.category-link1 {
+    font-family: 'Roboto', sans-serif;
+    font-size: 16px;
+    color: #000; /* встановлено чорний колір */
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+    .category-link1:hover {
+        color: #007bff;
+        text-decoration: underline;
+    }
+
+
+
+
+/* Блок товару */
+.product-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+    background-color: #fff;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    height: 100%; /* Займає всю висоту колонки */
+}
+
+/* Блок для зображення */
+.product-image-container {
+    width: 100%;
+    height: 200px; /* Фіксована висота блоку */
+    background-color: #f9f9f9; /* Фон на випадок менших зображень */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 4px;
+    overflow: hidden; /* Запобігає виходу зображень за межі */
+    margin-bottom: 10px;
+}
+
+/* Зображення */
+.product-image {
+    max-width: 100%; /* Пропорційна ширина */
+    max-height: 100%; /* Пропорційна висота */
+    object-fit: contain; /* Вписує зображення пропорційно */
+    border-radius: 4px;
+}
+
+/* Короткий опис */
+.product-description {
+    font-family: 'Roboto', sans-serif;
+    font-size: 16px;
+    color: #333;
+    margin-bottom: 10px;
+    height: 48px; /* Фіксована висота для вирівнювання */
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 2; /* Ліміт тексту до 2 рядків */
+    -webkit-box-orient: vertical;
+}
+
+/* Ціна товару */
+.product-price {
+    font-family: 'Roboto', sans-serif;
+    font-size: 16px;
+    font-weight: bold;
+    color: #e76f51;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/* Секція відгуків */
+.reviews-section {
+    width: 100%;
+    max-width: 1920px;
+    padding: 24px;
+    background: #ffffff;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 24px;
+}
+
+.reviews-header {
+    width: 100%;
+    max-width: 1920px;
+    height: 62px;
+    font-family: 'Roboto', sans-serif;
+    font-weight: 400;
+    font-size: 32px;
+    line-height: 37.5px;
+    text-align: center;
+    background: #ffffff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.reviews-button-container {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+}
+
+.reviews-add-button {
+    width: 156px;
+    height: 47px;
+    padding: 12px;
+    background: #2C509A;
+    color: #ffffff;
+    font-family: 'Roboto', sans-serif;
+    font-weight: 400;
+    font-size: 20px;
+    line-height: 23.44px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background 0.3s ease;
+}
+
+    .reviews-add-button:hover {
+        background: #1F3B7A;
+    }
+
+.reviews-content {
+    width: 100%;
+    min-height: 100px;
+    background: #F9F9F9;
+    border-radius: 8px;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.review-card {
+    width: 100%;
+    max-width: 1814px;
+    height: auto;
+    background: #FFFFFF;
+    box-shadow: 0px 4px 4px 0px #00000040;
+    padding: 16px 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto;
+    box-sizing: border-box;
+}
+
+.review-content {
+    width: 100%;
+    height: auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.review-left {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex: 1;
+    height: 100%;
+    min-width: 300px;
+}
+
+.review-avatar {
+    width: 132px;
+    height: 126px;
+    background: #D9D9D9;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+    .review-avatar img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
+.review-text {
+    width: 100%;
+    max-width: 1317px;
+    min-height: 115px;
+    background: #F9F9F9;
+    padding: 12px;
+    border-radius: 8px;
+    font-family: 'Roboto', sans-serif;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.review-header {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    min-height: 24px;
+}
+
+.review-username {
+    font-family: 'Roboto', sans-serif;
+    font-weight: 400;
+    font-size: 20px;
+    line-height: 23.44px;
+}
+
+.review-rating {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.rating-star {
+    width: 24px;
+    height: 24px;
+    object-fit: contain;
+}
+
+.review-message {
+    font-family: 'Roboto', sans-serif;
+    font-weight: 400;
+    font-size: 14px;
+    line-height: 16.8px;
+    margin: 0;
+}
+
+.review-right {
+    width: 157px;
+    height: 126px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    position: relative;
+}
+
+.review-dropdown {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    width: 24px;
+    height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.dropdown-arrow {
+    width: 20px;
+    height: 20px;
+    cursor: pointer;
+}
+
+.review-comment-text {
+    width: 100%;
+    height: auto;
+    resize: none;
+    border-radius: 4px;
+    font-family: 'Roboto', sans-serif;
+    font-size: 14px;
+    line-height: 16.8px;
+    outline: none;
+    transition: border-color 0.3s ease;
+    margin-top: auto;
+}
+
+/* Головний контейнер для додаткових блоків */
+.additional-block {
+    width: 100%;
+    max-width: 1674px;
+    height: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    padding: 16px;
+    box-sizing: border-box;
+    margin: 0 auto;
+}
+
+.additional-top {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    gap: 6px;
+    flex-wrap: wrap;
+}
+
+.top-left, .top-right {
+    width: calc(50% - 3px);
+    height: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.top-left-header, .top-right-header {
+    width: 100%;
+    height: 48px;
+    padding: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    border-radius: 4px;
+}
+
+.top-left-text, .top-right-text {
+    font-family: 'Roboto', sans-serif;
+    font-weight: 400;
+    font-size: 14px;
+    line-height: 16.8px;
+    color: #000;
+}
+
+.top-left-plus {
+    font-size: 24px;
+    font-weight: bold;
+    color: green;
+    cursor: pointer;
+}
+
+.top-right-minus {
+    font-size: 24px;
+    font-weight: bold;
+    color: red;
+    cursor: pointer;
+}
+
+.top-left-content, .top-right-content {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    padding: 12px;
+}
+
+.advantage-block {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    height: 41px;
+    padding: 12px;
+    border-radius: 4px;
+}
+
+.advantage-label {
+    font-family: 'Roboto', sans-serif;
+    font-weight: 400;
+    font-size: 14px;
+    line-height: 16.8px;
+    color: #000;
+    margin-right: 12px;
+    white-space: nowrap;
+}
+
+.advantage-input {
+    flex: 1;
+    height: 100%;
+    border: none;
+    background: transparent;
+    font-family: 'Roboto', sans-serif;
+    font-size: 14px;
+    outline: none;
+    padding: 4px 8px;
+}
+
+.additional-bottom {
+    width: 100%;
+    height: auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px;
+    border-radius: 4px;
+    flex-wrap: wrap;
+}
+
+.bottom-icons {
+    display: flex;
+    gap: 12px;
+}
+
+.icon-box {
+    width: 72px;
+    height: 72px;
+    background: #D9D9D9;
+    border-radius: 4px;
+}
+
+.add-review-button {
+    width: 225px;
+    height: 55px;
+    padding: 12px;
+    font-family: 'Roboto', sans-serif;
+    font-weight: 400;
+    font-size: 18px;
+    line-height: 23.44px;
+    color: white;
+    background: #2C509A;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background 0.3s ease;
+}
+
+    .add-review-button:hover {
+        background: #1F3B7A;
+    }
+
+/* Стилі для вкладок */
+#description-tab {
+    padding: 30px;
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+
+    #description-tab h2 {
+        font-size: 24px;
+        margin-bottom: 20px;
+        color: #333;
+    }
+
+    #description-tab p {
+        font-size: 16px;
+        line-height: 1.6;
+        color: #555;
+    }
+
+/* Адаптивність */
+@media (max-width: 768px) {
+    .additional-bottom {
+        flex-direction: column;
+        gap: 12px;
+        align-items: center;
+    }
+
+    .bottom-icons {
+        justify-content: center;
+    }
+
+    .product-navigation {
+        overflow-x: auto;
+        white-space: nowrap;
+        justify-content: flex-start;
+        padding-bottom: 10px;
+    }
+
+    .nav-item {
+        padding: 8px 12px;
+        font-size: 14px;
+    }
+
+    .tab-content {
+        padding: 15px 10px;
+    }
+}
+
+@media (max-width: 1200px) {
+    .top-left, .top-right {
+        width: 100%;
+    }
+
+    .additional-top {
+        flex-direction: column;
+    }
+}
+
+@media (max-width: 1200px) {
+    .review-card {
+        flex-direction: column;
+        align-items: flex-start;
+        padding: 16px;
+    }
+
+    .review-content {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .review-left {
+        width: 100%;
+        justify-content: center;
+    }
+
+    .review-text {
+        width: 100%;
+        text-align: center;
+    }
+
+    .review-right {
+        width: 100%;
+        display: flex;
+        justify-content: center;
+        margin-top: 10px;
+    }
+
+    .review-comment-text {
+        width: 90%;
+    }
+}
+
+@media (max-width: 768px) {
+    .review-left {
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+    }
+
+    .review-avatar {
+        width: 100px;
+        height: 100px;
+    }
+
+    .review-text {
+        text-align: left;
+    }
+
+    .review-right {
+        width: 100%;
+        margin-top: 10px;
+    }
+
+    .review-comment-text {
+        width: 100%;
+    }
+}
+
+/* Футер */
+.footer {
+    background-color: #1F4E92;
+    color: #fff;
+    padding: 2.5rem 0;
+}
+
+    .footer h5 {
+        font-size: 1rem;
+        font-weight: bold;
+        margin-bottom: 0.625rem;
+    }
+
+    .footer .category-link {
+        color: #fff;
+        text-decoration: none;
+        font-size: 0.875rem;
+        transition: color 0.3s;
+    }
+
+        .footer .category-link:hover {
+            color: #FFD700;
+        }
+
+@media (max-width: 1024px) {
+    .custom-header, .footer {
+        padding: 0.625rem;
+    }
+
+    .custom-box {
+        width: 6.875rem;
+        height: 5rem;
+    }
+
+        .custom-box a {
+            font-size: 0.75rem;
+        }
+}
+
+@media (max-width: 768px) {
+    .custom-header {
+        text-align: center;
+    }
+
+    .breadcrumb-links {
+        flex-direction: column;
+    }
+
+    .footer {
+        text-align: center;
+    }
+
+    .custom-box {
+        width: 100%;
+        padding: 0.625rem 0;
+    }
+}

@@ -20,10 +20,8 @@
 
         <div class="button-block">
             <a href="@Url.Action("Login", "Account")" class="btn btn-outline-secondary">Увійти</a>
-            @* <a href="@Url.Action("Register", "Account")" class="btn btn-primary">Зареєстуватись</a> *@
             <a href="@Url.Action("Index", "Home")" class="btn btn-outline-secondary">На головну</a>
         </div>
-
 
         <!-- Вивід помилки -->
         @if (!ViewData.ModelState.IsValid)
@@ -35,8 +33,6 @@
                 }
             </div>
         }
-
-
 
         <form method="post" asp-action="Register" asp-controller="Account">
             <div class="mb-3">
@@ -58,8 +54,6 @@
                 <button type="submit" class="btn btn-primary">Зареєстуватись</button>
             </div>
         </form>
-
-
 
         <div class="text-center">
             <p class="text-muted">Продовжити через</p>
