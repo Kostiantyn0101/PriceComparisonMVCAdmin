@@ -2,7 +2,7 @@
 using System.Text;
 using System.Net.Http.Headers;
 
-namespace PriceComparisonMVC.Services
+namespace PriceComparisonMVCAdmin.Services
 {
     public class ApiService : IApiService
     {

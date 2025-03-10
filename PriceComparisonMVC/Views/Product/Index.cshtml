@@ -1,9 +1,9 @@
-﻿@model PriceComparisonMVC.Models.Product.ProductPageModel
+﻿@model PriceComparisonMVCAdmin.Models.Product.ProductPageModel
 
 @{
     // Отримуємо список характеристик із моделі та сортуємо за DisplayOrder
     // Додаємо перевірку на null для безпечного використання
-    var characteristics = (Model.Characteristics ?? Enumerable.Empty<PriceComparisonMVC.Models.Response.ProductCharacteristicResponseModel>())
+    var characteristics = (Model.Characteristics ?? Enumerable.Empty<PriceComparisonMVCAdmin.Models.Response.ProductCharacteristicResponseModel>())
                             .OrderBy(c => c.DisplayOrder)
                             .ToList();
 
@@ -255,7 +255,7 @@
 
                     <div class="item-specs">
                         <ul>
-                            @foreach (var group in (Model.ShortCharacteristics ?? Enumerable.Empty<PriceComparisonMVC.Models.Response.ProductCharacteristicGroupResponseModel>()).OrderBy(g => g.GroupDisplayOrder))
+                            @foreach (var group in (Model.ShortCharacteristics ?? Enumerable.Empty<PriceComparisonMVCAdmin.Models.Response.ProductCharacteristicGroupResponseModel>()).OrderBy(g => g.GroupDisplayOrder))
                             {
                                 if (group.CharacteristicGroupTitle.Equals("Колір", StringComparison.OrdinalIgnoreCase))
                                 {

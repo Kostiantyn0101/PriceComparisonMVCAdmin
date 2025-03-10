@@ -1,11 +1,11 @@
 ﻿using System.Text.Json;
 using System.Text;
-using PriceComparisonMVC.Models.Configuration;
+using PriceComparisonMVCAdmin.Models.Configuration;
 using Microsoft.Extensions.Options;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 
-namespace PriceComparisonMVC.Services
+namespace PriceComparisonMVCAdmin.Services
 {
     public class TokenManager
     {

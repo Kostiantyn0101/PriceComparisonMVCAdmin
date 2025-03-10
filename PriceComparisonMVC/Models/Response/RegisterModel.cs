@@ -1,4 +1,4 @@
-﻿namespace PriceComparisonMVC.Models.Request
+﻿namespace PriceComparisonMVCAdmin.Models.Request
 {
     public class RegisterModel
     {

@@ -1,6 +1,6 @@
 ﻿using Microsoft.IdentityModel.Tokens;
-using PriceComparisonMVC.Models.Configuration;
-using PriceComparisonMVC.Services;
+using PriceComparisonMVCAdmin.Models.Configuration;
+using PriceComparisonMVCAdmin.Services;
 using System.Net.Http.Headers;
 
 namespace PriceComparisonWebAPI.Infrastructure.DependencyInjection

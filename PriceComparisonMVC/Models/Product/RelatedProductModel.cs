@@ -1,4 +1,4 @@
-﻿namespace PriceComparisonMVC.Models.Product
+﻿namespace PriceComparisonMVCAdmin.Models.Product
 {
     public class RelatedProductModel
     {

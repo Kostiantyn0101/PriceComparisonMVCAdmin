@@ -1,4 +1,4 @@
-﻿namespace PriceComparisonMVC.Models.Categories
+﻿namespace PriceComparisonMVCAdmin.Models.Categories
 {
     public class ProductsResponseWrapper
     {

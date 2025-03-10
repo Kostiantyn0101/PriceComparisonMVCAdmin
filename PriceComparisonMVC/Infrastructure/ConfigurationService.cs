@@ -1,7 +1,7 @@
-﻿using PriceComparisonMVC.Infrastructure.DependencyInjection;
+﻿using PriceComparisonMVCAdmin.Infrastructure.DependencyInjection;
 using PriceComparisonWebAPI.Infrastructure.DependencyInjection;
 
-namespace PriceComparisonMVC.Infrastructure
+namespace PriceComparisonMVCAdmin.Infrastructure
 {
     public class ConfigurationService
     {

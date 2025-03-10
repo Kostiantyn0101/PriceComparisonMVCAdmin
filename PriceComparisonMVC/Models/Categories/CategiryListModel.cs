@@ -1,6 +1,6 @@
-﻿using PriceComparisonMVC.Models.Response;
+﻿using PriceComparisonMVCAdmin.Models.Response;
 
-namespace PriceComparisonMVC.Models.Categories
+namespace PriceComparisonMVCAdmin.Models.Categories
 {
     public class CategiryListModel
     {

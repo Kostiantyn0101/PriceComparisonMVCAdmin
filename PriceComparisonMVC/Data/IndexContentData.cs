@@ -1,8 +1,8 @@
 ﻿using System.Collections.Generic;
-using PriceComparisonMVC.Models;
-using PriceComparisonMVC.Models.Response;
+using PriceComparisonMVCAdmin.Models;
+using PriceComparisonMVCAdmin.Models.Response;
 
-namespace PriceComparisonMVC.Data
+namespace PriceComparisonMVCAdmin.Data
 {
     public static class IndexContentData
     {

@@ -1,6 +1,6 @@
-﻿using PriceComparisonMVC.Models.Response;
+﻿using PriceComparisonMVCAdmin.Models.Response;
 
-namespace PriceComparisonMVC.Models.Product
+namespace PriceComparisonMVCAdmin.Models.Product
 {
     public class ProductPageModel
     {

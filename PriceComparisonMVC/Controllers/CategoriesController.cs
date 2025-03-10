@@ -1,10 +1,10 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using PriceComparisonMVC.Models;
-using PriceComparisonMVC.Models.Categories;
-using PriceComparisonMVC.Models.Response;
-using PriceComparisonMVC.Services;
+using PriceComparisonMVCAdmin.Models;
+using PriceComparisonMVCAdmin.Models.Categories;
+using PriceComparisonMVCAdmin.Models.Response;
+using PriceComparisonMVCAdmin.Services;
 
-namespace PriceComparisonMVC.Controllers
+namespace PriceComparisonMVCAdmin.Controllers
 {
     public class CategoriesController : Controller
     {

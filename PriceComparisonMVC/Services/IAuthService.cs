@@ -5,10 +5,10 @@ using System.Text.Json;
 using System.Net.Http.Headers;
 using System.Text;
 using System.Threading.Tasks;
-using PriceComparisonMVC.Models.Response;
-using PriceComparisonMVC.Models.Request;
+using PriceComparisonMVCAdmin.Models.Response;
+using PriceComparisonMVCAdmin.Models.Request;
 
-namespace PriceComparisonMVC.Services
+namespace PriceComparisonMVCAdmin.Services
 {
     public interface IAuthService
     {

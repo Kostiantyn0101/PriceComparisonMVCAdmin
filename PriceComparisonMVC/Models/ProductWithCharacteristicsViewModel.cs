@@ -1,4 +1,4 @@
-﻿namespace PriceComparisonMVC.Models
+﻿namespace PriceComparisonMVCAdmin.Models
 {
     public class ProductWithCharacteristicsViewModel
     {

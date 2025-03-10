@@ -1,11 +1,11 @@
 ﻿using System.Diagnostics;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using PriceComparisonMVC.Models;
-using PriceComparisonMVC.Models.Response;
-using PriceComparisonMVC.Services;
+using PriceComparisonMVCAdmin.Models;
+using PriceComparisonMVCAdmin.Models.Response;
+using PriceComparisonMVCAdmin.Services;
 
-namespace PriceComparisonMVC.Controllers
+namespace PriceComparisonMVCAdmin.Controllers
 {
     public class HomeController : Controller
     {

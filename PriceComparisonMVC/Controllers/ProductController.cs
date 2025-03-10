@@ -1,13 +1,13 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
-using PriceComparisonMVC.Models;
-using PriceComparisonMVC.Models.Categories;
-using PriceComparisonMVC.Models.Product;
-using PriceComparisonMVC.Models.Response;
-using PriceComparisonMVC.Services;
+using PriceComparisonMVCAdmin.Models;
+using PriceComparisonMVCAdmin.Models.Categories;
+using PriceComparisonMVCAdmin.Models.Product;
+using PriceComparisonMVCAdmin.Models.Response;
+using PriceComparisonMVCAdmin.Services;
 using System.Text.Json;
 
-namespace PriceComparisonMVC.Controllers
+namespace PriceComparisonMVCAdmin.Controllers
 {
     public class ProductController : Controller
     {

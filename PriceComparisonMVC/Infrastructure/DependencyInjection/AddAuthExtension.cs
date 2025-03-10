@@ -2,9 +2,9 @@
 using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
-using PriceComparisonMVC.Models.Configuration;
+using PriceComparisonMVCAdmin.Models.Configuration;
 
-namespace PriceComparisonMVC.Infrastructure.DependencyInjection
+namespace PriceComparisonMVCAdmin.Infrastructure.DependencyInjection
 {
     public static class AddAuthExtension
     {

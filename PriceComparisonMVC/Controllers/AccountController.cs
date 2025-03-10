@@ -1,9 +1,9 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using PriceComparisonMVC.Models.Response;
-using PriceComparisonMVC.Services;
-using PriceComparisonMVC.Models.Request;
+using PriceComparisonMVCAdmin.Models.Response;
+using PriceComparisonMVCAdmin.Services;
+using PriceComparisonMVCAdmin.Models.Request;
 
-namespace PriceComparisonMVC.Controllers
+namespace PriceComparisonMVCAdmin.Controllers
 {
     public class AccountController : Controller
     {

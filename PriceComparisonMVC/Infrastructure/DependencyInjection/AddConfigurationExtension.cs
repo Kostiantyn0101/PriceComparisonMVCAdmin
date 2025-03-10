@@ -1,6 +1,6 @@
-﻿using PriceComparisonMVC.Models.Configuration;
+﻿using PriceComparisonMVCAdmin.Models.Configuration;
 
-namespace PriceComparisonMVC.Infrastructure.DependencyInjection
+namespace PriceComparisonMVCAdmin.Infrastructure.DependencyInjection
 {
     public static class AddConfigurationExtension
     {

@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace PriceComparisonMVC.Models.Configuration
+namespace PriceComparisonMVCAdmin.Models.Configuration
 {
     public class JwtConfiguration
     {
