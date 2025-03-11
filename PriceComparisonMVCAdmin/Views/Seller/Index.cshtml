@@ -1,0 +1,19 @@
+﻿@using PriceComparisonMVCAdmin.Models.Response.Seller
+@model SellerResponseModel
+
+@if (Model != null)
+{
+    <div>
+        <p><strong>Назва магазину:</strong> @Model.StoreName</p>
+        <p><strong>API Key:</strong> @Model.ApiKey</p>
+        <p><strong>Website:</strong> <a href="@Model.WebsiteUrl">@Model.WebsiteUrl</a></p>
+        <p><strong>Баланс:</strong> @Model.AccoundBalance</p>
+        <p><strong>Статус:</strong> @(Model.IsActive ? "Активний" : "Неактивний")</p>
+    </div>
+
+    <a asp-controller="Seller" asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-primary">Редагувати дані</a>
+}
+else
+{
+    <p>Доступ не нажано.</p>
+}

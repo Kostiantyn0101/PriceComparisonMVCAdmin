@@ -1,0 +1,30 @@
+﻿@using PriceComparisonMVCAdmin.Models.Seller
+@model SellerEditViewModel
+
+<h2>Редагування</h2>
+
+<form asp-action="Edit" method="post" enctype="multipart/form-data">
+    <input type="hidden" asp-for="Id" />
+
+    <div class="form-group">
+        <label asp-for="StoreName"></label>
+        <input asp-for="StoreName" class="form-control" />
+    </div>
+
+    <div class="form-group">
+        <label asp-for="WebsiteUrl"></label>
+        <input asp-for="WebsiteUrl" class="form-control" />
+    </div>
+
+    <div class="form-group">
+        <label>Поточний логотип</label><br />
+        <img src="@Model.CurrentLogoImageUrl" alt="Логотип" style="max-width: 200px;" />
+    </div>
+
+    <div class="form-group">
+        <label asp-for="NewLogoImage">Новий логотип</label>
+        <input asp-for="NewLogoImage" type="file" class="form-control" />
+    </div>
+
+    <button type="submit" class="btn btn-primary">Зберегти зміни</button>
+</form>
