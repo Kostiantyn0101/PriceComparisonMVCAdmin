@@ -10,11 +10,11 @@ using System.Text.Json;
 
 namespace PriceComparisonMVCAdmin.Controllers
 {
-    public class SellerController : Controller
+    public class SellerController : BaseController
     {
         private readonly IApiService _apiService;
 
-        public SellerController(IApiService apiService)
+        public SellerController(IApiService apiService) : base(apiService)
         {
             _apiService = apiService;
         }
@@ -99,6 +99,22 @@ namespace PriceComparisonMVCAdmin.Controllers
                 return View(model);
             }
         }
+        public async Task<IActionResult> Settings()
+        {
+            var userId = HttpContext.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            SellerResponseModel? seller = null;
 
+            try
+            {
+                seller = await _apiService.GetAsync<SellerResponseModel>($"api/Seller/getByUserId/{userId}");
+            }
+            catch (Exception ex)
+            {
+                ViewBag.ErrorMessage = "Не вдалося отримати дані продавця";
+                //redirect to error page or access deni
+            }
+
+            return View(seller);
+        }
     }
 }

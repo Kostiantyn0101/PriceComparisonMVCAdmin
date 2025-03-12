@@ -35,6 +35,7 @@ namespace PriceComparisonMVCAdmin.Services
                 SetAuthorizationHeader();
                 var response = await requestFunc();
 
+                
                 if (response.StatusCode == System.Net.HttpStatusCode.Unauthorized)
                 {
                     var newToken = await _tokenManager.RefreshTokenAsync();
