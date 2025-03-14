@@ -5,30 +5,65 @@
     Layout = "~/Views/Shared/_AdminLayout.cshtml";
 }
 
-<h2>Редагування</h2>
+<div class="container my-4">
+    <h2 class="mb-4">Редагування магазину</h2>
 
-<form asp-action="Edit" method="post" enctype="multipart/form-data">
-    <input type="hidden" asp-for="Id" />
+    <div class="card shadow-sm">
+        <div class="card-body">
+            <form asp-action="Edit" method="post" enctype="multipart/form-data">
+                <input type="hidden" asp-for="Id" />
 
-    <div class="form-group">
-        <label asp-for="StoreName"></label>
-        <input asp-for="StoreName" class="form-control" />
+                <div class="row mb-3">
+                    <label asp-for="StoreName" class="col-sm-2 col-form-label fw-bold"></label>
+                    <div class="col-sm-10">
+                        <input asp-for="StoreName" class="form-control" />
+                        <span asp-validation-for="StoreName" class="text-danger"></span>
+                    </div>
+                </div>
+
+                <div class="row mb-3">
+                    <label asp-for="WebsiteUrl" class="col-sm-2 col-form-label fw-bold"></label>
+                    <div class="col-sm-10">
+                        <input asp-for="WebsiteUrl" class="form-control" />
+                        <span asp-validation-for="WebsiteUrl" class="text-danger"></span>
+                    </div>
+                </div>
+
+                <div class="row mb-3">
+                    <label class="col-sm-2 col-form-label fw-bold">Публікація прайс-листа</label>
+                    <div class="col-sm-10">
+                        <div class="form-check form-switch">
+                            <input asp-for="PublishPriceList" class="form-check-input" role="switch" />
+                            <label asp-for="PublishPriceList" class="form-check-label ms-2"></label>
+                        </div>
+                        <span asp-validation-for="PublishPriceList" class="text-danger"></span>
+                    </div>
+                </div>
+
+                <div class="row mb-3">
+                    <label class="col-sm-2 col-form-label fw-bold">Поточний логотип</label>
+                    <div class="col-sm-10">
+                        <img src="@Model.CurrentLogoImageUrl"
+                             alt="Логотип"
+                             class="img-fluid img-thumbnail"
+                             style="max-width: 200px;" />
+                    </div>
+                </div>
+
+                <div class="row mb-3">
+                    <label asp-for="NewLogoImage" class="col-sm-2 col-form-label fw-bold">Новий логотип</label>
+                    <div class="col-sm-10">
+                        <input asp-for="NewLogoImage" type="file" class="form-control" />
+                        <span asp-validation-for="NewLogoImage" class="text-danger"></span>
+                    </div>
+                </div>
+
+                <div class="text-center">
+                    <button type="submit" class="btn btn-primary px-4">
+                        Зберегти зміни
+                    </button>
+                </div>
+            </form>
+        </div>
     </div>
-
-    <div class="form-group">
-        <label asp-for="WebsiteUrl"></label>
-        <input asp-for="WebsiteUrl" class="form-control" />
-    </div>
-
-    <div class="form-group">
-        <label>Поточний логотип</label><br />
-        <img src="@Model.CurrentLogoImageUrl" alt="Логотип" style="max-width: 200px;" />
-    </div>
-
-    <div class="form-group">
-        <label asp-for="NewLogoImage">Новий логотип</label>
-        <input asp-for="NewLogoImage" type="file" class="form-control" />
-    </div>
-
-    <button type="submit" class="btn btn-primary">Зберегти зміни</button>
-</form>
+</div>

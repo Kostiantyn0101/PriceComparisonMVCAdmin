@@ -16,9 +16,7 @@ public class BaseController : Controller
     public override async Task OnActionExecutionAsync(ActionExecutingContext context, ActionExecutionDelegate next)
     {
         await base.OnActionExecutionAsync(context, next);
-
-
-            ViewBag.Username = HttpContext?.User?.Identity?.Name;
+        ViewBag.Username = HttpContext?.User?.Identity?.Name;
         if (ViewBag.Username != null)
         {
             if (User.Identity.IsAuthenticated)

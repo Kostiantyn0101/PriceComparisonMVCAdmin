@@ -7,5 +7,6 @@
         public string WebsiteUrl { get; set; }
         public string? CurrentLogoImageUrl { get; set; }
         public IFormFile? NewLogoImage { get; set; }
+        public bool PublishPriceList { get; set; }
     }
 }

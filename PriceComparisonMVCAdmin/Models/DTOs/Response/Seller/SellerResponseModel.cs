@@ -8,6 +8,7 @@
         public string? LogoImageUrl { get; set; }
         public string WebsiteUrl { get; set; }
         public bool IsActive { get; set; }
+        public bool PublishPriceList { get; set; }
         public decimal AccoundBalance { get; set; }
         public int UserId { get; set; }
     }

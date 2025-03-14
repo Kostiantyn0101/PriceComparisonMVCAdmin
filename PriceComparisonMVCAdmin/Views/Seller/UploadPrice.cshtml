@@ -1,0 +1,24 @@
+﻿@model PriceComparisonMVCAdmin.Models.Seller.PriceListViewModel
+
+@{
+    ViewBag.Title = "Завантаження прайс-листа";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<div class="container mt-4">
+    <h2>Завантаження прайс-листа</h2>
+
+    <form asp-action="UploadPrice" method="post" enctype="multipart/form-data">
+        <div class="mb-3">
+            <input asp-for="PriceListFile" class="form-control" />
+        </div>
+        <button type="submit" class="btn btn-primary">Завантажити</button>
+    </form>
+
+    @if (!string.IsNullOrEmpty(Model.Message))
+    {
+        <div class="alert @(Model.IsSuccess ? "alert-success" : "alert-danger") mt-3">
+            @Model.Message
+        </div>
+    }
+</div>

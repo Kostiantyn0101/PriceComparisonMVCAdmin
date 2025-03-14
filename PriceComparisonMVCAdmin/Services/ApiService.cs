@@ -89,7 +89,7 @@ namespace PriceComparisonMVCAdmin.Services
         {
             var formData = new MultipartFormDataContent();
 
-            // Reflection: ідемо по всіх властивостях TRequest
+            // Reflection: TRequest
             var properties = typeof(TRequest).GetProperties();
             foreach (var prop in properties)
             {
@@ -97,7 +97,7 @@ namespace PriceComparisonMVCAdmin.Services
                 if (value == null)
                     continue;
 
-                // Якщо властивість — IFormFile
+                // IFormFile
                 if (value is IFormFile file)
                 {
                     var fileContent = new StreamContent(file.OpenReadStream());

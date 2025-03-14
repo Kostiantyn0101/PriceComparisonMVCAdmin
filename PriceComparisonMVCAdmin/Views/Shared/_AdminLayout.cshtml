@@ -31,6 +31,9 @@
                                 @sellerModel.WebsiteUrl
                             </a>
                         </div>
+                        <div>
+                            <small>Баланс: @sellerModel.AccoundBalance.ToString("C")</small>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -72,10 +75,10 @@
                             <a asp-controller="Seller" asp-action="Index" class="nav-link">Головна</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="#">Мої товари</a>
+                            <a asp-controller="Seller" asp-action="UploadPrice" class="nav-link">Завантаження прайсу</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="#">Замовлення</a>
+                            <a class="nav-link" href="#">Мої товари</a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link" href="#">Статистика</a>
