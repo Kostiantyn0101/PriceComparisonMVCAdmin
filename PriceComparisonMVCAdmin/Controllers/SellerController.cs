@@ -10,12 +10,12 @@ using System.Security.Claims;
 
 namespace PriceComparisonMVCAdmin.Controllers
 {
-    [Authorize(Policy = "StandardRights")]
+    [Authorize(Policy = "SellerRights")]
     public class SellerController : BaseController
     {
         private readonly IApiService _apiService;
 
-        public SellerController(IApiService apiService) : base (apiService)
+        public SellerController(IApiService apiService) : base(apiService)
         {
             _apiService = apiService;
         }
@@ -162,6 +162,81 @@ namespace PriceComparisonMVCAdmin.Controllers
                 model.Message = $"Виникла помилка: {ex.Message}";
             }
 
+            return View(model);
+        }
+        [HttpGet]
+        public async Task<IActionResult> Statistics()
+        {
+            var model = new ProductReferenceStatisticsViewModel
+            {
+                StartDate = DateTime.Today.AddMonths(-1),
+                EndDate = DateTime.Today,
+            };
+
+            var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            if (!string.IsNullOrEmpty(userId))
+            {
+                var seller = await _apiService.GetAsync<SellerResponseModel>($"api/Seller/getByUserId/{userId}");
+
+                var requestModel = new ProductSellerReferenceClickStaisticRequestModel
+                {
+                    SellerId = seller.Id,
+                    StartDate = model.StartDate,
+                    EndDate = model.EndDate
+                };
+
+                try
+                {
+                    var response = await _apiService
+                        .PostAsync<ProductSellerReferenceClickStaisticRequestModel, List<ProductSellerReferenceClickResponseModel>>(
+                            "/api/ProductReferenceClick/statistic",
+                            requestModel);
+
+                    model.Results = response ?? new List<ProductSellerReferenceClickResponseModel>();
+                }
+                catch (Exception ex)
+                {
+                    ModelState.AddModelError(string.Empty, $"Помилка отримання статистики: {ex.Message}");
+                }
+            }
+
+            return View(model);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Statistics(ProductReferenceStatisticsViewModel model)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View(model);
+            }
+            var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            if (!string.IsNullOrEmpty(userId))
+            {
+                var seller = await _apiService.GetAsync<SellerResponseModel>($"api/Seller/getByUserId/{userId}");
+
+                var requestModel = new ProductSellerReferenceClickStaisticRequestModel
+                {
+                    SellerId = seller.Id,
+                    StartDate = model.StartDate,
+                    EndDate = model.EndDate
+                };
+
+                try
+                {
+                    var response = await _apiService
+                        .PostAsync<ProductSellerReferenceClickStaisticRequestModel,
+                                   List<ProductSellerReferenceClickResponseModel>>(
+                            "/api/ProductReferenceClick/statistic",
+                            requestModel);
+
+                    model.Results = response ?? new List<ProductSellerReferenceClickResponseModel>();
+                }
+                catch (Exception ex)
+                {
+                    ModelState.AddModelError(string.Empty, $"Помилка отримання статистики: {ex.Message}");
+                }
+            }
             return View(model);
         }
     }
