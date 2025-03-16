@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using PriceComparisonMVCAdmin.Models;
 using PriceComparisonMVCAdmin.Models.DTOs.Request.Seller;
 using PriceComparisonMVCAdmin.Models.Request.Seller;
+using PriceComparisonMVCAdmin.Models.Response;
 using PriceComparisonMVCAdmin.Models.Response.Seller;
 using PriceComparisonMVCAdmin.Models.Seller;
 using PriceComparisonMVCAdmin.Services;
@@ -239,5 +240,39 @@ namespace PriceComparisonMVCAdmin.Controllers
             }
             return View(model);
         }
+
+        public async Task<IActionResult> AuctionRates()
+        {
+            var categories = await _apiService.GetAsync<List<CategoryResponseModel>>("api/Categories/getall");
+            categories = categories.Where(c => c.ParentCategoryId.HasValue).ToList();
+
+            var model = new SellerAuctionRatesViewModel();
+
+            var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            if (!string.IsNullOrEmpty(userId))
+            {
+                var seller = await _apiService.GetAsync<SellerResponseModel>($"api/Seller/getByUserId/{userId}");
+                var auctionRates = await _apiService.GetAsync<List<AuctionClickRateResponseModel>>($"api/AuctionClickRate/getBySellerId/{seller.Id}");
+
+                var items = categories.Select(cat =>
+                {
+                    var rate = auctionRates.FirstOrDefault(r => r.CategoryId == cat.Id);
+                    return new CategoryAuctionRateViewModel
+                    {
+                        CategoryId = cat.Id,
+                        CategoryTitle = cat.Title,
+                        AuctionClickRateId = rate?.Id,
+                        AuctionClickRate = rate != null ? rate.ClickRate : 0
+                    };
+                }).ToList();
+
+                model.SellerId = seller.Id;
+                model.Items = items;
+            }
+
+            return View(model);
+        }
+
+
     }
 }
