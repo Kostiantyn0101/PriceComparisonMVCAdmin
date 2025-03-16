@@ -80,7 +80,7 @@ namespace PriceComparisonMVCAdmin.Controllers
                 StoreName = model.StoreName,
                 WebsiteUrl = model.WebsiteUrl,
                 IsActive = originalSeller.IsActive, //dont update
-                AccoundBalance = originalSeller.AccoundBalance, //dont update
+                AccountBalance = originalSeller.AccountBalance, //dont update
                 UserId = originalSeller.UserId,
                 DeleteCurrentLogoImage = model.NewLogoImage != null, //if new image is uploaded, delete the old one
                 NewLogoImage = model.NewLogoImage,
@@ -103,6 +103,7 @@ namespace PriceComparisonMVCAdmin.Controllers
                 return View(model);
             }
         }
+
         public async Task<IActionResult> Settings()
         {
             var userId = HttpContext.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
