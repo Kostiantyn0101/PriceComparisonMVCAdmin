@@ -20,10 +20,6 @@ namespace PriceComparisonWebAPI.Infrastructure.DependencyInjection
                 client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
             });
 
-            builder.Services.AddHttpClient<IApiService, ApiService>();
-            builder.Services.AddSingleton<TokenManager>();
-
-
             builder.Services.AddHttpClient<IAuthService, AuthService>(async (serviceProvider, client) =>
             {
                 client.BaseAddress = new Uri(jwtConfig?.Issuer!);
@@ -36,12 +32,6 @@ namespace PriceComparisonWebAPI.Infrastructure.DependencyInjection
                     client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
                 }
             });
-
-
-            //builder.Services.AddHttpClient<IAuthService, AuthService>(client =>
-            //{
-            //    client.BaseAddress = new Uri(jwtConfig?.Issuer!);
-            //});
 
             builder.Services.AddSingleton<TokenManager>();
         }

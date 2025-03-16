@@ -31,7 +31,7 @@ namespace PriceComparisonMVCAdmin.Infrastructure.DependencyInjection
                     ValidAudience = builder.Configuration["JWT:Audience"],
                     ValidIssuer = builder.Configuration["JWT:Issuer"],
                     IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["JWT:Key"])),
-                    
+
                     ClockSkew = TimeSpan.Zero
                 };
 
@@ -46,7 +46,18 @@ namespace PriceComparisonMVCAdmin.Infrastructure.DependencyInjection
                             context.Token = token;
                         }
                         return Task.CompletedTask;
-                    }
+                    },
+                    OnForbidden = context =>
+                    {
+                        context.Response.Redirect("/Home/NoAccess");
+                        return Task.CompletedTask;
+                    },
+                    OnChallenge = context =>
+                    {
+                        context.Response.Redirect("/Account/Login");
+                        context.HandleResponse(); // обов'язково, щоб зупинити стандартну обробку
+                        return Task.CompletedTask;
+                    },
                 };
             });
 

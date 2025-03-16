@@ -1,0 +1,122 @@
+﻿@model PriceComparisonMVCAdmin.Models.Seller.SellerAuctionRatesViewModel
+@{
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+    
+<div class="container my-4">
+    <h2 class="mb-4">Аукціонні ставки за категоріями</h2>
+    <div class="d-flex flex-column gap-3">
+        @foreach(var item in Model.Items)
+        {
+            <div class="d-flex align-items-center justify-content-between border rounded p-2" data-category-id="@item.CategoryId" data-rate-id="@item.AuctionClickRateId">
+                <div class="fw-bold">
+                    @item.CategoryTitle
+                </div>
+                <div class="d-flex align-items-center gap-2">
+                    <span class="rate-display">
+                        @string.Format(System.Globalization.CultureInfo.InvariantCulture, "{0:F2}", item.AuctionClickRate)
+                    </span>
+                    <input type="number"
+                           class="form-control rate-input d-none"
+                           value="@string.Format(System.Globalization.CultureInfo.InvariantCulture, "{0:F2}", item.AuctionClickRate)"
+                           step="0.01"
+                           style="max-width: 100px;" />
+
+                    <button type="button" class="btn btn-link edit-toggle-btn">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pencil" viewBox="0 0 16 16">
+                          <path d="M12.146.146a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1 0 .708l-10 10a.5.5 0 0 1-.168.11l-5 2a.5.5 0 0 1-.65-.65l2-5a.5.5 0 0 1 .11-.168zM11.207 2.5 13.5 4.793 14.793 3.5 12.5 1.207zm1.586 3L10.5 3.207 4 9.707V10h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.293zm-9.761 5.175-.106.106-1.528 3.821 3.821-1.528.106-.106A.5.5 0 0 1 5 12.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.468-.325"/>
+                        </svg>
+                    </button>
+                    
+                    <button type="button" class="btn btn-link confirm-btn d-none">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-check-lg" viewBox="0 0 16 16">
+                          <path d="M12.736 3.97a.733.733 0 0 1 1.047 0c.286.289.29.756.01 1.05L7.88 12.01a.733.733 0 0 1-1.065.02L3.217 8.384a.757.757 0 0 1 0-1.06.733.733 0 0 1 1.047 0l3.052 3.093 5.4-6.425z"/>
+                        </svg>
+                    </button>
+                    <button type="button" class="btn btn-link cancel-btn d-none">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-x-lg" viewBox="0 0 16 16">
+                          <path d="M2.146 2.854a.5.5 0 1 1 .708-.708L8 7.293l5.146-5.147a.5.5 0 0 1 .708.708L8.707 8l5.147 5.146a.5.5 0 0 1-.708.708L8 8.707l-5.146 5.147a.5.5 0 0 1-.708-.708L7.293 8z"/>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        }
+    </div>
+</div>
+
+@section Scripts {
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $(function(){
+            $(".edit-toggle-btn").click(function(){
+                var $row = $(this).closest("div.d-flex");
+                $row.find(".rate-display").addClass("d-none");
+                $row.find(".rate-input").removeClass("d-none");
+                $(this).addClass("d-none");
+                $row.find(".confirm-btn, .cancel-btn").removeClass("d-none");
+            });
+
+            $(".cancel-btn").click(function(){
+                var $row = $(this).closest("div.d-flex");
+                var original = $row.find(".rate-display").text();
+                $row.find(".rate-input").val(original).addClass("d-none");
+                $row.find(".rate-display").removeClass("d-none");
+                $row.find(".confirm-btn, .cancel-btn").addClass("d-none");
+                $row.find(".edit-toggle-btn").removeClass("d-none");
+            });
+
+            $(".confirm-btn").click(function(){
+                var $container = $(this).closest("div.d-flex");
+                var $row = $(this).closest("div.border");
+                var categoryId = $row.data("category-id");
+                var rateId = $row.data("rate-id"); // Якщо існує, це update, інакше create
+                var newRate = parseFloat($container.find(".rate-input").val());
+
+                var payload = {
+                    CategoryId: categoryId,
+                    SellerId: @Model.SellerId, // SellerId передається через модель
+                    ClickRate: newRate
+                };
+
+                if(rateId){ // Ставка існує → оновлення
+                    payload.Id = rateId;
+                    $.ajax({
+                        url: window.apiBaseUrl +  "/api/AuctionClickRate/update",
+                        type: "PUT",
+                        contentType: "application/json",
+                        data: JSON.stringify(payload),
+                        success: function(response){
+                            $container.find(".rate-display").text(newRate);
+                            $container.find(".rate-input").addClass("d-none");
+                            $container.find(".rate-display").removeClass("d-none");
+                            $container.find(".confirm-btn, .cancel-btn").addClass("d-none");
+                            $container.find(".edit-toggle-btn").removeClass("d-none");
+                        },
+                        error: function(){
+                            alert("Помилка оновлення ставки.");
+                        }
+                    });
+                } else { // Ставки немає → створення
+                    $.ajax({
+                        url: window.apiBaseUrl +  "/api/AuctionClickRate/create",
+                        type: "POST",
+                        contentType: "application/json",
+                        data: JSON.stringify(payload),
+                        success: function(response){
+                            $row.attr("data-rate-id", response.newId);
+                            $container.find(".rate-display").text(newRate);
+                            $container.find(".rate-input").addClass("d-none");
+                            $container.find(".rate-display").removeClass("d-none");
+                            $container.find(".confirm-btn, .cancel-btn").addClass("d-none");
+                            $container.find(".edit-toggle-btn").removeClass("d-none");
+                        },
+                        error: function(){
+                            alert("Помилка створення ставки.");
+                        }
+                    });
+                }
+            });
+        });
+    </script>
+}
+

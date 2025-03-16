@@ -39,7 +39,7 @@ namespace PriceComparisonMVCAdmin.Controllers
                 return View(model);
             }
 
-            return RedirectToAction("Index", "Home");
+            return RedirectToAction("Index", "Seller");
         }
 
 
@@ -47,7 +47,7 @@ namespace PriceComparisonMVCAdmin.Controllers
         public IActionResult Logout()
         {
             _tokenManager.ClearToken();
-            return RedirectToAction("Index", "Home");
+            return RedirectToAction("Login", "Account");
         }
 
 

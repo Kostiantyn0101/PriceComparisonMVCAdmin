@@ -42,6 +42,19 @@ namespace PriceComparisonMVCAdmin.Services
             return usernameClaim?.Value;
         }
 
+        public string? GetUserIdFromToken()
+        {
+            var token = GetToken();
+            if (string.IsNullOrEmpty(token))
+                return null;
+
+            var handler = new JwtSecurityTokenHandler();
+            var jwtToken = handler.ReadJwtToken(token);
+
+            var userIdClaim = jwtToken.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier);
+            return userIdClaim?.Value;
+        }
+
         public async Task<string?> GetTokenAsync()
         {
             var accessToken = _httpContextAccessor.HttpContext?.Request.Cookies["token"];

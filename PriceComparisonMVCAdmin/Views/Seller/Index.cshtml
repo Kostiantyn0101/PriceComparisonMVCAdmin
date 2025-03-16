@@ -1,0 +1,43 @@
+﻿@model PriceComparisonMVCAdmin.Models.Response.Seller.SellerResponseModel
+@{
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<h2 class="mb-4">Дані магазину</h2>
+
+@if (Model != null)
+{
+    <div class="card">
+        <div class="card-body">
+            <h5 class="card-title">Інформація про магазин</h5>
+
+            <p class="card-text">
+                <strong>Назва магазину:</strong> @Model.StoreName
+            </p>
+            <p class="card-text">
+                <strong>API Key:</strong> @Model.ApiKey
+            </p>
+            <p class="card-text">
+                <strong>Website:</strong>
+                <a href="@Model.WebsiteUrl" target="_blank">@Model.WebsiteUrl</a>
+            </p>
+            <p class="card-text">
+                <strong>Баланс:</strong> @Model.AccoundBalance
+            </p>
+            <p class="card-text">
+                <strong>Статус:</strong> @(Model.IsActive ? "Активний" : "Неактивний")
+            </p>
+
+            <a asp-controller="Seller" asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-primary">
+                Редагувати дані
+            </a>
+        </div>
+    </div>
+}
+else
+{
+    <div class="alert alert-warning">
+        <strong>Увага!</strong> Дані продавця не знайдені або у вас немає доступу.
+    </div>
+}
+
