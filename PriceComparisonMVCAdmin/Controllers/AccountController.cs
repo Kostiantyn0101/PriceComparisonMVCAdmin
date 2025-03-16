@@ -47,7 +47,7 @@ namespace PriceComparisonMVCAdmin.Controllers
         public IActionResult Logout()
         {
             _tokenManager.ClearToken();
-            return RedirectToAction("Index", "Home");
+            return RedirectToAction("Login", "Account");
         }
 
 
