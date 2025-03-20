@@ -36,31 +36,41 @@ namespace PriceComparisonMVCAdmin.Controllers
 
         // POST: CreateBaseProduct
         [HttpPost]
-        public async Task<IActionResult> CreateBase(BaseProductCreateRequestModel model)
+        public async Task<IActionResult> CreateBase(BaseProductFormModel model)
         {
             if (!ModelState.IsValid)
             {
                 var categories = await _apiService.GetAsync<List<CategoryResponseModel>>("api/Categories/getall");
-                ViewBag.Categories = categories ?? new List<CategoryResponseModel>();
+                var filteredCategories = categories?.Where(c => c.ParentCategoryId.HasValue).ToList() ?? new List<CategoryResponseModel>();
+                ViewBag.Categories = filteredCategories ?? new List<CategoryResponseModel>();
                 return View(model);
             }
 
+            var modelCreate = new BaseProductCreateRequestModel
+            {
+                Brand = model.Brand,
+                Title = model.Title,
+                Description = model.Description,
+                IsUnderModeration = model.IsUnderModeration,
+                CategoryId = model.CategoryId
+            };
+
             var response = await _apiService.PostAsync<BaseProductCreateRequestModel, GeneralApiResponseModel>(
-                "api/BaseProducts/create", model);
+                "api/BaseProducts/create", modelCreate);
 
             var product = _apiResponseDeserializerService.DeserializeData<BaseProductResponseModel>(response);
 
             if (product == null)
             {
-                return await ReturnWithError("Invalid response data.", model);
+                return await ReturnWithError("Invalid response data.", modelCreate);
             }
 
             if (response.ReturnCode != AppSuccessCodes.CreateSuccess && response.ReturnCode != AppSuccessCodes.GerneralSuccess)
             {
-                return await ReturnWithError(response.Message, model);
+                return await ReturnWithError(response.Message, modelCreate);
             }
 
-            return RedirectToAction("EditCharacteristics", new { baseProductId = product.Id, categoryId = model.CategoryId });
+            return RedirectToAction("EditCharacteristics", new { baseProductId = product.Id, categoryId = modelCreate.CategoryId });
         }
 
         // GET: EditBaseProduct
@@ -95,15 +105,30 @@ namespace PriceComparisonMVCAdmin.Controllers
 
         // POST: EditBaseProduct
         [HttpPost]
-        public async Task<IActionResult> EditBaseProduct(BaseProductUpdateRequestModel model)
+        public async Task<IActionResult> EditBaseProduct(BaseProductFormModel model)
         {
             if (!ModelState.IsValid)
             {
+                var categories = await _apiService.GetAsync<List<CategoryResponseModel>>("api/Categories/getall");
+                var filteredCategories = categories?.Where(c => c.ParentCategoryId.HasValue).ToList() ?? new List<CategoryResponseModel>();
+
+                ViewBag.Categories = filteredCategories ?? new List<CategoryResponseModel>();
                 return View(model);
             }
 
+            var modelUpdate = new BaseProductUpdateRequestModel
+            {
+                Id = model.Id!.Value,
+                Brand = model.Brand,
+                Title = model.Title,
+                Description = model.Description,
+                IsUnderModeration = model.IsUnderModeration,
+                AddedToDatabase = model.AddedToDatabase!.Value,
+                CategoryId = model.CategoryId
+            };
+
             var response = await _apiService.SendAsync<BaseProductUpdateRequestModel, GeneralApiResponseModel>(
-                HttpMethod.Put, "api/BaseProducts/update", model, useMultipartFormData: false);
+                HttpMethod.Put, "api/BaseProducts/update", modelUpdate, useMultipartFormData: false);
 
             if (response.ReturnCode != AppSuccessCodes.UpdateSuccess && response.ReturnCode != AppSuccessCodes.GerneralSuccess)
             {
@@ -324,6 +349,7 @@ namespace PriceComparisonMVCAdmin.Controllers
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> EditVariant(ProductUpdateRequestModel model)
         {
             if (!ModelState.IsValid)

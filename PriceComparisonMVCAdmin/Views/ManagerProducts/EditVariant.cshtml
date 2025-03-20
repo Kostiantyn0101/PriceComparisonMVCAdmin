@@ -24,6 +24,7 @@
     <div class="mb-3">
         <label asp-for="BaseProductId" class="form-label" hidden></label>
         <input asp-for="BaseProductId" class="form-control" hidden />
+        <span asp-validation-for="BaseProductId" class="text-danger"></span>
     </div>
 
     <div class="mb-3">
@@ -55,6 +56,7 @@
                 <option value="@c.Id" selected="@(Model.ColorId == c.Id ? "selected" : null)">@c.Name</option>
             }
         </select>
+        <span asp-validation-for="ColorId" class="text-danger"></span>
     </div>
 
     <div class="mb-3">

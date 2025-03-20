@@ -7,16 +7,11 @@ namespace PriceComparisonMVCAdmin.Infrastructure
     {
         public static void ConfigureServices(WebApplicationBuilder builder)
         {
-            try
-            {
-                builder.AddConfiguration();
-                builder.AddServices();
-                builder.AddAuth();
-            }
-            catch (Exception ex)
-            {
-                throw;
-            }
+            builder.AddConfiguration();
+            builder.AddFluentValidation();
+            builder.AddAutoMapper();
+            builder.AddServices();
+            builder.AddAuth();
         }
     }
 }

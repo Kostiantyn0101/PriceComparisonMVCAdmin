@@ -37,11 +37,12 @@ namespace PriceComparisonMVCAdmin.Controllers
         }
 
         [HttpPost]
-        [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(CategoryCreateRequestModel model)
         {
             if (!ModelState.IsValid)
+            { 
                 return View(model);
+            }    
 
             var response = await _apiService.PostAsync<CategoryCreateRequestModel, GeneralApiResponseModel>(
                 "api/Categories/create", model);
