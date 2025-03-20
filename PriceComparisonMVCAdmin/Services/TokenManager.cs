@@ -90,7 +90,7 @@ namespace PriceComparisonMVCAdmin.Services
                 HttpOnly = true,
                 Secure = true,
                 SameSite = SameSiteMode.Strict,
-                Expires = DateTime.UtcNow.AddMinutes(refreshTokenLifetime)
+                Expires = DateTime.UtcNow.AddHours(refreshTokenLifetime)
             });
         }
 
