@@ -1,9 +1,9 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using PriceComparisonMVCAdmin.Models;
 using PriceComparisonMVCAdmin.Models.DTOs.Request.Seller;
+using PriceComparisonMVCAdmin.Models.DTOs.Response;
+using PriceComparisonMVCAdmin.Models.DTOs.Response.Category;
 using PriceComparisonMVCAdmin.Models.Request.Seller;
-using PriceComparisonMVCAdmin.Models.Response;
 using PriceComparisonMVCAdmin.Models.Response.Seller;
 using PriceComparisonMVCAdmin.Models.Seller;
 using PriceComparisonMVCAdmin.Services;
@@ -12,49 +12,109 @@ using System.Security.Claims;
 namespace PriceComparisonMVCAdmin.Controllers
 {
     [Authorize(Policy = "SellerRights")]
-    public class SellerController : BaseController
+    public class SellerController : BaseController<SellerController>
     {
-        private readonly IApiService _apiService;
 
-        public SellerController(IApiService apiService) : base(apiService)
-        {
-            _apiService = apiService;
-        }
+        public SellerController(IApiService apiService, ILogger<SellerController> logger)
+               : base(apiService, logger)
+        {}
 
         public async Task<IActionResult> Index()
         {
-            var userId = HttpContext.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-            SellerResponseModel? seller = null;
-
-            try
+            var model = new ProductReferenceStatisticsViewModel
             {
-                seller = await _apiService.GetAsync<SellerResponseModel>($"api/Seller/getByUserId/{userId}");
-            }
-            catch (Exception ex)
+                StartDate = DateTime.Today.AddMonths(-1),
+                EndDate = DateTime.Today,
+            };
+
+            var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            if (!string.IsNullOrEmpty(userId))
             {
-                ViewBag.ErrorMessage = "Не вдалося отримати дані продавця";
-                //redirect to error page or access deni
+
+                try
+                {
+                    var seller = await _apiService.GetAsync<SellerResponseModel>($"api/Seller/getByUserId/{userId}");
+
+                    var requestModel = new ProductSellerReferenceClickStaisticRequestModel
+                    {
+                        SellerId = seller.Id,
+                        StartDate = model.StartDate,
+                        EndDate = model.EndDate
+                    };
+                    var response = await _apiService
+                        .PostAsync<ProductSellerReferenceClickStaisticRequestModel, List<ProductSellerReferenceClickResponseModel>>(
+                            "/api/ProductReferenceClick/statistic",
+                            requestModel);
+
+                    model.Results = response ?? new List<ProductSellerReferenceClickResponseModel>();
+                }
+                catch (Exception ex)
+                {
+                    ModelState.AddModelError(string.Empty, $"Помилка отримання статистики: {ex.Message}");
+                }
             }
 
-            return View(seller);
+            return View(model);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Index(ProductReferenceStatisticsViewModel model)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View(model);
+            }
+            var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            if (!string.IsNullOrEmpty(userId))
+            {
+
+                try
+                {
+                    var seller = await _apiService.GetAsync<SellerResponseModel>($"api/Seller/getByUserId/{userId}");
+
+                    var requestModel = new ProductSellerReferenceClickStaisticRequestModel
+                    {
+                        SellerId = seller.Id,
+                        StartDate = model.StartDate,
+                        EndDate = model.EndDate
+                    };
+                    var response = await _apiService
+                        .PostAsync<ProductSellerReferenceClickStaisticRequestModel,
+                                   List<ProductSellerReferenceClickResponseModel>>(
+                            "/api/ProductReferenceClick/statistic",
+                            requestModel);
+
+                    model.Results = response ?? new List<ProductSellerReferenceClickResponseModel>();
+                }
+                catch (Exception ex)
+                {
+                    ModelState.AddModelError(string.Empty, $"Помилка отримання статистики: {ex.Message}");
+                }
+            }
+            return View(model);
         }
 
         public async Task<IActionResult> Edit(int id)
         {
-            var sellerResponse = await _apiService.GetAsync<SellerResponseModel>($"api/Seller/{id}");
-            if (sellerResponse == null)
+            var model = new SellerEditViewModel();
+            try
             {
-                return NotFound();
-            }
+                var sellerResponse = await _apiService.GetAsync<SellerResponseModel>($"api/Seller/{id}");
+                if (sellerResponse == null)
+                {
+                    return NotFound();
+                }
 
-            var model = new SellerEditViewModel
+                model.Id = sellerResponse.Id;
+                model.StoreName = sellerResponse.StoreName;
+                model.WebsiteUrl = sellerResponse.WebsiteUrl;
+                model.CurrentLogoImageUrl = sellerResponse.LogoImageUrl;
+                model.PublishPriceList = sellerResponse.PublishPriceList;
+            }
+            catch (Exception ex)
             {
-                Id = sellerResponse.Id,
-                StoreName = sellerResponse.StoreName,
-                WebsiteUrl = sellerResponse.WebsiteUrl,
-                CurrentLogoImageUrl = sellerResponse.LogoImageUrl,
-                PublishPriceList = sellerResponse.PublishPriceList
-            };
+                ModelState.AddModelError(string.Empty, $"Помилка отримання статистики: {ex.Message}");
+            }
 
             return View(model);
         }
@@ -177,17 +237,17 @@ namespace PriceComparisonMVCAdmin.Controllers
             var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
             if (!string.IsNullOrEmpty(userId))
             {
-                var seller = await _apiService.GetAsync<SellerResponseModel>($"api/Seller/getByUserId/{userId}");
-
-                var requestModel = new ProductSellerReferenceClickStaisticRequestModel
-                {
-                    SellerId = seller.Id,
-                    StartDate = model.StartDate,
-                    EndDate = model.EndDate
-                };
 
                 try
                 {
+                    var seller = await _apiService.GetAsync<SellerResponseModel>($"api/Seller/getByUserId/{userId}");
+
+                    var requestModel = new ProductSellerReferenceClickStaisticRequestModel
+                    {
+                        SellerId = seller.Id,
+                        StartDate = model.StartDate,
+                        EndDate = model.EndDate
+                    };
                     var response = await _apiService
                         .PostAsync<ProductSellerReferenceClickStaisticRequestModel, List<ProductSellerReferenceClickResponseModel>>(
                             "/api/ProductReferenceClick/statistic",
@@ -251,28 +311,37 @@ namespace PriceComparisonMVCAdmin.Controllers
             var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
             if (!string.IsNullOrEmpty(userId))
             {
-                var seller = await _apiService.GetAsync<SellerResponseModel>($"api/Seller/getByUserId/{userId}");
-                var auctionRates = await _apiService.GetAsync<List<AuctionClickRateResponseModel>>($"api/AuctionClickRate/getBySellerId/{seller.Id}");
-
-                var items = categories.Select(cat =>
+                try
                 {
-                    var rate = auctionRates.FirstOrDefault(r => r.CategoryId == cat.Id);
-                    return new CategoryAuctionRateViewModel
-                    {
-                        CategoryId = cat.Id,
-                        CategoryTitle = cat.Title,
-                        AuctionClickRateId = rate?.Id,
-                        AuctionClickRate = rate != null ? rate.ClickRate : 0
-                    };
-                }).ToList();
+                    var seller = await _apiService.GetAsync<SellerResponseModel>($"api/Seller/getByUserId/{userId}");
 
-                model.SellerId = seller.Id;
-                model.Items = items;
+                    var auctionRates = await _apiService.GetAsync<List<AuctionClickRateResponseModel>>(
+                        $"api/AuctionClickRate/getBySellerId/{seller.Id}"
+                    );
+
+                    var items = categories.Select(cat =>
+                    {
+                        var rate = auctionRates.FirstOrDefault(r => r.CategoryId == cat.Id);
+                        return new CategoryAuctionRateViewModel
+                        {
+                            CategoryId = cat.Id,
+                            CategoryTitle = cat.Title,
+                            AuctionClickRateId = rate?.Id,
+                            AuctionClickRate = rate?.ClickRate ?? 0
+                        };
+                    }).ToList();
+
+                    model.SellerId = seller.Id;
+                    model.Items = items;
+                }
+                catch (Exception ex)
+                {
+                    ModelState.AddModelError(string.Empty, $"Помилка отримання статистики: {ex.Message}");
+                }
             }
 
             return View(model);
         }
-
 
     }
 }

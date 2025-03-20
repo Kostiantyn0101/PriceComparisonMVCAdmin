@@ -1,43 +1,91 @@
-﻿@model PriceComparisonMVCAdmin.Models.Response.Seller.SellerResponseModel
+﻿@model PriceComparisonMVCAdmin.Models.Seller.ProductReferenceStatisticsViewModel
 @{
-    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+    Layout = "~/Views/Shared/_SellerLayout.cshtml";
 }
 
-<h2 class="mb-4">Дані магазину</h2>
-
-@if (Model != null)
-{
-    <div class="card">
+<div class="container my-4">
+    <h2 class="mb-4">Графік статистики</h2>
+    <form asp-action="Index" method="post" class="card mb-4 shadow-sm">
         <div class="card-body">
-            <h5 class="card-title">Інформація про магазин</h5>
-
-            <p class="card-text">
-                <strong>Назва магазину:</strong> @Model.StoreName
-            </p>
-            <p class="card-text">
-                <strong>API Key:</strong> @Model.ApiKey
-            </p>
-            <p class="card-text">
-                <strong>Website:</strong>
-                <a href="@Model.WebsiteUrl" target="_blank">@Model.WebsiteUrl</a>
-            </p>
-            <p class="card-text">
-                <strong>Баланс:</strong> @Model.AccoundBalance
-            </p>
-            <p class="card-text">
-                <strong>Статус:</strong> @(Model.IsActive ? "Активний" : "Неактивний")
-            </p>
-
-            <a asp-controller="Seller" asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-primary">
-                Редагувати дані
-            </a>
+            <input type="hidden" asp-for="SellerId" />
+            <div class="row mb-3">
+                <div class="col-sm-6">
+                    <label asp-for="StartDate" class="form-label fw-bold">Початок періоду</label>
+                    <input asp-for="StartDate" type="date" class="form-control" />
+                </div>
+                <div class="col-sm-6">
+                    <label asp-for="EndDate" class="form-label fw-bold">Кінець періоду</label>
+                    <input asp-for="EndDate" type="date" class="form-control" />
+                </div>
+            </div>
+            <div class="text-end">
+                <button type="submit" class="btn btn-primary">Показати</button>
+            </div>
         </div>
-    </div>
-}
-else
-{
-    <div class="alert alert-warning">
-        <strong>Увага!</strong> Дані продавця не знайдені або у вас немає доступу.
-    </div>
-}
+    </form>
 
+    @if (!ViewData.ModelState.IsValid)
+    {
+        <div class="alert alert-danger">
+            @Html.ValidationSummary()
+        </div>
+    }
+    <canvas id="myChart" style="max-height: 400px;"></canvas>
+
+</div>
+
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/moment@2.29.1"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@3.7.1"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-moment@1.0.0"></script>
+
+    <script>
+            const chartData = @Html.Raw(Json.Serialize(Model.Results
+                    .GroupBy(r => r.ClickedAt.Date)
+                    .Select(g => new
+                    {
+                            x = g.Key.ToString("yyyy-MM-dd"), 
+                            y = g.Sum(r => r.ClickRate)      
+                    })));
+
+            // Ініціалізація графіка
+            const ctx = document.getElementById('myChart').getContext('2d');
+            new Chart(ctx, {
+                type: 'line',
+                data: {
+                    datasets: [{
+                        label: 'Витрати (грн)',
+                        data: chartData,
+                        borderColor: 'rgba(75, 192, 192, 1)',
+                        backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                        tension: 0.1
+                    }]
+                },
+                options: {
+                    scales: {
+                        x: {
+                            type: 'time',
+                            time: {
+                                parser: 'YYYY-MM-DD',   
+                                unit: 'day',           
+                                tooltipFormat: 'DD.MM.yyyy'
+                            },
+                            title: {
+                                display: true,
+                                text: 'Дата/час'
+                            }
+                        },
+                        y: {
+                            title: {
+                                display: true,
+                                text: 'Сума (грн)'
+                            },
+                            beginAtZero: false
+                        }
+                    },
+                    responsive: true,
+                    maintainAspectRatio: false
+                }
+            });
+    </script>
+}

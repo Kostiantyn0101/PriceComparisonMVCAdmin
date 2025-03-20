@@ -1,48 +1,86 @@
 ﻿@model PriceComparisonMVCAdmin.Models.Seller.SellerAuctionRatesViewModel
 @{
-    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+    Layout = "~/Views/Shared/_SellerLayout.cshtml";
 }
-    
-<div class="container my-4">
-    <h2 class="mb-4">Аукціонні ставки за категоріями</h2>
-    <div class="d-flex flex-column gap-3">
-        @foreach(var item in Model.Items)
-        {
-            <div class="d-flex align-items-center justify-content-between border rounded p-2" data-category-id="@item.CategoryId" data-rate-id="@item.AuctionClickRateId">
-                <div class="fw-bold">
-                    @item.CategoryTitle
-                </div>
-                <div class="d-flex align-items-center gap-2">
-                    <span class="rate-display">
-                        @string.Format(System.Globalization.CultureInfo.InvariantCulture, "{0:F2}", item.AuctionClickRate)
-                    </span>
-                    <input type="number"
-                           class="form-control rate-input d-none"
-                           value="@string.Format(System.Globalization.CultureInfo.InvariantCulture, "{0:F2}", item.AuctionClickRate)"
-                           step="0.01"
-                           style="max-width: 100px;" />
 
-                    <button type="button" class="btn btn-link edit-toggle-btn">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pencil" viewBox="0 0 16 16">
-                          <path d="M12.146.146a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1 0 .708l-10 10a.5.5 0 0 1-.168.11l-5 2a.5.5 0 0 1-.65-.65l2-5a.5.5 0 0 1 .11-.168zM11.207 2.5 13.5 4.793 14.793 3.5 12.5 1.207zm1.586 3L10.5 3.207 4 9.707V10h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.293zm-9.761 5.175-.106.106-1.528 3.821 3.821-1.528.106-.106A.5.5 0 0 1 5 12.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.468-.325"/>
-                        </svg>
-                    </button>
-                    
-                    <button type="button" class="btn btn-link confirm-btn d-none">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-check-lg" viewBox="0 0 16 16">
-                          <path d="M12.736 3.97a.733.733 0 0 1 1.047 0c.286.289.29.756.01 1.05L7.88 12.01a.733.733 0 0 1-1.065.02L3.217 8.384a.757.757 0 0 1 0-1.06.733.733 0 0 1 1.047 0l3.052 3.093 5.4-6.425z"/>
-                        </svg>
-                    </button>
-                    <button type="button" class="btn btn-link cancel-btn d-none">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-x-lg" viewBox="0 0 16 16">
-                          <path d="M2.146 2.854a.5.5 0 1 1 .708-.708L8 7.293l5.146-5.147a.5.5 0 0 1 .708.708L8.707 8l5.147 5.146a.5.5 0 0 1-.708.708L8 8.707l-5.146 5.147a.5.5 0 0 1-.708-.708L7.293 8z"/>
-                        </svg>
-                    </button>
+<div class="container my-3">
+    <h5 class="mb-3">Аукціонні ставки за категоріями</h5>
+
+    <div class="row row-cols-1 row-cols-md-2 g-3">
+        @foreach (var item in Model.Items)
+        {
+            <div class="col">
+                <div class="border rounded p-2 d-flex align-items-center justify-content-between"
+                     data-category-id="@item.CategoryId"
+                     data-rate-id="@item.AuctionClickRateId">
+
+                    <span class="fw-bold me-2">@item.CategoryTitle</span>
+
+                    <div class="d-flex align-items-center">
+                        <span class="rate-display me-2">
+                            @string.Format(System.Globalization.CultureInfo.InvariantCulture, "{0:F2}", item.AuctionClickRate)
+                        </span>
+
+                        <input type="number"
+                               class="form-control rate-input d-none"
+                               style="max-width: 80px;"
+                               step="0.01"
+                               value="@string.Format(System.Globalization.CultureInfo.InvariantCulture, "{0:F2}", item.AuctionClickRate)" />
+
+                        <button type="button" class="btn btn-sm btn-link edit-toggle-btn ms-2">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+                                 fill="currentColor" class="bi bi-pencil" viewBox="0 0 16 16">
+                                <path d="M12.146.146a.5.5 0 0 1 .708 0l3
+                                       3a.5.5 0 0 1 0 .708l-10
+                                       10a.5.5 0 0 1-.168.11l-5
+                                       2a.5.5 0 0 1-.65-.65l2-5a.5.5
+                                       0 0 1 .11-.168zM11.207
+                                       2.5 13.5 4.793 14.793 3.5
+                                       12.5 1.207zm1.586
+                                       3L10.5 3.207 4
+                                       9.707V10h.5a.5.5 0 0
+                                       1 .5.5v.5h.5a.5.5 0 0
+                                       1 .5.5v.5h.293zm-9.761
+                                       5.175-.106.106-1.528
+                                       3.821 3.821-1.528.106-.106A.5.5
+                                       0 0 1 5 12.5V12h-.5a.5.5
+                                       0 0 1-.5-.5V11h-.5a.5.5
+                                       0 0 1-.468-.325" />
+                            </svg>
+                        </button>
+
+                        <button type="button" class="btn btn-sm btn-link confirm-btn d-none ms-2">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+                                 fill="currentColor" class="bi bi-check-lg" viewBox="0 0 16 16">
+                                <path d="M12.736 3.97a.733.733 0 0
+                                       1 1.047 0c.286.289.29.756.01
+                                       1.05L7.88 12.01a.733.733 0 0
+                                       1-1.065.02L3.217
+                                       8.384a.757.757 0 0 1
+                                       0-1.06.733.733 0 0
+                                       1 1.047 0l3.052
+                                       3.093 5.4-6.425z" />
+                            </svg>
+                        </button>
+
+                        <button type="button" class="btn btn-sm btn-link cancel-btn d-none ms-2">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+                                 fill="currentColor" class="bi bi-x-lg" viewBox="0 0 16 16">
+                                <path d="M2.146 2.854a.5.5 0 1
+                                       1 .708-.708L8 7.293l5.146-5.147a.5.5
+                                       0 0 1 .708.708L8.707 8l5.147
+                                       5.146a.5.5 0 0 1-.708.708L8
+                                       8.707l-5.146 5.147a.5.5 0 0
+                                       1-.708-.708L7.293 8z" />
+                            </svg>
+                        </button>
+                    </div>
                 </div>
             </div>
         }
     </div>
 </div>
+
 
 @section Scripts {
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>

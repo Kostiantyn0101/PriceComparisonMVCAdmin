@@ -1,0 +1,66 @@
+﻿@model PriceComparisonMVCAdmin.Models.ManagerProducts.BaseProductFormModel
+@{
+    var isEditMode = Model.Id.HasValue;
+    var categories = ViewBag.Categories as List<PriceComparisonMVCAdmin.Models.DTOs.Response.Category.CategoryResponseModel> 
+                            ?? new List<PriceComparisonMVCAdmin.Models.DTOs.Response.Category.CategoryResponseModel>();
+}
+<h2>@(isEditMode ? "Редагування базового продукту" : "Створення базового продукту")</h2>
+
+<form asp-action="@(isEditMode ? "EditBaseProduct" : "CreateBase")" method="post">
+    @if (isEditMode)
+    {
+        <input type="hidden" asp-for="Id" />
+    }
+    <div class="mb-3">
+        <label asp-for="Brand" class="form-label">Бренд</label>
+        <input asp-for="Brand" class="form-control" />
+        <span asp-validation-for="Brand" class="text-danger"></span>
+    </div>
+    <div class="mb-3">
+        <label asp-for="Title" class="form-label">Назва</label>
+        <input asp-for="Title" class="form-control" />
+        <span asp-validation-for="Title" class="text-danger"></span>
+    </div>
+    <div class="mb-3">
+        <label asp-for="Description" class="form-label">Опис</label>
+        <textarea asp-for="Description" class="form-control"></textarea>
+        <span asp-validation-for="Description" class="text-danger"></span>
+    </div>
+    <div class="mb-3">
+        <label asp-for="CategoryId" class="form-label">Категорія</label>
+        @if (isEditMode)
+        {
+            <input type="text" class="form-control" value="@categories.FirstOrDefault(c => c.Id == Model.CategoryId)?.Title" readonly />
+            <input type="hidden" asp-for="CategoryId" />
+        }
+        else
+        {
+            <select asp-for="CategoryId" class="form-select">
+                <option value="">-- Оберіть категорію --</option>
+                @foreach (var cat in categories)
+                {
+                    <option value="@cat.Id" selected="@(Model.CategoryId == cat.Id ? "selected" : null)">@cat.Title</option>
+                }
+            </select>
+        }
+        <span asp-validation-for="CategoryId" class="text-danger"></span>
+    </div>
+    <div class="form-check mb-3">
+        <input asp-for="IsUnderModeration" class="form-check-input" />
+        <label asp-for="IsUnderModeration" class="form-check-label">Під модерацією</label>
+    </div>
+
+    @if (isEditMode)
+    {
+        <div class="mb-3">
+            <label asp-for="AddedToDatabase" class="form-label">Дата створення</label>
+            <input asp-for="AddedToDatabase" class="form-control" readonly />
+        </div>
+    }
+
+    <div class="text-center">
+        <button type="submit" class="btn btn-primary d-inline-flex align-items-center justify-content-center mt-3">
+            @(isEditMode ? "Зберегти зміни" : "Створити базовий продукт")
+        </button>
+    </div>
+</form>

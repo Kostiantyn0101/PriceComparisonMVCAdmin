@@ -1,0 +1,44 @@
+﻿@model PriceComparisonMVCAdmin.Models.DTOs.Request.Categoty.CategoryUpdateRequestModel
+@{
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<h2>Редагування категорії</h2>
+
+<form asp-action="Edit" method="post" enctype="multipart/form-data">
+    <input type="hidden" asp-for="Id" />
+    <div class="mb-3">
+        <label asp-for="Title" class="form-label"></label>
+        <input asp-for="Title" class="form-control" />
+        <span asp-validation-for="Title" class="text-danger"></span>
+    </div>
+    <div class="mb-3">
+        <label asp-for="NewImage" class="form-label">Новий образ</label>
+        <input asp-for="NewImage" type="file" class="form-control" />
+        <span asp-validation-for="NewImage" class="text-danger"></span>
+        <div class="form-check mt-2">
+            <input asp-for="DeleteCurrentImage" class="form-check-input" type="checkbox" />
+            <label asp-for="DeleteCurrentImage" class="form-check-label">Видалити поточне зображення</label>
+        </div>
+    </div>
+    <div class="mb-3">
+        <label asp-for="NewIcon" class="form-label">Нова іконка</label>
+        <input asp-for="NewIcon" type="file" class="form-control" />
+        <span asp-validation-for="NewIcon" class="text-danger"></span>
+        <div class="form-check mt-2">
+            <input asp-for="DeleteCurrentIcon" class="form-check-input" type="checkbox" />
+            <label asp-for="DeleteCurrentIcon" class="form-check-label">Видалити поточну іконку</label>
+        </div>
+    </div>
+    <div class="mb-3">
+        <label asp-for="ParentCategoryId" class="form-label">Батьківська категорія (опційно)</label>
+        <input asp-for="ParentCategoryId" class="form-control" />
+        <span asp-validation-for="ParentCategoryId" class="text-danger"></span>
+    </div>
+    <div class="mb-3">
+        <label asp-for="DisplayOrder" class="form-label">Порядок відображення</label>
+        <input asp-for="DisplayOrder" class="form-control" />
+        <span asp-validation-for="DisplayOrder" class="text-danger"></span>
+    </div>
+    <button type="submit" class="btn btn-primary">Зберегти зміни</button>
+</form>

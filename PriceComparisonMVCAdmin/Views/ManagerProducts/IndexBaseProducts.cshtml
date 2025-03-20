@@ -1,0 +1,207 @@
+﻿@model Dictionary<PriceComparisonMVCAdmin.Models.DTOs.Response.Category.CategoryResponseModel,
+        List<PriceComparisonMVCAdmin.Models.DTOs.Response.Category.CategoryResponseModel>>
+
+@{
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<div class="container my-4">
+    <div class="d-flex justify-content-between align-items-center">
+        <h2 class="mb-3">Каталог продуктів</h2>
+
+        <a href="/ManagerProducts/CreateBase" class="btn btn-success btn-primary-add m-0">
+            <i class="bi bi-plus-lg"></i> Додати базовий продукт
+        </a>
+    </div>
+    @if (Model != null && Model.Any())
+    {
+        <ul class="list-group">
+            @foreach (var parentCategory in Model)
+            {
+                <li class="list-group-item">
+                    <button class="btn btn-link category-toggle d-flex align-items-center" 
+                            data-target="category-@parentCategory.Key.Id">
+                        <i class="bi bi-chevron-right toggle-icon me-2"></i> @parentCategory.Key.Title
+                    </button>
+
+                    <ul id="category-@parentCategory.Key.Id" class="list-unstyled ms-4 d-none">
+                        @foreach (var subCategory in parentCategory.Value)
+                        {
+                            <li class="list-group-item">
+                                <button class="btn btn-link subcategory-toggle d-flex align-items-center"
+                                        data-target="category-@subCategory.Id"
+                                        data-category-id="@subCategory.Id">
+                                    <i class="bi bi-chevron-right toggle-icon me-2"></i> @subCategory.Title
+                                </button>
+
+                                <ul id="category-@subCategory.Id" class="list-unstyled ms-4 d-none"></ul>
+
+                                <ul id="base-products-@subCategory.Id" class="list-unstyled ms-4 d-none"></ul>
+                            </li>
+                        }
+                    </ul>
+                </li>
+            }
+        </ul>
+    }
+    else
+    {
+        <p>Немає категорій.</p>
+    }
+</div>
+
+@section Scripts {
+    <script>
+        $(function () {
+            // Тогл для категорій
+            $(".category-toggle").click(function () {
+                var $button = $(this);
+                var $icon = $button.find(".toggle-icon");
+                var targetId = $button.attr("data-target");
+                var $target = $("#" + targetId);
+
+                if ($target.hasClass("d-none")) {
+                    $target.removeClass("d-none");
+                    $icon.removeClass("bi-chevron-right").addClass("bi-chevron-down");
+                } else {
+                    $target.addClass("d-none");
+                    $icon.removeClass("bi-chevron-down").addClass("bi-chevron-right");
+                }
+            });
+
+            // Тогл для підкатегорій + завантаження базових продуктів
+            $(".subcategory-toggle").click(function () {
+                var $button = $(this);
+                var $icon = $button.find(".toggle-icon");
+                var categoryId = $button.data("category-id");
+                var $baseProductsContainer = $("#base-products-" + categoryId);
+
+                if ($baseProductsContainer.hasClass("d-none")) {
+                    $baseProductsContainer.removeClass("d-none");
+                    $icon.removeClass("bi-chevron-right").addClass("bi-chevron-down");
+
+                    // Приховуємо всі інші базові продукти в поточній категорії
+                    $(".base-products-container").not($baseProductsContainer).addClass("d-none");
+
+                    // Завантажуємо базові продукти (якщо ще не завантажені)
+                    if ($baseProductsContainer.is(":empty")) {
+                        loadBaseProducts(categoryId, $baseProductsContainer);
+                    }
+                } else {
+                    $baseProductsContainer.addClass("d-none");
+                    $icon.removeClass("bi-chevron-down").addClass("bi-chevron-right");
+                }
+            });
+
+            // Тогл для базових продуктів + завантаження варіантів продуктів
+            $(document).on("click", ".base-product-toggle", function () {
+                var $button = $(this);
+                var $icon = $button.find(".toggle-icon");
+                var productId = $button.data("product-id");
+                var $variantsContainer = $("#variants-" + productId);
+                var categoryId = $button.data("category-id");
+
+                if ($variantsContainer.hasClass("d-none")) {
+                    $variantsContainer.removeClass("d-none");
+                    $icon.removeClass("bi-chevron-right").addClass("bi-chevron-down");
+
+                    // Закриваємо всі інші відкриті варіанти
+                    $(".variants-container").not($variantsContainer).addClass("d-none");
+
+                    // Завантажуємо варіанти продукту (якщо ще не завантажені)
+                    if ($variantsContainer.is(":empty")) {
+                        loadProductVariants(productId, $variantsContainer, categoryId);
+                    }
+                } else {
+                    $variantsContainer.addClass("d-none");
+                    $icon.removeClass("bi-chevron-down").addClass("bi-chevron-right");
+                }
+            });
+
+            // Завантаження базових продуктів
+            function loadBaseProducts(categoryId, container) {
+                $.ajax({
+                    url: window.apiBaseUrl +  "/api/BaseProducts/bycategory/" + categoryId,
+                    type: "GET",
+                    success: function (data) {
+                        container.empty().removeClass("d-none").addClass("base-products-container");
+                        if (data.length > 0) {
+                            data.forEach(function (product) {
+                                container.append(`
+                                    <li class="list-group-item">
+                                        <div class="d-flex justify-content-between align-items-center">
+                                            <button class="btn btn-link base-product-toggle d-flex align-items-center" 
+                                                    data-product-id="${product.id}"
+                                                    data-category-id="${product.categoryId}">
+                                                <i class="bi bi-chevron-right toggle-icon me-2"></i> ${product.title}
+                                            </button>
+                                            <div class="d-flex align-items-center">
+                                                <a href="/ManagerProducts/EditBaseProduct/${product.id}" 
+                                                class="btn btn-sm btn-link text-primary" data-bs-toggle="tooltip" title="Редагувати базовий продукт">
+                                                    <i class="bi bi-pencil"></i>
+                                                </a>
+                                                <a href="/ManagerProducts/EditCharacteristics?baseProductId=${product.id}&categoryId=${product.categoryId}"
+                                                   class="btn btn-sm btn-link text-success" data-bs-toggle="tooltip" title="Додати/редагувати характеристики">
+                                                    <i class="bi bi-list-check"></i>
+                                                </a>
+                                                <a href="/ManagerProducts/CreateVariant?baseProductId=${product.id}"
+                                                   class="btn btn-sm btn-link text-success" data-bs-toggle="tooltip" title="Додати варіант продукту">
+                                                    <i class="bi bi-plus-lg"></i>
+                                                </a>
+                                            </div>
+                                        </div>
+                                        <ul id="variants-${product.id}" class="list-unstyled ms-4 d-none variants-container"></ul>
+                                    </li>
+                                `);
+                            });
+                        } else {
+                            container.append("<li class='text-muted'>Немає базових продуктів</li>");
+                        }
+                    },
+                    error: function () {
+                        alert("Помилка завантаження базових продуктів");
+                    }
+                });
+            }
+
+            // Завантаження варіантів продуктів
+            function loadProductVariants(baseProductId, container, categoryId) {
+                $.ajax({
+                    url: window.apiBaseUrl +  "/api/Products/bybaseproduct/" + baseProductId,
+                    type: "GET",
+                    success: function (data) {
+                        container.empty().removeClass("d-none");
+                        if (data.length > 0) {
+                            data.forEach(function (variant) {
+                                container.append(`
+                                    <li class="list-group-item">
+                                        <div class="d-flex justify-content-between align-items-center">
+                                            <span>modelNumber - ${variant.modelNumber || 'Невідомо'} | gtin - ${variant.gtin || 'Невідомо'}</span>
+                                            <div class="d-flex align-items-center">
+                                                <a href="/ManagerProducts/EditVariant/${variant.id}" 
+                                                        class="btn btn-sm btn-link text-primary"
+                                                        title="Редагувати варіангт продукту">
+                                                    <i class="bi bi-pencil"></i>
+                                                </a>
+                                                <a href="/ManagerProducts/EditCharacteristics?productId=${variant.id}&categoryId=${categoryId}"
+                                                        class="btn btn-sm btn-link text-success" data-bs-toggle="tooltip" 
+                                                        title="Додати/редагувати характеристики">
+                                                    <i class="bi bi-list-check"></i>
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </li>
+                                `);
+                            });
+                        } else {
+                            container.append("<li class='text-muted'>Немає варіантів</li>");
+                        }
+                    },
+                    error: function () {
+                        alert("Помилка завантаження варіантів продуктів");
+                    }
+                });
+            }
+        });
+    </script>
+}

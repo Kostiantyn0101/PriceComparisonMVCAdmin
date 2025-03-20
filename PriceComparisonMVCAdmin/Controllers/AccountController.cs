@@ -2,6 +2,8 @@
 using PriceComparisonMVCAdmin.Models.Response;
 using PriceComparisonMVCAdmin.Services;
 using PriceComparisonMVCAdmin.Models.Request;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
 
 namespace PriceComparisonMVCAdmin.Controllers
 {
@@ -37,6 +39,27 @@ namespace PriceComparisonMVCAdmin.Controllers
             {
                 ModelState.AddModelError(string.Empty, "Невірний логін чи пароль");
                 return View(model);
+            }
+
+            var token = _tokenManager.GetToken();
+
+            if (!string.IsNullOrEmpty(token))
+            {
+                var handler = new JwtSecurityTokenHandler();
+                var jwtToken = handler.ReadJwtToken(token);
+                var roles = jwtToken.Claims
+                    .Where(c => c.Type == ClaimTypes.Role)
+                    .Select(c => c.Value)
+                    .ToList();
+
+                if (roles.Contains("Admin"))
+                {
+                    return RedirectToAction("Index", "Admin");
+                }
+                else if (roles.Contains("Seller"))
+                {
+                    return RedirectToAction("Index", "Seller");
+                }
             }
 
             return RedirectToAction("Index", "Seller");

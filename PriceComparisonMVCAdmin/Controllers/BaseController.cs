@@ -1,42 +1,45 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
+using PriceComparisonMVCAdmin.Controllers;
 using PriceComparisonMVCAdmin.Models.Response.Seller;
 using PriceComparisonMVCAdmin.Services;
 using System.Security.Claims;
 
-public class BaseController : Controller
+public abstract class BaseController<T> : Controller
 {
-    private readonly IApiService _apiService;
+    protected readonly IApiService _apiService;
+    protected readonly ILogger<T> _logger;
 
-    public BaseController(IApiService apiService)
+    protected BaseController(IApiService apiService, ILogger<T> logger)
     {
         _apiService = apiService;
+        _logger = logger;
     }
 
     public override async Task OnActionExecutionAsync(ActionExecutingContext context, ActionExecutionDelegate next)
     {
-        await base.OnActionExecutionAsync(context, next);
         ViewBag.Username = HttpContext?.User?.Identity?.Name;
-        if (ViewBag.Username != null)
+
+        if (ViewBag.Username != null && User.Identity.IsAuthenticated)
         {
-            if (User.Identity.IsAuthenticated)
+            var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            if (!string.IsNullOrEmpty(userId))
             {
-                var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-                if (!string.IsNullOrEmpty(userId))
+                try
                 {
-                    try
+                    if (ViewBag.Seller == null)
                     {
                         var seller = await _apiService.GetAsync<SellerResponseModel>($"api/Seller/getByUserId/{userId}");
                         ViewBag.Seller = seller;
                     }
-                    catch
-                    {
-                        ViewBag.Seller = null;
-                    }
+                }
+                catch
+                {
+                    ViewBag.Seller = null;
+                    _logger.LogError("Seller not fount");
                 }
             }
         }
-
 
         await next();
     }

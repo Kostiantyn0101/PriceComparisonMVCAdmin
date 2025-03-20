@@ -1,0 +1,139 @@
+﻿@model PriceComparisonMVCAdmin.Models.DTOs.Request.Product.ProductUpdateRequestModel
+
+@{
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+    var groupTypes = ViewBag.GroupTypes as List<PriceComparisonMVCAdmin.Models.DTOs.Response.Product.ProductGroupTypeResponseModel>
+                      ?? new List<PriceComparisonMVCAdmin.Models.DTOs.Response.Product.ProductGroupTypeResponseModel>();
+    var colors = ViewBag.Colors as List<PriceComparisonMVCAdmin.Models.DTOs.Response.Product.ColorResponseModel>
+                      ?? new List<PriceComparisonMVCAdmin.Models.DTOs.Response.Product.ColorResponseModel>();
+    var selectedGroupTypeId = ViewBag.SelectedGroupTypeId as int?;
+    var baseProduct = ViewBag.baseProduct as PriceComparisonMVCAdmin.Models.DTOs.Response.Product.BaseProductResponseModel;
+}
+
+<div class="card shadow-sm mb-4">
+    <div class="card-body">
+        <h3 class="card-title text-dark">
+            Редагування продукту: <span class="text-primary">@baseProduct!.Title</span>
+        </h3>
+    </div>
+</div>
+
+<form asp-action="EditVariant" method="post">
+    <input type="hidden" asp-for="Id" />
+
+    <div class="mb-3">
+        <label asp-for="BaseProductId" class="form-label" hidden></label>
+        <input asp-for="BaseProductId" class="form-control" hidden />
+    </div>
+
+    <div class="mb-3">
+        <label for="groupTypeSelect" class="form-label">Тип групи продуктів</label>
+        <select id="groupTypeSelect" class="form-select">
+            <option value="">-- Оберіть тип групи --</option>
+            @foreach (var type in groupTypes)
+            {
+                <option value="@type.Id" selected="@(selectedGroupTypeId == type.Id ? "selected" : null)">@type.Name</option>
+            }
+        </select>
+    </div>
+
+    <div class="mb-3">
+        <label for="groupSelect" class="form-label">Група продукту</label>
+        <select id="groupSelect" asp-for="ProductGroupId" class="form-select">
+            <option value="">-- Оберіть групу --</option>
+        </select>
+        <input type="hidden" id="currentGroupId" value="@Model.ProductGroupId" />
+        <span asp-validation-for="ProductGroupId" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="ColorId" class="form-label">Колір</label>
+        <select asp-for="ColorId" class="form-select">
+            <option value="">-- Оберіть колір --</option>
+            @foreach (var c in colors)
+            {
+                <option value="@c.Id" selected="@(Model.ColorId == c.Id ? "selected" : null)">@c.Name</option>
+            }
+        </select>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="ModelNumber" class="form-label">Model Number</label>
+        <input asp-for="ModelNumber" class="form-control" />
+        <span asp-validation-for="ModelNumber" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="GTIN" class="form-label">GTIN</label>
+        <input asp-for="GTIN" class="form-control" />
+        <span asp-validation-for="GTIN" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="UPC" class="form-label">UPC</label>
+        <input asp-for="UPC" class="form-control" />
+        <span asp-validation-for="UPC" class="text-danger"></span>
+    </div>
+
+    <div class="form-check mb-3">
+        <input asp-for="IsDefault" class="form-check-input" />
+        <label asp-for="IsDefault" class="form-check-label">За замовчуванням</label>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Зберегти зміни</button>
+</form>
+<div class="d-flex justify-content-between mt-4">
+    <a asp-controller="ManagerProducts" asp-action="EditCharacteristics"
+       asp-route-productId="@Model.Id" asp-route-categoryId="@baseProduct!.CategoryId" 
+       class="btn btn-success btn-primary-add d-inline-flex align-items-center justify-content-center">
+        <i class="bi bi-list-check me-2"></i> Додати/редагувати характеристики
+    </a>
+</div>
+@section Scripts {
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $(function(){
+            var initialGroupId = $('#currentGroupId').val();
+            var selectedGroupTypeId = '@(selectedGroupTypeId)';
+
+            function loadGroups(groupTypeId) {
+                var $groupSelect = $('#groupSelect');
+                $groupSelect.empty();
+                $groupSelect.append('<option value="">-- Оберіть групу --</option>');
+
+                if (groupTypeId) {
+                    $.ajax({
+                        url: window.apiBaseUrl + '/api/ProductGroup/getByProductGroupType/' + groupTypeId,
+                        type: 'GET',
+                        dataType: 'json',
+                        success: function(data) {
+                            $.each(data, function(index, group) {
+                                var isSelected = group.id == initialGroupId ? 'selected' : '';
+                                $groupSelect.append(`<option value="${group.id}" ${isSelected}>${group.name}</option>`);
+                            });
+                        },
+                        error: function(){
+                            alert('Помилка отримання груп');
+                        }
+                    });
+                }
+            }
+
+            if (selectedGroupTypeId) {
+                $('#groupTypeSelect').val(selectedGroupTypeId);
+                loadGroups(selectedGroupTypeId);
+            }
+
+            $('#groupTypeSelect').change(function(){
+                loadGroups($(this).val());
+            });
+
+            $('#groupSelect').change(function(){
+                var newGroupId = $(this).val();
+                if (newGroupId !== initialGroupId) {
+                    console.log('Група змінена! Нове значення: ' + newGroupId);
+                }
+            });
+        });
+    </script>
+}

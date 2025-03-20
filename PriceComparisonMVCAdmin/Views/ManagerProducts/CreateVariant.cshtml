@@ -1,0 +1,101 @@
+﻿@model PriceComparisonMVCAdmin.Models.DTOs.Request.Product.ProductCreateRequestModel
+@{
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+    var groupTypes = ViewBag.GroupTypes as List<PriceComparisonMVCAdmin.Models.DTOs.Response.Product.ProductGroupTypeResponseModel>
+                      ?? new List<PriceComparisonMVCAdmin.Models.DTOs.Response.Product.ProductGroupTypeResponseModel>();
+    var colors = ViewBag.Colors as List<PriceComparisonMVCAdmin.Models.DTOs.Response.Product.ColorResponseModel>
+                      ?? new List<PriceComparisonMVCAdmin.Models.DTOs.Response.Product.ColorResponseModel>();
+    var baseProduct = ViewBag.baseProduct as PriceComparisonMVCAdmin.Models.DTOs.Response.Product.BaseProductResponseModel;
+}
+
+<div class="card shadow-sm mb-4">
+    <div class="card-body">
+        <h3 class="card-title text-dark">
+            Створення продукту: <span class="text-primary">@baseProduct!.Title</span>
+        </h3>
+    </div>
+</div>
+
+<!-- GET форма для вибору типу групи -->
+<div class="mb-3">
+    <label for="groupTypeSelect" class="form-label">Тип групи продуктів</label>
+    <select id="groupTypeSelect" class="form-select">
+        <option value="">-- Оберіть тип групи --</option>
+        @foreach (var type in groupTypes)
+        {
+            <option value="@type.Id">@type.Name</option>
+        }
+    </select>
+</div>
+
+<form asp-action="CreateVariant" method="post">
+    <input type="hidden" asp-for="BaseProductId" />
+
+    <div class="mb-3">
+        <label for="groupSelect" class="form-label">Група продукту</label>
+        <select id="groupSelect" asp-for="ProductGroupId" class="form-select">
+            <option value="">-- Оберіть групу --</option>
+        </select>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="ColorId" class="form-label">Колір</label>
+        <select asp-for="ColorId" class="form-select">
+            <option value="">-- Оберіть колір --</option>
+            @foreach (var c in colors)
+            {
+                <option value="@c.Id">@c.Name</option>
+            }
+        </select>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="ModelNumber" class="form-label">Model Number</label>
+        <input asp-for="ModelNumber" class="form-control" />
+    </div>
+    <div class="mb-3">
+        <label asp-for="GTIN" class="form-label">GTIN</label>
+        <input asp-for="GTIN" class="form-control" />
+    </div>
+    <div class="mb-3">
+        <label asp-for="UPC" class="form-label">UPC</label>
+        <input asp-for="UPC" class="form-control" />
+    </div>
+    <div class="form-check mb-3">
+        <input asp-for="IsDefault" class="form-check-input" />
+        <label asp-for="IsDefault" class="form-check-label">За замовчуванням</label>
+    </div>
+    <button type="submit" class="btn btn-primary">Створити продукт</button>
+</form>
+
+@section Scripts {
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $(function(){
+            $('#groupTypeSelect').change(function(){
+                var groupTypeId = $(this).val();
+                var $groupSelect = $('#groupSelect');
+                $groupSelect.empty();
+                $groupSelect.append('<option value="">-- Оберіть групу --</option>');
+                if(groupTypeId){
+                    $.ajax({
+                        url: window.apiBaseUrl + '/api/ProductGroup/getByProductGroupType/' + groupTypeId,
+                        type: 'GET',
+                        dataType: 'json',
+                        success: function(data){
+                            $.each(data, function(index, group){
+                                $groupSelect.append($('<option>', {
+                                    value: group.id,
+                                    text: group.name
+                                }));
+                            });
+                        },
+                        error: function(){
+                            alert('Помилка отримання груп');
+                        }
+                    });
+                }
+            });
+        });
+    </script>
+}

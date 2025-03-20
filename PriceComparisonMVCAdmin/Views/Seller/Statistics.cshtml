@@ -1,12 +1,11 @@
 ﻿@model PriceComparisonMVCAdmin.Models.Seller.ProductReferenceStatisticsViewModel
 @{
-    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+    Layout = "~/Views/Shared/_SellerLayout.cshtml";
 }
 
 <div class="container my-4">
     <h2 class="mb-4">Статистика кліків</h2>
 
-    <!-- Форма для вибору періоду -->
     <form asp-action="Statistics" method="post" class="card mb-4 shadow-sm">
         <div class="card-body">
             <input type="hidden" asp-for="SellerId" />
@@ -33,7 +32,6 @@
         </div>
     }
 
-    <!-- Таблиця з результатами -->
     @if (Model.Results != null && Model.Results.Count > 0)
     {
         <div class="card shadow-sm">
