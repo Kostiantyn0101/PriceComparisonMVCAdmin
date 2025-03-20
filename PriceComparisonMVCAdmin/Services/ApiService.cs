@@ -27,6 +27,10 @@ namespace PriceComparisonMVCAdmin.Services
             return await ExecuteRequestAsync<TResponse>(() => _httpClient.PostAsync(endpoint, content));
         }
 
+        public async Task<T> DeleteAsync<T>(string endpoint)
+        {
+            return await ExecuteRequestAsync<T>(() => _httpClient.DeleteAsync(endpoint));
+        }
 
         private async Task<T> ExecuteRequestAsync<T>(Func<Task<HttpResponseMessage>> requestFunc)
         {

@@ -1,0 +1,204 @@
+﻿@model List<PriceComparisonMVCAdmin.Models.DTOs.ProductCharacteristicViewModel>
+@{
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+    var characteristicsMeta = ViewBag.CharacteristicsMeta as List<PriceComparisonMVCAdmin.Models.DTOs.Response.Category.CategoryCharacteristicResponseModel> ?? new List<PriceComparisonMVCAdmin.Models.DTOs.Response.Category.CategoryCharacteristicResponseModel>();
+}
+
+<div class="container my-4">
+    <h2 class="mb-3">Редагування характеристик</h2>
+
+    <div class="d-flex flex-column">
+        <!-- Заголовки колонок -->
+        <div class="row fw-bold border-bottom py-2">
+            <div class="col-4 text-start">Характеристика</div>
+            <div class="col-4 text-center">Значення</div>
+            <div class="col-4 text-center">Дії</div>
+        </div>
+
+        @foreach (var characteristic in Model)
+        {
+            var meta = characteristicsMeta.FirstOrDefault(m => m.CharacteristicId == characteristic.CharacteristicId);
+
+            <div class="row align-items-center border-bottom py-2"
+                 data-characteristic-id="@characteristic.CharacteristicId"
+                 data-record-id="@characteristic.Id"
+                 data-base-product-id="@characteristic.BaseProductId"
+                 data-product-id="@characteristic.ProductId"
+                 data-characteristic-type="@meta?.CharacteristicDataType?.ToLowerInvariant()">
+
+                <!-- Назва характеристики -->
+                <div class="col-4 text-start">
+                    <label class="form-label">@meta?.CharacteristicTitle</label>
+                    @if (!string.IsNullOrEmpty(meta?.CharacteristicUnit))
+                    {
+                        <small>(@meta.CharacteristicUnit)</small>
+                    }
+                </div>
+
+                <!-- Поле значення -->
+                <div class="col-4 text-center">
+                    @if (meta?.CharacteristicDataType?.ToLowerInvariant() == "string")
+                    {
+                        <input class="form-control characteristic-input d-none text-center" type="text" value="@characteristic.ValueText" />
+                        <span class="characteristic-display">@characteristic.ValueText</span>
+                    }
+                    else if (meta?.CharacteristicDataType?.ToLowerInvariant() == "decimal")
+                    {
+                        <input class="form-control characteristic-input d-none text-center" type="number" step="0.01" value="@characteristic.ValueNumber" />
+                        <span class="characteristic-display">@characteristic.ValueNumber</span>
+                    }
+                    else if (meta?.CharacteristicDataType?.ToLowerInvariant() == "bool")
+                    {
+                        <input class="form-check-input characteristic-input d-none" type="checkbox" @(characteristic.ValueBoolean ? "checked" : "") />
+                        <span class="characteristic-display">@(characteristic.ValueBoolean ? "Так" : "Ні")</span>
+                    }
+                    else if (meta?.CharacteristicDataType?.ToLowerInvariant() == "datetime")
+                    {
+                        <input class="form-control characteristic-input d-none text-center" type="date" value="@characteristic.ValueDate?.ToString("yyyy-MM-dd")" />
+                        <span class="characteristic-display">@characteristic.ValueDate?.ToString("dd.MM.yyyy")</span>
+                    }
+                </div>
+
+                <!-- Дії -->
+                <div class="col-4 text-center">
+                    <!-- Кнопка редагування (олівець) -->
+                    <button type="button" class="btn btn-sm btn-link edit-toggle-btn ms-2">
+                        <i class="bi bi-pencil"></i>
+                    </button>
+
+                    <!-- Кнопка підтвердження (зелена галочка) -->
+                    <button type="button" class="btn btn-sm btn-link confirm-btn text-success d-none ms-2">
+                        <i class="bi bi-check-lg"></i>
+                    </button>
+
+                    <!-- Кнопка скасування (червоний хрестик) -->
+                    <button type="button" class="btn btn-sm btn-link cancel-btn text-danger d-none ms-2">
+                        <i class="bi bi-x-lg"></i>
+                    </button>
+
+                    <!-- Кнопка видалення (смітник) -->
+                    <button type="button" class="btn btn-sm btn-link delete-btn ms-2 text-danger">
+                        <i class="bi bi-trash"></i>
+                    </button>
+                </div>
+            </div>
+        }
+    </div>
+</div>
+
+@section Scripts {
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $(function(){
+            $(".edit-toggle-btn").click(function(){
+                var $row = $(this).closest(".row");
+                $row.find(".characteristic-input").removeClass("d-none");
+                $row.find(".characteristic-display").addClass("d-none");
+                $(this).addClass("d-none");
+                $row.find(".confirm-btn, .cancel-btn").removeClass("d-none");
+            });
+
+            $(".cancel-btn").click(function(){
+                var $row = $(this).closest(".row");
+                $row.find(".characteristic-input").addClass("d-none");
+                $row.find(".characteristic-display").removeClass("d-none");
+                $row.find(".confirm-btn, .cancel-btn").addClass("d-none");
+                $row.find(".edit-toggle-btn").removeClass("d-none");
+            });
+
+            $(".confirm-btn").click(function(){
+                var $row = $(this).closest(".row");
+                var characteristicId = $row.data("characteristic-id");
+                var baseProductId = $row.data("base-product-id") || null;
+                var productId = $row.data("product-id") || null;
+                var characteristicType = $row.data("characteristic-type");
+                var characteristicRecordId = $row.data("record-id") || 0;
+
+                // Отримання нового значення залежно від типу поля
+                var inputField = $row.find(".characteristic-input");
+                var newValue = inputField.val();
+
+                if (inputField.attr("type") === "checkbox") {
+                    newValue = inputField.prop("checked");
+                } else if (inputField.attr("type") === "number") {
+                    newValue = parseFloat(newValue) || null;
+                } else if (inputField.attr("type") === "date") {
+                    newValue = newValue ? new Date(newValue).toISOString() : null;
+                }
+
+                var payload = {
+                    Id: characteristicRecordId > 0 ? characteristicRecordId : null,
+                    BaseProductId: baseProductId,
+                    ProductId: productId,
+                    CharacteristicId: characteristicId,
+                    ValueText: characteristicType === "string" ? newValue : null,
+                    ValueNumber: characteristicType === "decimal" ? newValue : null,
+                    ValueBoolean: characteristicType === "bool" ? (newValue === "true" || newValue === true) : false,
+                    ValueDate: characteristicType === "datetime" ? newValue : null
+                };
+
+                var apiUrl = characteristicRecordId > 0
+                    ? "/ManagerProducts/UpdateCharacteristic"
+                    : "/ManagerProducts/CreateCharacteristic";
+                var methodType = characteristicRecordId > 0 ? "PUT" : "POST";
+
+                $.ajax({
+                    url: apiUrl,
+                    type: methodType,
+                    contentType: "application/json",
+                    data: JSON.stringify(payload),
+                    success: function(response){
+                        var displayValue = newValue;
+                        if (characteristicType === "bool") {
+                            displayValue = newValue ? "Так" : "Ні";
+                        } else if (characteristicType === "datetime") {
+                            displayValue = new Date(newValue).toLocaleDateString("uk-UA");
+                        }
+
+                        $row.find(".characteristic-display").text(newValue || "Немає");
+                        $row.find(".characteristic-input").addClass("d-none");
+                        $row.find(".characteristic-display").removeClass("d-none");
+                        $row.find(".confirm-btn, .cancel-btn").addClass("d-none");
+                        $row.find(".edit-toggle-btn").removeClass("d-none");
+
+                        if (characteristicRecordId === 0 && response.updatedId) {
+                            $row.data("record-id", response.updatedId);
+                        }
+                    },
+                    error: function(){
+                        alert("Помилка оновлення/створення");
+                    }
+                });
+            });
+
+            $(".delete-btn").click(function(){
+                var $row = $(this).closest(".row");
+                var characteristicRecordId = $row.data("record-id");
+
+                if (!characteristicRecordId) {
+                    alert("Характеристика ще не була збережена.");
+                    return;
+                }
+                $.ajax({
+                    url: "/ManagerProducts/DeleteCharacteristic/" + characteristicRecordId,
+                    type: "DELETE",
+                    success: function(){
+                        $row.find(".characteristic-input").val("").prop("checked", false);
+                        $row.find(".characteristic-display").text("Немає");
+                        $row.removeData("record-id");
+                        $row.attr("data-record-id", "0");
+                        $row.find(".confirm-btn, .cancel-btn").addClass("d-none");
+                        $row.find(".edit-toggle-btn").removeClass("d-none");
+
+                        alert("Значення характеристики видалено");                    
+                    },
+                    error: function(){
+                        alert("Помилка видалення");
+                    }
+                });
+            });
+        });
+    </script>
+}
+
+

@@ -1,0 +1,35 @@
+﻿@model PriceComparisonMVCAdmin.Models.DTOs.Request.Categoty.CategoryCreateRequestModel
+@{
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<h2>Створення категорії</h2>
+
+<form asp-action="Create" method="post" enctype="multipart/form-data">
+    <div class="mb-3">
+        <label asp-for="Title" class="form-label"></label>
+        <input asp-for="Title" class="form-control" />
+        <span asp-validation-for="Title" class="text-danger"></span>
+    </div>
+    <div class="mb-3">
+        <label asp-for="Image" class="form-label">Зображення</label>
+        <input asp-for="Image" type="file" class="form-control" />
+        <span asp-validation-for="Image" class="text-danger"></span>
+    </div>
+    <div class="mb-3">
+        <label asp-for="Icon" class="form-label">Іконка</label>
+        <input asp-for="Icon" type="file" class="form-control" />
+        <span asp-validation-for="Icon" class="text-danger"></span>
+    </div>
+    <div class="mb-3">
+        <label asp-for="ParentCategoryId" class="form-label">Батьківська категорія (опційно)</label>
+        <input asp-for="ParentCategoryId" class="form-control" />
+        <span asp-validation-for="ParentCategoryId" class="text-danger"></span>
+    </div>
+    <div class="mb-3">
+        <label asp-for="DisplayOrder" class="form-label">Порядок відображення</label>
+        <input asp-for="DisplayOrder" class="form-control" />
+        <span asp-validation-for="DisplayOrder" class="text-danger"></span>
+    </div>
+    <button type="submit" class="btn btn-primary">Створити</button>
+</form>

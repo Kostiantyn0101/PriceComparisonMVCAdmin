@@ -1,0 +1,24 @@
+﻿@model PriceComparisonMVCAdmin.Models.ManagerProducts.BaseProductFormModel
+@{
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+@if (TempData["SuccessMessage"] != null)
+{
+    <div class="alert alert-success">
+        @TempData["SuccessMessage"]
+    </div>
+}
+<partial name="_BaseProductForm" model="Model" />
+<div class="d-flex justify-content-between mt-4">
+    <a asp-controller="ManagerProducts" asp-action="EditCharacteristics"
+       asp-route-baseProductId="@Model.Id" asp-route-categoryId="@Model.CategoryId"
+       class="btn btn-success btn-primary-add d-inline-flex align-items-center justify-content-center">
+        <i class="bi bi-list-check me-2"></i> Додати характеристики
+    </a>
+
+    <a asp-controller="ManagerProducts" asp-action="CreateVariant"
+       asp-route-baseProductId="@Model.Id"
+       class="btn btn-success btn-primary-add d-inline-flex align-items-center justify-content-center">
+        <i class="bi bi-plus-lg me-2"></i> Додати варіант продукту
+    </a>
+</div>

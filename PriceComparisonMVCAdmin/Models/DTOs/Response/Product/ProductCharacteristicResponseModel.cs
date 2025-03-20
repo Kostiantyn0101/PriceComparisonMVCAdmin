@@ -1,8 +1,10 @@
-﻿namespace PriceComparisonMVCAdmin.Models.Response
+﻿namespace PriceComparisonMVCAdmin.Models.DTOs.Response.Product
 {
     public class ProductCharacteristicResponseModel
     {
-        public int ProductId { get; set; }
+        public int? Id { get; set; }
+        public int? ProductId { get; set; }
+        public int? BaseProductId { get; set; }
         public int CharacteristicId { get; set; }
         public string CharacteristicTitle { get; set; }
         public string? CharacteristicUnit { get; set; }

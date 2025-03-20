@@ -38,6 +38,7 @@ namespace PriceComparisonMVCAdmin.Infrastructure.DependencyInjection
                 options.Events = new JwtBearerEvents
                 {
                     OnMessageReceived = context =>
+                    
                     {
                         // Get token from the cookies if it wasn't sent in header
                         var token = context.Request.Cookies["token"];
@@ -66,9 +67,9 @@ namespace PriceComparisonMVCAdmin.Infrastructure.DependencyInjection
                 options.AddPolicy("AdminRights", policy =>
                     policy.RequireRole(Role.Admin));
                 options.AddPolicy("StandardRights", policy =>
-                    policy.RequireRole(Role.Admin, Role.User, Role.Seller));
+                    policy.RequireRole(Role.User, Role.Admin, Role.Seller));
                 options.AddPolicy("SellerRights", policy =>
-                    policy.RequireRole(Role.Seller));
+                    policy.RequireRole(Role.Seller, Role.Admin));
             });
         }
     }

@@ -9,5 +9,6 @@
             string endpoint,
             TRequest? requestData = default,
             bool useMultipartFormData = false);
+        Task<T> DeleteAsync<T>(string endpoint);
     }
 }
