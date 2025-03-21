@@ -27,9 +27,17 @@ namespace PriceComparisonMVCAdmin.Services
             return await ExecuteRequestAsync<TResponse>(() => _httpClient.PostAsync(endpoint, content));
         }
 
-        public async Task<T> DeleteAsync<T>(string endpoint)
+        public async Task<TResponse> DeleteAsync<TRequest, TResponse>(string endpoint, TRequest? requestData = default)
         {
-            return await ExecuteRequestAsync<T>(() => _httpClient.DeleteAsync(endpoint));
+            var request = new HttpRequestMessage(HttpMethod.Delete, endpoint);
+
+            if (requestData != null)
+            {
+                var json = JsonSerializer.Serialize(requestData);
+                request.Content = new StringContent(json, Encoding.UTF8, "application/json");
+            }
+
+            return await ExecuteRequestAsync<TResponse>(() => _httpClient.SendAsync(request));
         }
 
         private async Task<T> ExecuteRequestAsync<T>(Func<Task<HttpResponseMessage>> requestFunc)
@@ -52,11 +60,16 @@ namespace PriceComparisonMVCAdmin.Services
 
                 response.EnsureSuccessStatusCode();
                 var json = await response.Content.ReadAsStringAsync();
+                if (string.IsNullOrWhiteSpace(json))
+                {
+                    throw new Exception("Порожня відповідь від API.");
+                }
+
                 return JsonSerializer.Deserialize<T>(json, new JsonSerializerOptions { PropertyNameCaseInsensitive = true })!;
             }
             catch (Exception ex)
             {
-                throw new Exception($"Error during API request: {ex.Message}");
+                throw new HttpRequestException($"Error during API request: {ex.Message}", ex);
             }
         }
 
@@ -101,15 +114,24 @@ namespace PriceComparisonMVCAdmin.Services
                 if (value == null)
                     continue;
 
-                // IFormFile
-                if (value is IFormFile file)
+                if (value is IFormFile singleFile)
                 {
-                    var fileContent = new StreamContent(file.OpenReadStream());
-                    fileContent.Headers.ContentType = new MediaTypeHeaderValue(file.ContentType);
-                    // Назва поля — ім’я властивості (prop.Name)
-                    formData.Add(fileContent, prop.Name, file.FileName);
+                    var fileContent = new StreamContent(singleFile.OpenReadStream());
+                    fileContent.Headers.ContentType = new MediaTypeHeaderValue(singleFile.ContentType);
+                    formData.Add(fileContent, prop.Name, singleFile.FileName);
                 }
-                // Якщо це не файл — додаємо як текст
+                else if (value is IEnumerable<IFormFile> multipleFiles)
+                {
+                    foreach (var file in multipleFiles)
+                    {
+                        if (file != null && file.Length > 0)
+                        {
+                            var fileContent = new StreamContent(file.OpenReadStream());
+                            fileContent.Headers.ContentType = new MediaTypeHeaderValue(file.ContentType);
+                            formData.Add(fileContent, prop.Name, file.FileName);
+                        }
+                    }
+                }
                 else
                 {
                     formData.Add(new StringContent(value.ToString()!), prop.Name);

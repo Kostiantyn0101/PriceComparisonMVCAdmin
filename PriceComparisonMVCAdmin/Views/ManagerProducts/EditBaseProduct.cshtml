@@ -25,13 +25,16 @@
     class="btn btn-success btn-primary-add d-flex align-items-center justify-content-center">
         <i class="bi bi-list-check me-2"></i> Додати характеристики
     </a>
-
     <a asp-controller="ManagerProducts" asp-action="CreateVariant"
     asp-route-baseProductId="@Model.Id"
     class="btn btn-success btn-primary-add d-flex align-items-center justify-content-center">
         <i class="bi bi-plus-lg me-2"></i> Додати варіант продукту
     </a>
-
+    <a asp-controller="ProductContent" asp-action="IndexBaseProduct"
+       asp-route-id="@Model.Id"
+       class="btn btn-success btn-primary-add d-inline-flex align-items-center justify-content-center">
+        <i class="bi bi-folder-plus me-2"></i> Додати контент
+    </a>
     <form asp-controller="ManagerProducts" asp-action="DeleteBaseProduct" method="post"
     class="d-inline-flex align-items-center justify-content-center flex-fill"
     onsubmit="return confirm('Видалити продукт?');">

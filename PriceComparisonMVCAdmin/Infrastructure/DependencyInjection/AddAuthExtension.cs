@@ -50,13 +50,13 @@ namespace PriceComparisonMVCAdmin.Infrastructure.DependencyInjection
                     },
                     OnForbidden = context =>
                     {
-                        context.Response.Redirect("/Home/NoAccess");
+                        context.Response.Redirect("/Account/NoAccess");
                         return Task.CompletedTask;
                     },
                     OnChallenge = context =>
                     {
                         context.Response.Redirect("/Account/Login");
-                        context.HandleResponse(); // обов'язково, щоб зупинити стандартну обробку
+                        context.HandleResponse();
                         return Task.CompletedTask;
                     },
                 };

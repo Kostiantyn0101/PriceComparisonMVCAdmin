@@ -1,0 +1,124 @@
+﻿@model PriceComparisonMVCAdmin.Models.ProductContent.BaseProductContentViewModel
+@{
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<h2>Контент продукту (ID: @Model.BaseProductId)</h2>
+
+@if (TempData["SuccessMessage"] != null)
+{
+    <div class="alert alert-success">@TempData["SuccessMessage"]</div>
+}
+@if (TempData["Error"] != null)
+{
+    <div class="alert alert-danger">@TempData["Error"]</div>
+}
+<ul class="nav nav-tabs" id="contentTabs" role="tablist">
+    <li class="nav-item" role="presentation">
+        <button class="nav-link active" id="videos-tab" data-bs-toggle="tab" data-bs-target="#videos" type="button" role="tab">Відео</button>
+    </li>
+    <li class="nav-item" role="presentation">
+        <button class="nav-link" id="reviews-tab" data-bs-toggle="tab" data-bs-target="#reviews" type="button" role="tab">Огляди</button>
+    </li>
+    <li class="nav-item" role="presentation">
+        <button class="nav-link" id="instructions-tab" data-bs-toggle="tab" data-bs-target="#instructions" type="button" role="tab">Інструкції</button>
+    </li>
+</ul>
+
+<div class="tab-content mt-3" id="contentTabsContent">
+    <div class="tab-pane fade show active" id="videos" role="tabpanel">
+        <h3>Відео</h3>
+        @if (Model.Videos.Any())
+        {
+            <ul class="list-group">
+                @foreach (var video in Model.Videos)
+                {
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        <span>@video.VideoUrl</span>
+                        <form asp-controller="ProductContent" asp-action="DeleteVideo" method="post" class="d-inline" onsubmit="return confirm('Видалити відео?');">
+                            <input type="hidden" name="id" value="@video.Id" />
+                            <input type="hidden" name="BaseProductId" value="@Model.BaseProductId" />
+                            <button type="submit" class="btn btn-sm btn-danger"><i class="bi bi-trash"></i></button>
+                        </form>
+                    </li>
+                }
+            </ul>
+        }
+        else
+        {
+            <p>Немає відео.</p>
+        }
+        <form asp-controller="ProductContent" asp-action="CreateVideo" method="post" class="mt-3">
+            <input type="hidden" name="BaseProductId" value="@Model.BaseProductId" />
+            <div class="mb-3">
+                <label>Посилання на відео</label>
+                <input type="text" name="VideoUrl" class="form-control" />
+            </div>
+            <button type="submit" class="btn btn-success btn-primary-add">Додати відео</button>
+        </form>
+    </div>
+
+    <div class="tab-pane fade" id="reviews" role="tabpanel">
+        <h3>Огляди</h3>
+        @if (Model.Reviews.Any())
+        {
+            <ul class="list-group">
+                @foreach (var review in Model.Reviews)
+                {
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        <span>@review.ReviewUrl</span>
+                        <form asp-controller="ProductContent" asp-action="DeleteReview" method="post" class="d-inline" onsubmit="return confirm('Видалити огляд?');">
+                            <input type="hidden" name="id" value="@review.Id" />
+                            <input type="hidden" name="BaseProductId" value="@Model.BaseProductId" />
+                            <button type="submit" class="btn btn-sm btn-danger"><i class="bi bi-trash"></i></button>
+                        </form>
+                    </li>
+                }
+            </ul>
+        }
+        else
+        {
+            <p>Немає оглядів.</p>
+        }
+        <form asp-controller="ProductContent" asp-action="CreateReview" method="post" class="mt-3">
+            <input type="hidden" name="BaseProductId" value="@Model.BaseProductId" />
+            <div class="mb-3">
+                <label>Посилання на огляд</label>
+                <input type="text" name="ReviewUrl" class="form-control" />
+            </div>
+            <button type="submit" class="btn btn-success btn-primary-add">Додати огляд</button>
+        </form>
+    </div>
+
+    <div class="tab-pane fade" id="instructions" role="tabpanel">
+        <h3>Інструкції</h3>
+        @if (Model.Instructions.Any())
+        {
+            <ul class="list-group">
+                @foreach (var instruction in Model.Instructions)
+                {
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        <span>@instruction.InstructionUrl</span>
+                        <form asp-controller="ProductContent" asp-action="DeleteInstruction" method="post" class="d-inline" onsubmit="return confirm('Видалити інструкцію?');">
+                            <input type="hidden" name="id" value="@instruction.Id" />
+                            <input type="hidden" name="BaseProductId" value="@Model.BaseProductId" />
+                            <button type="submit" class="btn btn-sm btn-danger"><i class="bi bi-trash"></i></button>
+                        </form>
+                    </li>
+                }
+            </ul>
+        }
+        else
+        {
+            <p>Немає інструкцій.</p>
+        }
+        <form asp-controller="ProductContent" asp-action="CreateInstruction" method="post" class="mt-3">
+            <input type="hidden" name="BaseProductId" value="@Model.BaseProductId" />
+            <div class="mb-3">
+                <label>Посилання на інструкцію</label>
+                <input type="text" name="InstructionUrl" class="form-control" />
+            </div>
+            <button type="submit" class="btn btn-success btn-primary-add">Додати інструкцію</button>
+        </form>
+    </div>
+</div>
