@@ -8,7 +8,6 @@ using PriceComparisonMVCAdmin.Models.DTOs.Response.Product;
 using PriceComparisonMVCAdmin.Models.ManagerProducts;
 using PriceComparisonMVCAdmin.Services;
 using PriceComparisonMVCAdmin.Services.Helper;
-using System.Reflection;
 
 namespace PriceComparisonMVCAdmin.Controllers
 {
@@ -42,8 +41,8 @@ namespace PriceComparisonMVCAdmin.Controllers
             if (!ModelState.IsValid)
             {
                 var categories = await _apiService.GetAsync<List<CategoryResponseModel>>("api/Categories/getall");
-                var filteredCategories = categories?.Where(c => c.ParentCategoryId.HasValue).ToList() ?? new List<CategoryResponseModel>();
-                ViewBag.Categories = filteredCategories ?? new List<CategoryResponseModel>();
+                var filteredCategories = categories?.Where(c => c.ParentCategoryId.HasValue).ToList() ?? [];
+                ViewBag.Categories = filteredCategories ?? [];
                 return View(model);
             }
 
@@ -80,17 +79,60 @@ namespace PriceComparisonMVCAdmin.Controllers
         [HttpGet]
         public async Task<IActionResult> EditBaseProduct(int Id)
         {
-            var baseProduct = await _apiService.GetAsync<BaseProductResponseModel>($"api/BaseProducts/{Id}");
+            BaseProductResponseModel? baseProduct = null;
+            try
+            {
+                baseProduct = await _apiService.GetAsync<BaseProductResponseModel>($"api/BaseProducts/{Id}");
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Не вдалося отримати базовий продукт з ID = {Id}", Id);
+            }
+
             if (baseProduct == null)
             {
                 return NotFound();
             }
 
-            var categories = await _apiService.GetAsync<List<CategoryResponseModel>>("api/Categories/getall");
-            var filteredCategories = categories?.Where(c => c.ParentCategoryId.HasValue).ToList() ?? new List<CategoryResponseModel>();
+            List<ProductResponseModel> productVariants = new();
+            try
+            {
+                productVariants = await _apiService.GetAsync<List<ProductResponseModel>>($"/api/Products/bybaseproduct/{Id}")
+                                  ?? new();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Не вдалося отримати варіанти продукту для базового продукту з ID = {Id}", Id);
+            }
+            ViewBag.productVariants = productVariants;
 
-            ViewBag.Categories = filteredCategories ?? new List<CategoryResponseModel>();
+            List<ColorResponseModel> productColors = new();
+            try
+            {
+                productColors = await _apiService.GetAsync<List<ColorResponseModel>>("/api/ProductColor/getall")
+                                 ?? new();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Не вдалося отримати список кольорів");
+            }
+            ViewBag.productColors = productColors;
 
+            List<CategoryResponseModel> categories = new();
+            try
+            {
+                categories = await _apiService.GetAsync<List<CategoryResponseModel>>("api/Categories/getall")
+                             ?? new();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Не вдалося отримати список категорій");
+            }
+
+            var filteredCategories = categories
+                .Where(c => c.ParentCategoryId.HasValue)
+                .ToList();
+            ViewBag.Categories = filteredCategories;
 
             var model = new BaseProductFormModel
             {
@@ -113,9 +155,9 @@ namespace PriceComparisonMVCAdmin.Controllers
             if (!ModelState.IsValid)
             {
                 var categories = await _apiService.GetAsync<List<CategoryResponseModel>>("api/Categories/getall");
-                var filteredCategories = categories?.Where(c => c.ParentCategoryId.HasValue).ToList() ?? new List<CategoryResponseModel>();
+                var filteredCategories = categories?.Where(c => c.ParentCategoryId.HasValue).ToList() ?? [];
 
-                ViewBag.Categories = filteredCategories ?? new List<CategoryResponseModel>();
+                ViewBag.Categories = filteredCategories ?? [];
                 return View(model);
             }
 
@@ -147,14 +189,20 @@ namespace PriceComparisonMVCAdmin.Controllers
         [HttpGet]
         public async Task<IActionResult> EditCharacteristics(int baseProductId, int categoryId, int? productId)
         {
-            var characteristics = await _apiService.GetAsync<List<CategoryCharacteristicResponseModel>>(
-                $"api/CategoryCharacteristics/{categoryId}");
+            List<CategoryCharacteristicResponseModel> characteristics = [];
+            try
+            {
+                characteristics = await _apiService.GetAsync<List<CategoryCharacteristicResponseModel>>(
+                    $"api/CategoryCharacteristics/{categoryId}");
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Не вдалося отримати характеристики категорії {CategoryId}", categoryId);
+            }
 
-            bool isVariant = productId.HasValue;
+            List<ProductCharacteristicUpdateRequestModel> existingCharacteristics = [];
 
-            List<ProductCharacteristicUpdateRequestModel> existingCharacteristics = new List<ProductCharacteristicUpdateRequestModel>();
-
-            if (isVariant)
+            if (productId.HasValue)
             {
                 try
                 {
@@ -164,6 +212,27 @@ namespace PriceComparisonMVCAdmin.Controllers
                 catch (Exception ex)
                 {
                     _logger.LogError(ex, "Не вдалося отримати характеристики продукту з ідентифікатором {ProductId}", productId);
+                }
+
+            }
+            if (baseProductId > 0)
+            {
+                try
+                {
+                    var baseProductChars = await _apiService.GetAsync<List<ProductCharacteristicUpdateRequestModel>>(
+                        $"/api/ProductCharacteristics/baseproduct/{baseProductId}");
+
+                    foreach (var baseChar in baseProductChars)
+                    {
+                        if (!existingCharacteristics.Any(ec => ec.CharacteristicId == baseChar.CharacteristicId))
+                        {
+                            existingCharacteristics.Add(baseChar);
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogError(ex, "Не вдалося отримати характеристики базового продукту {BaseProductId}", baseProductId);
                 }
             }
 
@@ -250,7 +319,7 @@ namespace PriceComparisonMVCAdmin.Controllers
         [HttpDelete]
         public async Task<IActionResult> DeleteCharacteristic(int id)
         {
-            var response = await _apiService.DeleteAsync<GeneralApiResponseModel>($"api/ProductCharacteristics/delete/{id}");
+            var response = await _apiService.DeleteAsync<object, GeneralApiResponseModel>($"api/ProductCharacteristics/delete/{id}");
 
             if (response.ReturnCode != AppSuccessCodes.DeleteSuccess)
             {
@@ -311,10 +380,10 @@ namespace PriceComparisonMVCAdmin.Controllers
         private async Task LoadViewBagsCreateVariantAsync(int? baseProductId)
         {
             var groupTypes = await _apiService.GetAsync<List<ProductGroupTypeResponseModel>>("api/ProductGroupType/getall");
-            ViewBag.GroupTypes = groupTypes ?? new List<ProductGroupTypeResponseModel>();
+            ViewBag.GroupTypes = groupTypes ?? [];
 
             var colors = await _apiService.GetAsync<List<ColorResponseModel>>("api/ProductColor/getall");
-            ViewBag.Colors = colors ?? new List<ColorResponseModel>();
+            ViewBag.Colors = colors ?? [];
 
             var baseProduct = await _apiService.GetAsync<BaseProductResponseModel>($"api/BaseProducts/{baseProductId}");
             ViewBag.baseProduct = baseProduct;
@@ -382,7 +451,7 @@ namespace PriceComparisonMVCAdmin.Controllers
         [HttpPost]
         public async Task<IActionResult> DeleteVariant(int id)
         {
-            var response = await _apiService.DeleteAsync<GeneralApiResponseModel>($"api/Products/delete/{id}");
+            var response = await _apiService.DeleteAsync<object, GeneralApiResponseModel>($"api/Products/delete/{id}");
 
             if (response.ReturnCode != AppSuccessCodes.DeleteSuccess &&
                 response.ReturnCode != AppSuccessCodes.GerneralSuccess)
@@ -395,7 +464,7 @@ namespace PriceComparisonMVCAdmin.Controllers
         [HttpPost]
         public async Task<IActionResult> DeleteVariantByJS(int id)
         {
-            var response = await _apiService.DeleteAsync<GeneralApiResponseModel>($"api/Products/delete/{id}");
+            var response = await _apiService.DeleteAsync<object, GeneralApiResponseModel>($"api/Products/delete/{id}");
 
             if (response.ReturnCode != AppSuccessCodes.DeleteSuccess &&
                 response.ReturnCode != AppSuccessCodes.GerneralSuccess)
@@ -412,7 +481,7 @@ namespace PriceComparisonMVCAdmin.Controllers
             var response = new GeneralApiResponseModel();
             try
             {
-                response = await _apiService.DeleteAsync<GeneralApiResponseModel>($"api/BaseProducts/delete/{id}");
+                response = await _apiService.DeleteAsync<object, GeneralApiResponseModel>($"api/BaseProducts/delete/{id}");
             }
             catch (Exception ex)
             {
@@ -422,7 +491,7 @@ namespace PriceComparisonMVCAdmin.Controllers
                     TempData["Error"] = "\r\nНе вдалося видалити базовий продукт.";
                 }
                 _logger.LogError(ex, "Не вдалося видалити базовий продукт з ідентифікатором {Id}", id);
-                return RedirectToAction("EditBaseProduct", id);
+                return RedirectToAction("EditBaseProduct", new { id = id });
             }
 
             return RedirectToAction("IndexBaseProducts");
@@ -431,7 +500,7 @@ namespace PriceComparisonMVCAdmin.Controllers
         [HttpPost]
         public async Task<IActionResult> DeleteBaseByJS(int id)
         {
-            var response = await _apiService.DeleteAsync<GeneralApiResponseModel>($"api/BaseProducts/delete/{id}");
+            var response = await _apiService.DeleteAsync<object, GeneralApiResponseModel>($"api/BaseProducts/delete/{id}");
 
             if (response.ReturnCode != AppSuccessCodes.DeleteSuccess &&
                 response.ReturnCode != AppSuccessCodes.GerneralSuccess)
@@ -440,12 +509,6 @@ namespace PriceComparisonMVCAdmin.Controllers
             }
             return Json(new { success = true });
         }
-
-
-
-
-
-
 
         // GET: IndexBaseProducts
         public async Task<IActionResult> IndexBaseProducts()
@@ -474,9 +537,10 @@ namespace PriceComparisonMVCAdmin.Controllers
         {
             ModelState.AddModelError("", errorMessage);
             var categories = await _apiService.GetAsync<List<CategoryResponseModel>>("api/Categories/getall");
-            ViewBag.Categories = categories ?? new List<CategoryResponseModel>();
+            ViewBag.Categories = categories ?? [];
             return View(model);
         }
+
 
 
     }

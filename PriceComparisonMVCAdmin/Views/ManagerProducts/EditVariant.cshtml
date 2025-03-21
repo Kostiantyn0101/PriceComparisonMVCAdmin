@@ -2,10 +2,8 @@
 
 @{
     Layout = "~/Views/Shared/_AdminLayout.cshtml";
-    var groupTypes = ViewBag.GroupTypes as List<PriceComparisonMVCAdmin.Models.DTOs.Response.Product.ProductGroupTypeResponseModel>
-                      ?? new List<PriceComparisonMVCAdmin.Models.DTOs.Response.Product.ProductGroupTypeResponseModel>();
-    var colors = ViewBag.Colors as List<PriceComparisonMVCAdmin.Models.DTOs.Response.Product.ColorResponseModel>
-                      ?? new List<PriceComparisonMVCAdmin.Models.DTOs.Response.Product.ColorResponseModel>();
+    var groupTypes = ViewBag.GroupTypes as List<PriceComparisonMVCAdmin.Models.DTOs.Response.Product.ProductGroupTypeResponseModel>;
+    var colors = ViewBag.Colors as List<PriceComparisonMVCAdmin.Models.DTOs.Response.Product.ColorResponseModel>;
     var selectedGroupTypeId = ViewBag.SelectedGroupTypeId as int?;
     var baseProduct = ViewBag.baseProduct as PriceComparisonMVCAdmin.Models.DTOs.Response.Product.BaseProductResponseModel;
 }
@@ -94,6 +92,11 @@
        asp-route-productId="@Model.Id" asp-route-categoryId="@baseProduct!.CategoryId" 
        class="btn btn-success btn-primary-add d-inline-flex align-items-center justify-content-center">
         <i class="bi bi-list-check me-2"></i> Додати/редагувати характеристики
+    </a>
+    <a asp-controller="ProductContent" asp-action="IndexVariantProduct"
+       asp-route-id="@Model.Id"
+       class="btn btn-success btn-primary-add d-inline-flex align-items-center justify-content-center">
+        <i class="bi bi-folder-plus me-2"></i> Додати контент
     </a>
     <form asp-controller="ManagerProducts" asp-action="DeleteVariant" method="post" class="d-inline-flex align-items-center justify-content-center" onsubmit="return confirm('Видалити продукт?');">
         <input type="hidden" name="id" value="@Model.Id" />
