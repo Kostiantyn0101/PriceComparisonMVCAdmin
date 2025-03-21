@@ -19,7 +19,7 @@
             @foreach (var parentCategory in Model)
             {
                 <li class="list-group-item">
-                    <button class="btn btn-link category-toggle d-flex align-items-center" 
+                    <button class="btn btn-link category-toggle d-flex align-items-center"
                             data-target="category-@parentCategory.Key.Id">
                         <i class="bi bi-chevron-right toggle-icon me-2"></i> @parentCategory.Key.Title
                     </button>
@@ -128,15 +128,15 @@
                         if (data.length > 0) {
                             data.forEach(function (product) {
                                 container.append(`
-                                    <li class="list-group-item">
+                                    <li class="list-group-item id="baseProduct-${product.id}">
                                         <div class="d-flex justify-content-between align-items-center">
-                                            <button class="btn btn-link base-product-toggle d-flex align-items-center" 
+                                            <button class="btn btn-link base-product-toggle d-flex align-items-center"
                                                     data-product-id="${product.id}"
                                                     data-category-id="${product.categoryId}">
                                                 <i class="bi bi-chevron-right toggle-icon me-2"></i> ${product.title}
                                             </button>
                                             <div class="d-flex align-items-center">
-                                                <a href="/ManagerProducts/EditBaseProduct/${product.id}" 
+                                                <a href="/ManagerProducts/EditBaseProduct/${product.id}"
                                                 class="btn btn-sm btn-link text-primary" data-bs-toggle="tooltip" title="Редагувати базовий продукт">
                                                     <i class="bi bi-pencil"></i>
                                                 </a>
@@ -148,6 +148,13 @@
                                                    class="btn btn-sm btn-link text-success" data-bs-toggle="tooltip" title="Додати варіант продукту">
                                                     <i class="bi bi-plus-lg"></i>
                                                 </a>
+                                                <form action="/ManagerProducts/DeleteBaseByJS" method="post" class="delete-product-form d-inline" data-id="${product.id}">
+                                                    <input type="hidden" name="id" value="${product.id}" />
+                                                    <button type="submit" class="btn btn-sm btn-link text-danger" data-bs-toggle="tooltip" title="Видалення базового продукту">
+                                                        <i class="bi bi-trash"></i>
+                                                </button>
+                                            </form>
+
                                             </div>
                                         </div>
                                         <ul id="variants-${product.id}" class="list-unstyled ms-4 d-none variants-container"></ul>
@@ -164,44 +171,82 @@
                 });
             }
 
-            // Завантаження варіантів продуктів
-            function loadProductVariants(baseProductId, container, categoryId) {
-                $.ajax({
-                    url: window.apiBaseUrl +  "/api/Products/bybaseproduct/" + baseProductId,
-                    type: "GET",
-                    success: function (data) {
-                        container.empty().removeClass("d-none");
-                        if (data.length > 0) {
-                            data.forEach(function (variant) {
-                                container.append(`
-                                    <li class="list-group-item">
-                                        <div class="d-flex justify-content-between align-items-center">
-                                            <span>modelNumber - ${variant.modelNumber || 'Невідомо'} | gtin - ${variant.gtin || 'Невідомо'}</span>
-                                            <div class="d-flex align-items-center">
-                                                <a href="/ManagerProducts/EditVariant/${variant.id}" 
-                                                        class="btn btn-sm btn-link text-primary"
-                                                        title="Редагувати варіангт продукту">
-                                                    <i class="bi bi-pencil"></i>
-                                                </a>
-                                                <a href="/ManagerProducts/EditCharacteristics?productId=${variant.id}&categoryId=${categoryId}"
-                                                        class="btn btn-sm btn-link text-success" data-bs-toggle="tooltip" 
-                                                        title="Додати/редагувати характеристики">
-                                                    <i class="bi bi-list-check"></i>
-                                                </a>
-                                            </div>
+        function loadProductVariants(baseProductId, container, categoryId) {
+            $.ajax({
+                url: window.apiBaseUrl + "/api/Products/bybaseproduct/" + baseProductId,
+                type: "GET",
+                success: function (data) {
+                    container.empty().removeClass("d-none");
+                    if (data.length > 0) {
+                        data.forEach(function (variant) {
+                            container.append(`
+                                <li class="list-group-item" id="variant-${variant.id}">
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <span>
+                                            ${variant.productGroup.name || ''}
+                                            ${variant.modelNumber ? ' | модель - ' + variant.modelNumber : ''}
+                                            ${variant.gtin
+                                                ? ' | GTIN - ' + variant.gtin
+                                                : (variant.upc ? ' | UPC - ' + variant.upc : '')
+                                            }
+                                        </span>
+                                        <div class="d-flex align-items-center">
+                                            <a href="/ManagerProducts/EditVariant/${variant.id}"
+                                               class="btn btn-sm btn-link text-primary"
+                                               title="Редагувати варіант продукту">
+                                                <i class="bi bi-pencil"></i>
+                                            </a>
+                                            <a href="/ManagerProducts/EditCharacteristics?productId=${variant.id}&categoryId=${categoryId}"
+                                               class="btn btn-sm btn-link text-success" data-bs-toggle="tooltip"
+                                               title="Додати/редагувати характеристики">
+                                                <i class="bi bi-list-check"></i>
+                                            </a>
+                                            <form action="/ManagerProducts/DeleteVariantByJS" method="post" class="delete-product-form d-inline" data-id="${variant.id}">
+                                                <input type="hidden" name="id" value="${variant.id}" />
+                                                <button type="submit" class="btn btn-sm btn-link text-danger" data-bs-toggle="tooltip" title="Видалення продукту">
+                                                    <i class="bi bi-trash"></i>
+                                                </button>
+                                            </form>
                                         </div>
-                                    </li>
-                                `);
-                            });
-                        } else {
-                            container.append("<li class='text-muted'>Немає варіантів</li>");
-                        }
-                    },
-                    error: function () {
-                        alert("Помилка завантаження варіантів продуктів");
+                                    </div>
+                                </li>
+                            `);
+                        });
+                    } else {
+                        container.append("<li class='text-muted'>Немає варіантів</li>");
                     }
-                });
+                },
+                error: function () {
+                    alert("Помилка завантаження варіантів продуктів");
+                }
+            });
+        }
+        });
+        $(document).on('submit', '.delete-product-form', function (e) {
+            e.preventDefault();
+
+            if (!confirm('Видалити продукт?')) {
+                return;
             }
+
+            var $form = $(this);
+            var id = $form.find('input[name="id"]').val();
+
+            $.ajax({
+                url: $form.attr('action'),
+                type: 'POST',
+                data: $form.serialize(),
+                success: function (response) {
+                    if (response.success) {
+                        $form.closest("li").remove();
+                    } else {
+                        alert("Помилка: " + response.message);
+                    }
+                },
+                error: function () {
+                    alert("Помилка видалення продукту");
+                }
+            });
         });
     </script>
 }

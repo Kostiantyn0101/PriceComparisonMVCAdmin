@@ -5,6 +5,7 @@
     --success-color: #0B8E00;
     --success-border-color: #CCF5E3;
     --success-hover-color: #097a00;
+    --danger-color: #BD1B10;
 }
 
 .btn-primary {
@@ -46,3 +47,23 @@
         background-color: var(--success-hover-color);
         color: var(--primary-text-color);
     }
+
+.btn-primary-remove {
+    width: 214px;
+    height: 48px;
+    background-color: var(--danger-color);
+    color: var(--primary-text-color);
+    font-size: 16px;
+    border: none;
+    border-radius: 0;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    white-space: normal;
+    word-wrap: break-word;
+    padding: 10px;
+    transition: background-color 0.3s ease;
+    line-height: 1.2;
+}

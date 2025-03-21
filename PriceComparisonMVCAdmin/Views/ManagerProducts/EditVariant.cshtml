@@ -9,7 +9,12 @@
     var selectedGroupTypeId = ViewBag.SelectedGroupTypeId as int?;
     var baseProduct = ViewBag.baseProduct as PriceComparisonMVCAdmin.Models.DTOs.Response.Product.BaseProductResponseModel;
 }
-
+@if (TempData["SuccessMessage"] != null)
+{
+    <div class="alert alert-success">
+        @TempData["SuccessMessage"]
+    </div>
+}
 <div class="card shadow-sm mb-4">
     <div class="card-body">
         <h3 class="card-title text-dark">
@@ -90,6 +95,12 @@
        class="btn btn-success btn-primary-add d-inline-flex align-items-center justify-content-center">
         <i class="bi bi-list-check me-2"></i> Додати/редагувати характеристики
     </a>
+    <form asp-controller="ManagerProducts" asp-action="DeleteVariant" method="post" class="d-inline-flex align-items-center justify-content-center" onsubmit="return confirm('Видалити продукт?');">
+        <input type="hidden" name="id" value="@Model.Id" />
+        <button type="submit" class="btn btn-danger btn-primary-remove d-inline-flex align-items-center justify-content-center">
+            <i class="bi bi-trash me-2"></i> Видалити продукт
+        </button>
+    </form>
 </div>
 @section Scripts {
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
