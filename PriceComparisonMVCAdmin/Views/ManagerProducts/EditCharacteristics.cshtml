@@ -8,7 +8,6 @@
     <h2 class="mb-3">Редагування характеристик</h2>
 
     <div class="d-flex flex-column">
-        <!-- Заголовки колонок -->
         <div class="row fw-bold border-bottom py-2">
             <div class="col-4 text-start">Характеристика</div>
             <div class="col-4 text-center">Значення</div>
@@ -26,7 +25,6 @@
                  data-product-id="@characteristic.ProductId"
                  data-characteristic-type="@meta?.CharacteristicDataType?.ToLowerInvariant()">
 
-                <!-- Назва характеристики -->
                 <div class="col-4 text-start">
                     <label class="form-label">@meta?.CharacteristicTitle</label>
                     @if (!string.IsNullOrEmpty(meta?.CharacteristicUnit))
@@ -35,7 +33,6 @@
                     }
                 </div>
 
-                <!-- Поле значення -->
                 <div class="col-4 text-center">
                     @if (meta?.CharacteristicDataType?.ToLowerInvariant() == "string")
                     {
@@ -59,24 +56,19 @@
                     }
                 </div>
 
-                <!-- Дії -->
                 <div class="col-4 text-center">
-                    <!-- Кнопка редагування (олівець) -->
                     <button type="button" class="btn btn-sm btn-link edit-toggle-btn ms-2">
                         <i class="bi bi-pencil"></i>
                     </button>
 
-                    <!-- Кнопка підтвердження (зелена галочка) -->
                     <button type="button" class="btn btn-sm btn-link confirm-btn text-success d-none ms-2">
                         <i class="bi bi-check-lg"></i>
                     </button>
 
-                    <!-- Кнопка скасування (червоний хрестик) -->
                     <button type="button" class="btn btn-sm btn-link cancel-btn text-danger d-none ms-2">
                         <i class="bi bi-x-lg"></i>
                     </button>
 
-                    <!-- Кнопка видалення (смітник) -->
                     <button type="button" class="btn btn-sm btn-link delete-btn ms-2 text-danger">
                         <i class="bi bi-trash"></i>
                     </button>

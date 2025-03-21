@@ -8,6 +8,7 @@ using PriceComparisonMVCAdmin.Models.DTOs.Response.Product;
 using PriceComparisonMVCAdmin.Models.ManagerProducts;
 using PriceComparisonMVCAdmin.Services;
 using PriceComparisonMVCAdmin.Services.Helper;
+using System.Reflection;
 
 namespace PriceComparisonMVCAdmin.Controllers
 {
@@ -36,31 +37,43 @@ namespace PriceComparisonMVCAdmin.Controllers
 
         // POST: CreateBaseProduct
         [HttpPost]
-        public async Task<IActionResult> CreateBase(BaseProductCreateRequestModel model)
+        public async Task<IActionResult> CreateBase(BaseProductFormModel model)
         {
             if (!ModelState.IsValid)
             {
                 var categories = await _apiService.GetAsync<List<CategoryResponseModel>>("api/Categories/getall");
-                ViewBag.Categories = categories ?? new List<CategoryResponseModel>();
+                var filteredCategories = categories?.Where(c => c.ParentCategoryId.HasValue).ToList() ?? new List<CategoryResponseModel>();
+                ViewBag.Categories = filteredCategories ?? new List<CategoryResponseModel>();
                 return View(model);
             }
 
+            var modelCreate = new BaseProductCreateRequestModel
+            {
+                Brand = model.Brand,
+                Title = model.Title,
+                Description = model.Description,
+                IsUnderModeration = model.IsUnderModeration,
+                CategoryId = model.CategoryId
+            };
+
             var response = await _apiService.PostAsync<BaseProductCreateRequestModel, GeneralApiResponseModel>(
-                "api/BaseProducts/create", model);
+                "api/BaseProducts/create", modelCreate);
 
             var product = _apiResponseDeserializerService.DeserializeData<BaseProductResponseModel>(response);
 
             if (product == null)
             {
-                return await ReturnWithError("Invalid response data.", model);
+                return await ReturnWithError("Invalid response data.", modelCreate);
             }
 
             if (response.ReturnCode != AppSuccessCodes.CreateSuccess && response.ReturnCode != AppSuccessCodes.GerneralSuccess)
             {
-                return await ReturnWithError(response.Message, model);
+                return await ReturnWithError(response.Message, modelCreate);
             }
 
-            return RedirectToAction("EditCharacteristics", new { baseProductId = product.Id, categoryId = model.CategoryId });
+            TempData["SuccessMessage"] = "Дані збережено успішно.";
+            //return RedirectToAction("EditCharacteristics", new { baseProductId = product.Id, categoryId = modelCreate.CategoryId });
+            return RedirectToAction("EditBaseProduct", new { id = product.Id });
         }
 
         // GET: EditBaseProduct
@@ -95,15 +108,30 @@ namespace PriceComparisonMVCAdmin.Controllers
 
         // POST: EditBaseProduct
         [HttpPost]
-        public async Task<IActionResult> EditBaseProduct(BaseProductUpdateRequestModel model)
+        public async Task<IActionResult> EditBaseProduct(BaseProductFormModel model)
         {
             if (!ModelState.IsValid)
             {
+                var categories = await _apiService.GetAsync<List<CategoryResponseModel>>("api/Categories/getall");
+                var filteredCategories = categories?.Where(c => c.ParentCategoryId.HasValue).ToList() ?? new List<CategoryResponseModel>();
+
+                ViewBag.Categories = filteredCategories ?? new List<CategoryResponseModel>();
                 return View(model);
             }
 
+            var modelUpdate = new BaseProductUpdateRequestModel
+            {
+                Id = model.Id!.Value,
+                Brand = model.Brand,
+                Title = model.Title,
+                Description = model.Description,
+                IsUnderModeration = model.IsUnderModeration,
+                AddedToDatabase = model.AddedToDatabase!.Value,
+                CategoryId = model.CategoryId
+            };
+
             var response = await _apiService.SendAsync<BaseProductUpdateRequestModel, GeneralApiResponseModel>(
-                HttpMethod.Put, "api/BaseProducts/update", model, useMultipartFormData: false);
+                HttpMethod.Put, "api/BaseProducts/update", modelUpdate, useMultipartFormData: false);
 
             if (response.ReturnCode != AppSuccessCodes.UpdateSuccess && response.ReturnCode != AppSuccessCodes.GerneralSuccess)
             {
@@ -264,6 +292,7 @@ namespace PriceComparisonMVCAdmin.Controllers
 
             var response = await _apiService.PostAsync<ProductCreateRequestModel, GeneralApiResponseModel>(
                 "api/Products/create", model);
+            var product = _apiResponseDeserializerService.DeserializeData<ProductResponseModel>(response);
 
 
             if (response.ReturnCode != AppSuccessCodes.CreateSuccess && response.ReturnCode != AppSuccessCodes.GerneralSuccess)
@@ -275,7 +304,8 @@ namespace PriceComparisonMVCAdmin.Controllers
                 return View(model);
             }
 
-            return RedirectToAction("IndexBaseProducts");
+            TempData["SuccessMessage"] = "Дані збережено успішно.";
+            return RedirectToAction("EditVariant", new { id = product.Id });
         }
 
         private async Task LoadViewBagsCreateVariantAsync(int? baseProductId)
@@ -292,7 +322,7 @@ namespace PriceComparisonMVCAdmin.Controllers
 
 
 
-        // GET: ManagerProducts/EditProduct?productId=...
+        // GET: EditVariant
         [HttpGet]
         public async Task<IActionResult> EditVariant(int id)
         {
@@ -304,8 +334,7 @@ namespace PriceComparisonMVCAdmin.Controllers
 
             await LoadViewBagsCreateVariantAsync(product.BaseProductId);
 
-            var group = await _apiService.GetAsync<ProductGroupResponseModel>($"api/ProductGroup/{product.ProductGroupId}");
-            ViewBag.SelectedGroupTypeId = group?.ProductGroupTypeId;
+            ViewBag.SelectedGroupTypeId = product.ProductGroup.ProductGroupTypeId;
 
             var model = new ProductUpdateRequestModel()
             {
@@ -317,7 +346,7 @@ namespace PriceComparisonMVCAdmin.Controllers
                 BaseProductId = product.BaseProductId,
                 ColorId = product.ColorId,
                 IsDefault = product.IsDefault,
-                ProductGroupId = product.ProductGroupId
+                ProductGroupId = product.ProductGroup.Id
             };
 
             return View(model);
@@ -345,16 +374,16 @@ namespace PriceComparisonMVCAdmin.Controllers
                 return View(model);
             }
 
-            return RedirectToAction("IndexBaseProducts");
+            return RedirectToAction("EditVariant", new { id = model.Id });
         }
 
 
-        // POST: ManagerProducts/DeleteProduct
+        // POST: DeleteProduct
         [HttpPost]
-        public async Task<IActionResult> DeleteProduct(int productId)
+        public async Task<IActionResult> DeleteVariant(int id)
         {
-            var response = await _apiService.SendAsync<object, GeneralApiResponseModel>(
-                HttpMethod.Delete, $"api/Products/delete/{productId}", null);
+            var response = await _apiService.DeleteAsync<GeneralApiResponseModel>($"api/Products/delete/{id}");
+
             if (response.ReturnCode != AppSuccessCodes.DeleteSuccess &&
                 response.ReturnCode != AppSuccessCodes.GerneralSuccess)
             {
@@ -363,7 +392,62 @@ namespace PriceComparisonMVCAdmin.Controllers
             return RedirectToAction("IndexBaseProducts");
         }
 
-        // GET: ManagerProducts/IndexBaseProducts – список базових продуктів
+        [HttpPost]
+        public async Task<IActionResult> DeleteVariantByJS(int id)
+        {
+            var response = await _apiService.DeleteAsync<GeneralApiResponseModel>($"api/Products/delete/{id}");
+
+            if (response.ReturnCode != AppSuccessCodes.DeleteSuccess &&
+                response.ReturnCode != AppSuccessCodes.GerneralSuccess)
+            {
+                return Json(new { success = false, message = response.Message });
+            }
+            return Json(new { success = true });
+        }
+
+        // POST: DeleteProduct
+        [HttpPost]
+        public async Task<IActionResult> DeleteBaseProduct(int id)
+        {
+            var response = new GeneralApiResponseModel();
+            try
+            {
+                response = await _apiService.DeleteAsync<GeneralApiResponseModel>($"api/BaseProducts/delete/{id}");
+            }
+            catch (Exception ex)
+            {
+                if (response.ReturnCode != AppSuccessCodes.DeleteSuccess &&
+                    response.ReturnCode != AppSuccessCodes.GerneralSuccess)
+                {
+                    TempData["Error"] = "\r\nНе вдалося видалити базовий продукт.";
+                }
+                _logger.LogError(ex, "Не вдалося видалити базовий продукт з ідентифікатором {Id}", id);
+                return RedirectToAction("EditBaseProduct", id);
+            }
+
+            return RedirectToAction("IndexBaseProducts");
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> DeleteBaseByJS(int id)
+        {
+            var response = await _apiService.DeleteAsync<GeneralApiResponseModel>($"api/BaseProducts/delete/{id}");
+
+            if (response.ReturnCode != AppSuccessCodes.DeleteSuccess &&
+                response.ReturnCode != AppSuccessCodes.GerneralSuccess)
+            {
+                return Json(new { success = false, message = response.Message });
+            }
+            return Json(new { success = true });
+        }
+
+
+
+
+
+
+
+        // GET: IndexBaseProducts
         public async Task<IActionResult> IndexBaseProducts()
         {
             // Отримуємо всі категорії

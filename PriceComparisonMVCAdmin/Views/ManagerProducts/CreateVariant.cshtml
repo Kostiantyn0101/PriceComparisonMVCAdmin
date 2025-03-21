@@ -36,6 +36,7 @@
         <select id="groupSelect" asp-for="ProductGroupId" class="form-select">
             <option value="">-- Оберіть групу --</option>
         </select>
+        <span asp-validation-for="ProductGroupId" class="text-danger"></span>
     </div>
 
     <div class="mb-3">
@@ -47,19 +48,27 @@
                 <option value="@c.Id">@c.Name</option>
             }
         </select>
+        <span asp-validation-for="ColorId" class="text-danger"></span>
+
     </div>
 
     <div class="mb-3">
         <label asp-for="ModelNumber" class="form-label">Model Number</label>
         <input asp-for="ModelNumber" class="form-control" />
+        <span asp-validation-for="ModelNumber" class="text-danger"></span>
+
     </div>
     <div class="mb-3">
         <label asp-for="GTIN" class="form-label">GTIN</label>
         <input asp-for="GTIN" class="form-control" />
+        <span asp-validation-for="GTIN" class="text-danger"></span>
+
     </div>
     <div class="mb-3">
         <label asp-for="UPC" class="form-label">UPC</label>
         <input asp-for="UPC" class="form-control" />
+        <span asp-validation-for="UPC" class="text-danger"></span>
+
     </div>
     <div class="form-check mb-3">
         <input asp-for="IsDefault" class="form-check-input" />

@@ -8,6 +8,12 @@
         @TempData["SuccessMessage"]
     </div>
 }
+@if (TempData["Error"] != null)
+{
+    <div class="alert alert-danger">
+        @TempData["Error"]
+    </div>
+}
 <partial name="_BaseProductForm" model="Model" />
 <div class="d-flex justify-content-between mt-4">
     <a asp-controller="ManagerProducts" asp-action="EditCharacteristics"
@@ -21,4 +27,11 @@
        class="btn btn-success btn-primary-add d-inline-flex align-items-center justify-content-center">
         <i class="bi bi-plus-lg me-2"></i> Додати варіант продукту
     </a>
+
+    <form asp-controller="ManagerProducts" asp-action="DeleteBaseProduct" method="post" class="d-inline-flex align-items-center justify-content-center" onsubmit="return confirm('Видалити продукт?');">
+        <input type="hidden" name="id" value="@Model.Id" />
+        <button type="submit" class="btn btn-danger btn-primary-remove d-inline-flex align-items-center justify-content-center">
+            <i class="bi bi-trash me-2"></i> Видалити продукт
+        </button>
+    </form>
 </div>
