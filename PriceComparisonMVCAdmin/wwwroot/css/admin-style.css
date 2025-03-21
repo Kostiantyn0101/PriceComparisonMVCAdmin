@@ -67,3 +67,12 @@
     transition: background-color 0.3s ease;
     line-height: 1.2;
 }
+
+@media (max-width: 576px) {
+    .btn-primary,
+    .btn-primary-add,
+    .btn-primary-remove {
+        width: 100% !important;
+        margin: 0 !important;
+    }
+}

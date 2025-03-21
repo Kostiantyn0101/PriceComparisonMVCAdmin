@@ -2,10 +2,8 @@
 
 @{
     Layout = "~/Views/Shared/_AdminLayout.cshtml";
-    var groupTypes = ViewBag.GroupTypes as List<PriceComparisonMVCAdmin.Models.DTOs.Response.Product.ProductGroupTypeResponseModel>
-                      ?? new List<PriceComparisonMVCAdmin.Models.DTOs.Response.Product.ProductGroupTypeResponseModel>();
-    var colors = ViewBag.Colors as List<PriceComparisonMVCAdmin.Models.DTOs.Response.Product.ColorResponseModel>
-                      ?? new List<PriceComparisonMVCAdmin.Models.DTOs.Response.Product.ColorResponseModel>();
+    var groupTypes = ViewBag.GroupTypes as List<PriceComparisonMVCAdmin.Models.DTOs.Response.Product.ProductGroupTypeResponseModel>;
+    var colors = ViewBag.Colors as List<PriceComparisonMVCAdmin.Models.DTOs.Response.Product.ColorResponseModel>;
     var selectedGroupTypeId = ViewBag.SelectedGroupTypeId as int?;
     var baseProduct = ViewBag.baseProduct as PriceComparisonMVCAdmin.Models.DTOs.Response.Product.BaseProductResponseModel;
 }

@@ -86,10 +86,16 @@ namespace PriceComparisonMVCAdmin.Controllers
                 return NotFound();
             }
 
+            var productVariants = await _apiService.GetAsync<List<ProductResponseModel>>($"/api/Products/bybaseproduct/{Id}");
+            ViewBag.productVariants = productVariants ?? [];
+
+            var productColors = await _apiService.GetAsync<List<ColorResponseModel>>("/api/ProductColor/getall");
+            ViewBag.productColors = productColors ?? [];
+
             var categories = await _apiService.GetAsync<List<CategoryResponseModel>>("api/Categories/getall");
             var filteredCategories = categories?.Where(c => c.ParentCategoryId.HasValue).ToList() ?? new List<CategoryResponseModel>();
 
-            ViewBag.Categories = filteredCategories ?? new List<CategoryResponseModel>();
+            ViewBag.Categories = filteredCategories ?? [];
 
 
             var model = new BaseProductFormModel
@@ -422,7 +428,7 @@ namespace PriceComparisonMVCAdmin.Controllers
                     TempData["Error"] = "\r\nНе вдалося видалити базовий продукт.";
                 }
                 _logger.LogError(ex, "Не вдалося видалити базовий продукт з ідентифікатором {Id}", id);
-                return RedirectToAction("EditBaseProduct", id);
+                return RedirectToAction("EditBaseProduct", new { id = id });
             }
 
             return RedirectToAction("IndexBaseProducts");
