@@ -20,7 +20,9 @@ public abstract class BaseController<T> : Controller
     {
         ViewBag.Username = HttpContext?.User?.Identity?.Name;
 
-        if (ViewBag.Username != null && User.Identity.IsAuthenticated)
+        var roles = User.Claims.Where(c => c.Type == ClaimTypes.Role).Select(c => c.Value).ToList();
+
+        if (ViewBag.Username != null && User.Identity?.IsAuthenticated && roles.Contains("Seller"))
         {
             var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
             if (!string.IsNullOrEmpty(userId))

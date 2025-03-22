@@ -21,7 +21,7 @@ namespace PriceComparisonMVCAdmin.Services
             _tokenManager = tokenManager;
         }
 
-        public async Task<bool> LoginAsync(LoginResponseModel login)
+        public async Task<string?> LoginAsync(LoginResponseModel login)
         {
             try
             {
@@ -32,11 +32,11 @@ namespace PriceComparisonMVCAdmin.Services
 
                 _tokenManager.SetToken(token, refreshToken, login.RememberMe);
 
-                return true;
+                return token;
             }
             catch (Exception)
             {
-                return false; 
+                return null;
             }
         }
 

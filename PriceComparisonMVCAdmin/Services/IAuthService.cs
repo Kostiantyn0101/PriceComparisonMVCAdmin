@@ -12,7 +12,7 @@ namespace PriceComparisonMVCAdmin.Services
 {
     public interface IAuthService
     {
-        Task<bool> LoginAsync(LoginResponseModel login);
+        Task<string?> LoginAsync(LoginResponseModel login);
 
         Task<string?> RegisterAsync(RegisterModel model);
 

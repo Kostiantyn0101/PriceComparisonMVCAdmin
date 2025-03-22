@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using PriceComparisonMVCAdmin.Models.Constants;
 using PriceComparisonMVCAdmin.Models.DTOs;
 using PriceComparisonMVCAdmin.Models.DTOs.Request.Product;
@@ -11,6 +12,7 @@ using PriceComparisonMVCAdmin.Services.Helper;
 
 namespace PriceComparisonMVCAdmin.Controllers
 {
+    [Authorize(Policy = "AdminRights")]
     public class ManagerProductsController : BaseController<ManagerProductsController>
     {
         private readonly IApiResponseDeserializerService _apiResponseDeserializerService;
@@ -447,7 +449,7 @@ namespace PriceComparisonMVCAdmin.Controllers
         }
 
 
-        // POST: DeleteProduct
+        // POST: DeleteVariantProduct
         [HttpPost]
         public async Task<IActionResult> DeleteVariant(int id)
         {
@@ -474,7 +476,7 @@ namespace PriceComparisonMVCAdmin.Controllers
             return Json(new { success = true });
         }
 
-        // POST: DeleteProduct
+        // POST: DeleteBaseProduct
         [HttpPost]
         public async Task<IActionResult> DeleteBaseProduct(int id)
         {

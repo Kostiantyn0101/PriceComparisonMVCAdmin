@@ -66,3 +66,10 @@
 .mb-3, .mb-4 {
     margin-bottom: 24px !important;
 }
+
+.logo {
+    max-width: 450px;
+    height: auto;
+    margin-bottom: 16px;
+    object-fit: contain;
+}

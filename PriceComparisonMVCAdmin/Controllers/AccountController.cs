@@ -33,33 +33,28 @@ namespace PriceComparisonMVCAdmin.Controllers
                 return View(model);
             }
 
-            var isSuccess = await _authService.LoginAsync(model);
+            var token = await _authService.LoginAsync(model);
 
-            if (!isSuccess)
+            if (token == null)
             {
                 ModelState.AddModelError(string.Empty, "Невірний логін чи пароль");
                 return View(model);
             }
 
-            var token = _tokenManager.GetToken();
+            var handler = new JwtSecurityTokenHandler();
+            var jwtToken = handler.ReadJwtToken(token);
+            var roles = jwtToken.Claims
+                .Where(c => c.Type == ClaimTypes.Role)
+                .Select(c => c.Value)
+                .ToList();
 
-            if (!string.IsNullOrEmpty(token))
+            if (roles.Contains("Admin"))
             {
-                var handler = new JwtSecurityTokenHandler();
-                var jwtToken = handler.ReadJwtToken(token);
-                var roles = jwtToken.Claims
-                    .Where(c => c.Type == ClaimTypes.Role)
-                    .Select(c => c.Value)
-                    .ToList();
-
-                if (roles.Contains("Admin"))
-                {
-                    return RedirectToAction("Index", "Admin");
-                }
-                else if (roles.Contains("Seller"))
-                {
-                    return RedirectToAction("Index", "Seller");
-                }
+                return RedirectToAction("Index", "Admin");
+            }
+            else if (roles.Contains("Seller"))
+            {
+                return RedirectToAction("Index", "Seller");
             }
 
             return RedirectToAction("Index", "Seller");

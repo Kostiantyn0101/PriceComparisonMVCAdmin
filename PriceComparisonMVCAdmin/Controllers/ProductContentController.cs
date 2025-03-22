@@ -7,9 +7,11 @@ using PriceComparisonMVCAdmin.Models.Constants;
 using PriceComparisonMVCAdmin.Models.DTOs.Request.Product;
 using PriceComparisonMVCAdmin.Models.DTOs.Response;
 using System.Reflection;
+using Microsoft.AspNetCore.Authorization;
 
 namespace PriceComparisonMVCAdmin.Controllers
 {
+    [Authorize(Policy = "AdminRights")]
     public class ProductContentController : BaseController<ProductContentController>
     {
         private readonly IApiResponseDeserializerService _apiResponseDeserializerService;
