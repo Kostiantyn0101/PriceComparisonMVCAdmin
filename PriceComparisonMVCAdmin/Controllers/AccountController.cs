@@ -50,7 +50,7 @@ namespace PriceComparisonMVCAdmin.Controllers
 
             if (roles.Contains("Admin"))
             {
-                return RedirectToAction("Index", "Admin");
+                return RedirectToAction("Index", "ManagerProducts");
             }
             else if (roles.Contains("Seller"))
             {

@@ -16,7 +16,6 @@
     </div>
 </div>
 
-<!-- GET форма для вибору типу групи -->
 <div class="mb-3">
     <label for="groupTypeSelect" class="form-label">Тип групи продуктів</label>
     <select id="groupTypeSelect" class="form-select">
@@ -78,33 +77,43 @@
 </form>
 
 @section Scripts {
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
-        $(function(){
-            $('#groupTypeSelect').change(function(){
-                var groupTypeId = $(this).val();
-                var $groupSelect = $('#groupSelect');
-                $groupSelect.empty();
-                $groupSelect.append('<option value="">-- Оберіть групу --</option>');
-                if(groupTypeId){
-                    $.ajax({
-                        url: window.apiBaseUrl + '/api/ProductGroup/getByProductGroupType/' + groupTypeId,
-                        type: 'GET',
-                        dataType: 'json',
-                        success: function(data){
-                            $.each(data, function(index, group){
-                                $groupSelect.append($('<option>', {
-                                    value: group.id,
-                                    text: group.name
-                                }));
+        document.addEventListener('DOMContentLoaded', function() {
+            const groupTypeSelect = document.getElementById('groupTypeSelect');
+            const groupSelect = document.getElementById('groupSelect');
+
+            groupTypeSelect.addEventListener('change', function() {
+                const groupTypeId = groupTypeSelect.value;
+                groupSelect.innerHTML = '';
+
+                const defaultOption = document.createElement('option');
+                defaultOption.value = '';
+                defaultOption.textContent = '-- Оберіть групу --';
+                groupSelect.appendChild(defaultOption);
+
+                if (groupTypeId) {
+                    fetch(window.apiBaseUrl + '/api/ProductGroup/getByProductGroupType/' + groupTypeId)
+                        .then(response => {
+                            if (!response.ok) {
+                                throw new Error('Помилка отримання груп');
+                            }
+                            return response.json();
+                        })
+                        .then(data => {
+                            data.forEach(group => {
+                                const option = document.createElement('option');
+                                option.value = group.id;
+                                option.textContent = group.name;
+                                groupSelect.appendChild(option);
                             });
-                        },
-                        error: function(){
-                            alert('Помилка отримання груп');
-                        }
-                    });
+                        })
+                        .catch(error => {
+                            alert(error.message || 'Помилка отримання груп');
+                        });
                 }
             });
         });
     </script>
 }
+
+
