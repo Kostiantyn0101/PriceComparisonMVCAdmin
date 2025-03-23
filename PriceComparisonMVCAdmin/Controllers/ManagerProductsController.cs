@@ -44,17 +44,8 @@ namespace PriceComparisonMVCAdmin.Controllers
         [HttpGet]
         public async Task<IActionResult> CreateBase()
         {
-            List<CategoryResponseModel> categories = new();
-            List<CategoryResponseModel> filteredCategories = new();
-            try
-            {
-                categories = await _apiRequestService.GetAllCategoriesAsync();
-                filteredCategories = categories.Where(c => c.ParentCategoryId.HasValue).ToList();
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Не вдалося отримати категорії");
-            }
+            var categories = await _apiRequestService.GetAllCategoriesAsync();
+            var filteredCategories = categories?.Where(c => c.ParentCategoryId.HasValue).ToList();
             ViewBag.Categories = filteredCategories;
             var model = new BaseProductFormModel();
             return View(model);
@@ -66,9 +57,9 @@ namespace PriceComparisonMVCAdmin.Controllers
         {
             if (!ModelState.IsValid)
             {
-                var categories = await _apiService.GetAsync<List<CategoryResponseModel>>("api/Categories/getall");
-                var filteredCategories = categories?.Where(c => c.ParentCategoryId.HasValue).ToList() ?? [];
-                ViewBag.Categories = filteredCategories ?? [];
+                var categories = await _apiRequestService.GetAllCategoriesAsync();
+                var filteredCategories = categories?.Where(c => c.ParentCategoryId.HasValue).ToList();
+                ViewBag.Categories = filteredCategories;
                 return View(model);
             }
 
@@ -80,10 +71,7 @@ namespace PriceComparisonMVCAdmin.Controllers
                 IsUnderModeration = model.IsUnderModeration,
                 CategoryId = model.CategoryId
             };
-
-            var response = await _apiService.PostAsync<BaseProductCreateRequestModel, GeneralApiResponseModel>(
-                "api/BaseProducts/create", modelCreate);
-
+            var response = await _apiRequestService.CreateBaseProductAsync(modelCreate);
             var product = _apiResponseDeserializerService.DeserializeData<BaseProductResponseModel>(response);
 
             if (product == null)
@@ -97,7 +85,6 @@ namespace PriceComparisonMVCAdmin.Controllers
             }
 
             TempData["SuccessMessage"] = "Дані збережено успішно.";
-            //return RedirectToAction("EditCharacteristics", new { baseProductId = product.Id, categoryId = modelCreate.CategoryId });
             return RedirectToAction("EditBaseProduct", new { id = product.Id });
         }
 
@@ -105,7 +92,7 @@ namespace PriceComparisonMVCAdmin.Controllers
         [HttpGet]
         public async Task<IActionResult> EditBaseProduct(int Id)
         {
-            BaseProductResponseModel? baseProduct = await _apiRequestService.GetBaseProductByIdAsync(Id);
+            var baseProduct = await _apiRequestService.GetBaseProductByIdAsync(Id);
 
             if (baseProduct == null || baseProduct.Id == 0)
             {
@@ -113,41 +100,14 @@ namespace PriceComparisonMVCAdmin.Controllers
                 return NotFound();
             }
 
-            List<ProductResponseModel> productVariants = new();
-            try
-            {
-                productVariants = await _apiService.GetAsync<List<ProductResponseModel>>($"/api/Products/bybaseproduct/{Id}");
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Не вдалося отримати варіанти продукту для базового продукту з ID = {Id}", Id);
-            }
+            var productVariants = await _apiRequestService.GetVariantsByBaseProductIdAsync(Id);
             ViewBag.productVariants = productVariants;
 
-            List<ColorResponseModel> productColors = new();
-            try
-            {
-                productColors = await _apiService.GetAsync<List<ColorResponseModel>>("/api/ProductColor/getall");
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Не вдалося отримати список кольорів");
-            }
+            var productColors = _apiRequestService.GetAllColorsAsync();
             ViewBag.productColors = productColors;
 
-            List<CategoryResponseModel> categories = new();
-            try
-            {
-                categories = await _apiService.GetAsync<List<CategoryResponseModel>>("api/Categories/getall");
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Не вдалося отримати список категорій");
-            }
-
-            var filteredCategories = categories
-                .Where(c => c.ParentCategoryId.HasValue)
-                .ToList();
+            var categories = await _apiRequestService.GetAllCategoriesAsync();
+            var filteredCategories = categories.Where(c => c.ParentCategoryId.HasValue).ToList();
             ViewBag.Categories = filteredCategories;
 
             var model = new BaseProductFormModel
@@ -170,10 +130,10 @@ namespace PriceComparisonMVCAdmin.Controllers
         {
             if (!ModelState.IsValid)
             {
-                var categories = await _apiService.GetAsync<List<CategoryResponseModel>>("api/Categories/getall");
-                var filteredCategories = categories?.Where(c => c.ParentCategoryId.HasValue).ToList() ?? [];
+                var categories = await _apiRequestService.GetAllCategoriesAsync();
+                var filteredCategories = categories.Where(c => c.ParentCategoryId.HasValue).ToList();
+                ViewBag.Categories = filteredCategories;
 
-                ViewBag.Categories = filteredCategories ?? [];
                 return View(model);
             }
 
@@ -188,9 +148,7 @@ namespace PriceComparisonMVCAdmin.Controllers
                 CategoryId = model.CategoryId
             };
 
-            var response = await _apiService.SendAsync<BaseProductUpdateRequestModel, GeneralApiResponseModel>(
-                HttpMethod.Put, "api/BaseProducts/update", modelUpdate, useMultipartFormData: false);
-
+            var response = await _apiRequestService.UpdateBaseProductAsync(modelUpdate);
             if (response.ReturnCode != AppSuccessCodes.UpdateSuccess && response.ReturnCode != AppSuccessCodes.GerneralSuccess)
             {
                 ModelState.AddModelError("", response.Message);

@@ -11,7 +11,7 @@ namespace PriceComparisonMVCAdmin.Services
         Task<List<ProductResponseModel>> GetProductVariantsOnModerationAsync();
         Task<List<CategoryResponseModel>> GetAllCategoriesAsync();
         Task<GeneralApiResponseModel> CreateBaseProductAsync(BaseProductCreateRequestModel model);
-        Task<BaseProductResponseModel?> GetBaseProductByIdAsync(int id);
+        Task<BaseProductResponseModel> GetBaseProductByIdAsync(int id);
         Task<List<ProductResponseModel>> GetVariantsByBaseProductIdAsync(int baseProductId);
         Task<List<ColorResponseModel>> GetAllColorsAsync();
         Task<GeneralApiResponseModel> UpdateBaseProductAsync(BaseProductUpdateRequestModel model);
@@ -23,7 +23,7 @@ namespace PriceComparisonMVCAdmin.Services
         Task<GeneralApiResponseModel> DeleteCharacteristicAsync(int id);
         Task<List<ProductGroupTypeResponseModel>> GetAllProductGroupTypesAsync();
         Task<GeneralApiResponseModel> CreateProductVariantAsync(ProductCreateRequestModel model);
-        Task<ProductResponseModel?> GetProductVariantByIdAsync(int id);
+        Task<ProductResponseModel> GetProductVariantByIdAsync(int id);
         Task<GeneralApiResponseModel> UpdateProductVariantAsync(ProductUpdateRequestModel model);
         Task<GeneralApiResponseModel> DeleteProductVariantAsync(int id);
         Task<GeneralApiResponseModel> DeleteBaseProductAsync(int id);
