@@ -20,7 +20,12 @@ a.text-white {
         text-decoration: none; /* Без підкреслення навіть при наведенні */
     }
 
-
+.logo {
+    max-width: 250px;
+    height: auto;
+    margin-bottom: 16px;
+    object-fit: contain;
+}
 
 
 

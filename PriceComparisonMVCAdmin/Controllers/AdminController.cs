@@ -1,8 +1,10 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using PriceComparisonMVCAdmin.Services;
 
 namespace PriceComparisonMVCAdmin.Controllers
 {
+    [Authorize(Policy = "AdminRights")]
     public class AdminController : BaseController<AdminController>
     {
         private readonly IApiService _apiService;

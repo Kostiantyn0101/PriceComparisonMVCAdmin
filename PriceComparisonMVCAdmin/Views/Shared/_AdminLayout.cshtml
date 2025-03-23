@@ -17,9 +17,8 @@
         <div class="container-fluid">
             <div class="row row-cols-1 row-cols-md-3 g-3 text-center">
 
-              <div class="col d-flex flex-wrap justify-content-center align-items-center">
-                    <h1 class="m-0 fs-5">LOGO</h1>
-
+                <div class="col d-flex flex-wrap justify-content-center align-items-center">
+                    <img src="@Url.Content("~/images/logo_white.png")" alt="LOGO" class="logo">
                 </div>
 
                 <div class="col text-center text-md-center"></div>
@@ -54,7 +53,7 @@
                 <h4 class="d-none d-md-block mb-3">Адмін-панель</h4>
                 <ul class="nav nav-pills flex-row flex-md-column gap-2">
                     <li class="nav-item">
-                        <a asp-controller="Admin" asp-action="Index" class="nav-link px-2">Головна</a>
+                        <a asp-controller="ManagerProducts" asp-action="Index" class="nav-link px-2">Головна</a>
                     </li>
                     <li class="nav-item">
                         <a asp-controller="Categories" asp-action="Index" class="nav-link px-2">Категорії</a>
@@ -62,12 +61,12 @@
                     <li class="nav-item">
                         <a asp-controller="ManagerProducts" asp-action="IndexBaseProducts" class="nav-link px-2">Продукти</a>
                     </li>
-                    <li class="nav-item">
+@*                     <li class="nav-item">
                         <a asp-controller="Seller" asp-action="Statistics" class="nav-link px-2">Статистика</a>
                     </li>
                     <li class="nav-item">
                         <a asp-controller="Seller" asp-action="Settings" class="nav-link px-2">Налаштування</a>
-                    </li>
+                    </li> *@
                 </ul>
             </nav>
             <main class="col-12 col-md-10 px-4 py-4">

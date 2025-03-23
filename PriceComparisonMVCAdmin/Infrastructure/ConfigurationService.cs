@@ -11,6 +11,7 @@ namespace PriceComparisonMVCAdmin.Infrastructure
             builder.AddFluentValidation();
             builder.AddAutoMapper();
             builder.AddServices();
+            builder.AddOthers();
             builder.AddAuth();
         }
     }

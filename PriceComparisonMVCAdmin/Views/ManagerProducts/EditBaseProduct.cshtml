@@ -19,15 +19,16 @@
     </div>
 }
 <partial name="_BaseProductForm" model="Model" />
+
 <div class="d-flex flex-wrap gap-2 mt-4 justify-content-center justify-content-sm-between align-items-center">
     <a asp-controller="ManagerProducts" asp-action="EditCharacteristics"
-    asp-route-baseProductId="@Model.Id" asp-route-categoryId="@Model.CategoryId"
-    class="btn btn-success btn-primary-add d-flex align-items-center justify-content-center">
+       asp-route-baseProductId="@Model.Id" asp-route-categoryId="@Model.CategoryId"
+       class="btn btn-success btn-primary-add d-flex align-items-center justify-content-center">
         <i class="bi bi-list-check me-2"></i> Додати характеристики
     </a>
     <a asp-controller="ManagerProducts" asp-action="CreateVariant"
-    asp-route-baseProductId="@Model.Id"
-    class="btn btn-success btn-primary-add d-flex align-items-center justify-content-center">
+       asp-route-baseProductId="@Model.Id"
+       class="btn btn-success btn-primary-add d-flex align-items-center justify-content-center">
         <i class="bi bi-plus-lg me-2"></i> Додати варіант продукту
     </a>
     <a asp-controller="ProductContent" asp-action="IndexBaseProduct"
@@ -36,8 +37,8 @@
         <i class="bi bi-folder-plus me-2"></i> Додати контент
     </a>
     <form asp-controller="ManagerProducts" asp-action="DeleteBaseProduct" method="post"
-    class="d-inline-flex align-items-center justify-content-center flex-fill"
-    onsubmit="return confirm('Видалити продукт?');">
+          class="d-inline-flex align-items-center justify-content-center flex-fill"
+          onsubmit="return confirm('Видалити продукт?');">
         <input type="hidden" name="id" value="@Model.Id" />
         <button type="submit" class="btn btn-danger btn-primary-remove d-inline-flex align-items-center justify-content-center">
             <i class="bi bi-trash me-2"></i> Видалити продукт
@@ -105,26 +106,19 @@
                 </div>
 
                 <div class="d-flex flex-wrap gap-2 justify-content-center justify-content-sm-start">
-                    <a asp-controller="ManagerProducts"
-                       asp-action="EditVariant"
-                       asp-route-id="@variant.Id"
+                    <a asp-controller="ManagerProducts" asp-action="EditVariant" asp-route-id="@variant.Id"
                        class="btn btn-primary d-flex align-items-center justify-content-center">
                         <i class="bi bi-pencil me-2"></i> Редагувати
                     </a>
 
-                    <a asp-controller="ManagerProducts"
-                       asp-action="EditCharacteristics"
-                       asp-route-productId="@variant.Id"
-                       asp-route-categoryId="@Model.CategoryId"
+                    <a asp-controller="ManagerProducts" asp-action="EditCharacteristics"
+                       asp-route-productId="@variant.Id" asp-route-categoryId="@Model.CategoryId"
                        class="btn btn-success btn-primary-add d-flex align-items-center justify-content-center">
                         <i class="bi bi-list-check me-2"></i> Характеристики
                     </a>
 
-                    <form asp-controller="ManagerProducts"
-                          asp-action="DeleteVariant"
-                          method="post"
-                          class="d-inline-block"
-                          onsubmit="return confirm('Видалити варіант?');">
+                    <form asp-controller="ManagerProducts" asp-action="DeleteVariant"
+                          method="post" class="d-inline-block" onsubmit="return confirm('Видалити варіант?');">
                         <input type="hidden" name="id" value="@variant.Id" />
                         <button type="submit" class="btn btn-danger btn-primary-remove d-flex align-items-center justify-content-center">
                             <i class="bi bi-trash me-2"></i> Видалити

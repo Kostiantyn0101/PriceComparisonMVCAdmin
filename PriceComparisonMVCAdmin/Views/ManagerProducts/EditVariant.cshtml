@@ -79,7 +79,10 @@
         <input asp-for="UPC" class="form-control" />
         <span asp-validation-for="UPC" class="text-danger"></span>
     </div>
-
+    <div class="form-check mb-3">
+        <input asp-for="IsUnderModeration" class="form-check-input" />
+        <label asp-for="IsUnderModeration" class="form-check-label">Під модерацією</label>
+    </div>
     <div class="form-check mb-3">
         <input asp-for="IsDefault" class="form-check-input" />
         <label asp-for="IsDefault" class="form-check-label">За замовчуванням</label>
