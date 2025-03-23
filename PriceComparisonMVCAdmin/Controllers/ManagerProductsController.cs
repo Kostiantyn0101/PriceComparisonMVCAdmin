@@ -103,7 +103,7 @@ namespace PriceComparisonMVCAdmin.Controllers
             var productVariants = await _apiRequestService.GetVariantsByBaseProductIdAsync(Id);
             ViewBag.productVariants = productVariants;
 
-            var productColors = _apiRequestService.GetAllColorsAsync();
+            var productColors = await _apiRequestService.GetAllColorsAsync();
             ViewBag.productColors = productColors;
 
             var categories = await _apiRequestService.GetAllCategoriesAsync();
