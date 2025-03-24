@@ -1,12 +1,8 @@
-﻿@model PriceComparisonMVCAdmin.Models.DTOs.Request.Product.ProductUpdateRequestModel
-
+﻿@model EditVariantViewModel
 @{
     Layout = "~/Views/Shared/_AdminLayout.cshtml";
-    var groupTypes = ViewBag.GroupTypes as List<PriceComparisonMVCAdmin.Models.DTOs.Response.Product.ProductGroupTypeResponseModel>;
-    var colors = ViewBag.Colors as List<PriceComparisonMVCAdmin.Models.DTOs.Response.Product.ColorResponseModel>;
-    var selectedGroupTypeId = ViewBag.SelectedGroupTypeId as int?;
-    var baseProduct = ViewBag.baseProduct as PriceComparisonMVCAdmin.Models.DTOs.Response.Product.BaseProductResponseModel;
 }
+
 @if (TempData["SuccessMessage"] != null)
 {
     <div class="alert alert-success">
@@ -16,93 +12,93 @@
 <div class="card shadow-sm mb-4">
     <div class="card-body">
         <h3 class="card-title text-dark">
-            Редагування продукту: <span class="text-primary">@baseProduct!.Title</span>
+            Редагування продукту: <span class="text-primary">@Model.BaseProduct.Title</span>
         </h3>
     </div>
 </div>
 
 <form asp-action="EditVariant" method="post">
-    <input type="hidden" asp-for="Id" />
+    <input type="hidden" asp-for="@Model.ProductVariant.Id" />
 
     <div class="mb-3">
-        <label asp-for="BaseProductId" class="form-label" hidden></label>
-        <input asp-for="BaseProductId" class="form-control" hidden />
-        <span asp-validation-for="BaseProductId" class="text-danger"></span>
+        <label asp-for="@Model.ProductVariant.BaseProductId" class="form-label" hidden></label>
+        <input asp-for="@Model.ProductVariant.BaseProductId" class="form-control" hidden />
+        <span asp-validation-for="@Model.ProductVariant.BaseProductId" class="text-danger"></span>
     </div>
 
     <div class="mb-3">
         <label for="groupTypeSelect" class="form-label">Тип групи продуктів</label>
         <select id="groupTypeSelect" class="form-select">
             <option value="">-- Оберіть тип групи --</option>
-            @foreach (var type in groupTypes)
+            @foreach (var type in @Model.GroupTypes)
             {
-                <option value="@type.Id" selected="@(selectedGroupTypeId == type.Id ? "selected" : null)">@type.Name</option>
+                <option value="@type.Id" selected="@(Model.SelectedGroupTypeId == type.Id ? "selected" : null)">@type.Name</option>
             }
         </select>
     </div>
 
     <div class="mb-3">
         <label for="groupSelect" class="form-label">Група продукту</label>
-        <select id="groupSelect" asp-for="ProductGroupId" class="form-select">
+        <select id="groupSelect" asp-for="@Model.ProductVariant.ProductGroupId" class="form-select">
             <option value="">-- Оберіть групу --</option>
         </select>
-        <input type="hidden" id="currentGroupId" value="@Model.ProductGroupId" />
-        <span asp-validation-for="ProductGroupId" class="text-danger"></span>
+        <input type="hidden" id="currentGroupId" value="@Model.ProductVariant.ProductGroupId" />
+        <span asp-validation-for="@Model.ProductVariant.ProductGroupId" class="text-danger"></span>
     </div>
 
     <div class="mb-3">
-        <label asp-for="ColorId" class="form-label">Колір</label>
-        <select asp-for="ColorId" class="form-select">
+        <label asp-for="@Model.ProductVariant.ColorId" class="form-label">Колір</label>
+        <select asp-for="@Model.ProductVariant.ColorId" class="form-select">
             <option value="">-- Оберіть колір --</option>
-            @foreach (var c in colors)
+            @foreach (var c in @Model.Colors)
             {
-                <option value="@c.Id" selected="@(Model.ColorId == c.Id ? "selected" : null)">@c.Name</option>
+                <option value="@c.Id" selected="@(Model.ProductVariant.ColorId == c.Id ? "selected" : null)">@c.Name</option>
             }
         </select>
-        <span asp-validation-for="ColorId" class="text-danger"></span>
+        <span asp-validation-for="@Model.ProductVariant.ColorId" class="text-danger"></span>
     </div>
 
     <div class="mb-3">
-        <label asp-for="ModelNumber" class="form-label">Model Number</label>
-        <input asp-for="ModelNumber" class="form-control" />
-        <span asp-validation-for="ModelNumber" class="text-danger"></span>
+        <label asp-for="@Model.ProductVariant.ModelNumber" class="form-label">Model Number</label>
+        <input asp-for="@Model.ProductVariant.ModelNumber" class="form-control" />
+        <span asp-validation-for="@Model.ProductVariant.ModelNumber" class="text-danger"></span>
     </div>
 
     <div class="mb-3">
-        <label asp-for="GTIN" class="form-label">GTIN</label>
-        <input asp-for="GTIN" class="form-control" />
-        <span asp-validation-for="GTIN" class="text-danger"></span>
+        <label asp-for="@Model.ProductVariant.GTIN" class="form-label">GTIN</label>
+        <input asp-for="@Model.ProductVariant.GTIN" class="form-control" />
+        <span asp-validation-for="@Model.ProductVariant.GTIN" class="text-danger"></span>
     </div>
 
     <div class="mb-3">
-        <label asp-for="UPC" class="form-label">UPC</label>
-        <input asp-for="UPC" class="form-control" />
-        <span asp-validation-for="UPC" class="text-danger"></span>
+        <label asp-for="@Model.ProductVariant.UPC" class="form-label">UPC</label>
+        <input asp-for="@Model.ProductVariant.UPC" class="form-control" />
+        <span asp-validation-for="@Model.ProductVariant.UPC" class="text-danger"></span>
     </div>
     <div class="form-check mb-3">
-        <input asp-for="IsUnderModeration" class="form-check-input" />
-        <label asp-for="IsUnderModeration" class="form-check-label">Під модерацією</label>
+        <input asp-for="@Model.ProductVariant.IsUnderModeration" class="form-check-input" />
+        <label asp-for="@Model.ProductVariant.IsUnderModeration" class="form-check-label">Під модерацією</label>
     </div>
     <div class="form-check mb-3">
-        <input asp-for="IsDefault" class="form-check-input" />
-        <label asp-for="IsDefault" class="form-check-label">За замовчуванням</label>
+        <input asp-for="@Model.ProductVariant.IsDefault" class="form-check-input" />
+        <label asp-for="@Model.ProductVariant.IsDefault" class="form-check-label">За замовчуванням</label>
     </div>
 
     <button type="submit" class="btn btn-primary">Зберегти зміни</button>
 </form>
 <div class="d-flex justify-content-between mt-4">
     <a asp-controller="ManagerProducts" asp-action="EditCharacteristics"
-       asp-route-productId="@Model.Id" asp-route-categoryId="@baseProduct!.CategoryId" 
+       asp-route-productId="@Model.ProductVariant.Id"
        class="btn btn-success btn-primary-add d-inline-flex align-items-center justify-content-center">
         <i class="bi bi-list-check me-2"></i> Додати/редагувати характеристики
     </a>
     <a asp-controller="ProductContent" asp-action="IndexVariantProduct"
-       asp-route-id="@Model.Id"
+       asp-route-id="@Model.ProductVariant.Id"
        class="btn btn-success btn-primary-add d-inline-flex align-items-center justify-content-center">
         <i class="bi bi-folder-plus me-2"></i> Додати контент
     </a>
     <form asp-controller="ManagerProducts" asp-action="DeleteVariant" method="post" class="d-inline-flex align-items-center justify-content-center" onsubmit="return confirm('Видалити продукт?');">
-        <input type="hidden" name="id" value="@Model.Id" />
+        <input type="hidden" name="id" value="@Model.ProductVariant.Id" />
         <button type="submit" class="btn btn-danger btn-primary-remove d-inline-flex align-items-center justify-content-center">
             <i class="bi bi-trash me-2"></i> Видалити продукт
         </button>
@@ -113,7 +109,7 @@
     <script>
         $(function(){
             var initialGroupId = $('#currentGroupId').val();
-            var selectedGroupTypeId = '@(selectedGroupTypeId)';
+            var selectedGroupTypeId = '@(Model.SelectedGroupTypeId)';
 
             function loadGroups(groupTypeId) {
                 var $groupSelect = $('#groupSelect');

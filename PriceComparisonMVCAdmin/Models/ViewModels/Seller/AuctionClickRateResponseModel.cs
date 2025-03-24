@@ -1,4 +1,4 @@
-﻿namespace PriceComparisonMVCAdmin.Models.Seller
+﻿namespace PriceComparisonMVCAdmin.Models.ViewModels.Seller
 {
     public class AuctionClickRateResponseModel
     {

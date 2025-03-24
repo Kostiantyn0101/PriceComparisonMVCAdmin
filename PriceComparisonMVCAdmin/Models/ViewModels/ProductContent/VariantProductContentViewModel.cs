@@ -1,6 +1,6 @@
 ﻿using PriceComparisonMVCAdmin.Models.DTOs.Response.Product;
 
-namespace PriceComparisonMVCAdmin.Models.ProductContent
+namespace PriceComparisonMVCAdmin.Models.ViewModels.ProductContent
 {
     public class VariantProductContentViewModel
     {

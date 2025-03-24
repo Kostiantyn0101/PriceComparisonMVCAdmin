@@ -1,6 +1,6 @@
 ﻿using PriceComparisonMVCAdmin.Models.DTOs.Response.Product;
 
-namespace PriceComparisonMVCAdmin.Models.ManagerProducts
+namespace PriceComparisonMVCAdmin.Models.ViewModels.ManagerProducts
 {
     public class ProductEditViewModel
     {

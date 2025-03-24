@@ -1,4 +1,4 @@
-﻿namespace PriceComparisonMVCAdmin.Models.ProductContent
+﻿namespace PriceComparisonMVCAdmin.Models.ViewModels.ProductContent
 {
     public class ProductImageDeleteViewModel
     {

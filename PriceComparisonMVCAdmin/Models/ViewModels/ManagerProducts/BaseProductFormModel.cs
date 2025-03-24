@@ -1,4 +1,4 @@
-﻿namespace PriceComparisonMVCAdmin.Models.ManagerProducts
+﻿namespace PriceComparisonMVCAdmin.Models.ViewModels.ManagerProducts
 {
     public class BaseProductFormModel
     {

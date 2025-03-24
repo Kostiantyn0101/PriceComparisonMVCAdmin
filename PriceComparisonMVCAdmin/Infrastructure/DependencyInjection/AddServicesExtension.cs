@@ -12,7 +12,10 @@ namespace PriceComparisonWebAPI.Infrastructure.DependencyInjection
             builder.Services.AddControllersWithViews();
             builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
             builder.Services.AddSingleton<IApiResponseDeserializerService, ApiResponseDeserializerService>();
+            builder.Services.AddScoped<IProductCharacteristicService, ProductCharacteristicService>();
+            builder.Services.AddScoped<IManagerProductsService, ManagerProductsService>();
             builder.Services.AddScoped<IApiRequestService, ApiRequestService>();
+
         }
     }
 }

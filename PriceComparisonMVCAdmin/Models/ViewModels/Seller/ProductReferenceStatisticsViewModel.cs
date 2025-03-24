@@ -1,6 +1,6 @@
 ﻿using PriceComparisonMVCAdmin.Models.DTOs.Request.Seller;
 
-namespace PriceComparisonMVCAdmin.Models.Seller
+namespace PriceComparisonMVCAdmin.Models.ViewModels.Seller
 {
     public class ProductReferenceStatisticsViewModel
     {

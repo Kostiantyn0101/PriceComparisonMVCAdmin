@@ -5,7 +5,7 @@ using PriceComparisonMVCAdmin.Models.DTOs.Response;
 using PriceComparisonMVCAdmin.Models.DTOs.Response.Category;
 using PriceComparisonMVCAdmin.Models.Request.Seller;
 using PriceComparisonMVCAdmin.Models.Response.Seller;
-using PriceComparisonMVCAdmin.Models.Seller;
+using PriceComparisonMVCAdmin.Models.ViewModels.Seller;
 using PriceComparisonMVCAdmin.Services;
 using System.Security.Claims;
 

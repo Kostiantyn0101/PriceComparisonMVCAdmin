@@ -1,4 +1,4 @@
-﻿@model PriceComparisonMVCAdmin.Models.ManagerProducts.ModerationViewModel
+﻿@model ModerationViewModel
 @{
     Layout = "~/Views/Shared/_AdminLayout.cshtml";
 }
@@ -20,7 +20,7 @@
                                title="Редагувати базовий продукт">
                                 <i class="bi bi-pencil"></i>
                             </a>
-                            <a href="/ManagerProducts/EditCharacteristics?baseProductId=@product.Id&categoryId=@product.CategoryId"
+                            <a href="/ManagerProducts/EditCharacteristics?baseProductId=@product.Id"
                                class="btn btn-sm btn-link text-success"
                                title="Додати/редагувати характеристики">
                                 <i class="bi bi-list-check"></i>

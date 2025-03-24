@@ -2,12 +2,12 @@
 using PriceComparisonMVCAdmin.Services.Helper;
 using PriceComparisonMVCAdmin.Services;
 using PriceComparisonMVCAdmin.Models.DTOs.Response.Product;
-using PriceComparisonMVCAdmin.Models.ProductContent;
 using PriceComparisonMVCAdmin.Models.Constants;
 using PriceComparisonMVCAdmin.Models.DTOs.Request.Product;
 using PriceComparisonMVCAdmin.Models.DTOs.Response;
 using System.Reflection;
 using Microsoft.AspNetCore.Authorization;
+using PriceComparisonMVCAdmin.Models.ViewModels.ProductContent;
 
 namespace PriceComparisonMVCAdmin.Controllers
 {

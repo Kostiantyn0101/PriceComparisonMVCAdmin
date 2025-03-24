@@ -1,60 +1,59 @@
-﻿@model PriceComparisonMVCAdmin.Models.ManagerProducts.BaseProductFormModel
+﻿    @model BaseProductViewModel
 @{
-    var isEditMode = Model.Id.HasValue;
-    var categories = ViewBag.Categories as List<PriceComparisonMVCAdmin.Models.DTOs.Response.Category.CategoryResponseModel> 
-                            ?? new List<PriceComparisonMVCAdmin.Models.DTOs.Response.Category.CategoryResponseModel>();
+    var isEditMode = Model.BaseProduct.Id.HasValue;
+    
 }
 <h2>@(isEditMode ? "Редагування базового продукту" : "Створення базового продукту")</h2>
 
 <form asp-action="@(isEditMode ? "EditBaseProduct" : "CreateBase")" method="post">
     @if (isEditMode)
     {
-        <input type="hidden" asp-for="Id" />
+        <input type="hidden" asp-for="BaseProduct.Id" />
     }
     <div class="mb-3">
-        <label asp-for="Brand" class="form-label">Бренд</label>
-        <input asp-for="Brand" class="form-control" />
-        <span asp-validation-for="Brand" class="text-danger"></span>
+        <label asp-for="BaseProduct.Brand" class="form-label">Бренд</label>
+        <input asp-for="BaseProduct.Brand" class="form-control" />
+        <span asp-validation-for="BaseProduct.Brand" class="text-danger"></span>
     </div>
     <div class="mb-3">
-        <label asp-for="Title" class="form-label">Назва</label>
-        <input asp-for="Title" class="form-control" />
-        <span asp-validation-for="Title" class="text-danger"></span>
+        <label asp-for="BaseProduct.Title" class="form-label">Назва</label>
+        <input asp-for="BaseProduct.Title" class="form-control" />
+        <span asp-validation-for="BaseProduct.Title" class="text-danger"></span>
     </div>
     <div class="mb-3">
-        <label asp-for="Description" class="form-label">Опис</label>
-        <textarea asp-for="Description" class="form-control"></textarea>
-        <span asp-validation-for="Description" class="text-danger"></span>
+        <label asp-for="BaseProduct.Description" class="form-label">Опис</label>
+        <textarea asp-for="BaseProduct.Description" class="form-control"></textarea>
+        <span asp-validation-for="BaseProduct.Description" class="text-danger"></span>
     </div>
     <div class="mb-3">
-        <label asp-for="CategoryId" class="form-label">Категорія</label>
+        <label asp-for="BaseProduct.CategoryId" class="form-label">Категорія</label>
         @if (isEditMode)
         {
-            <input type="text" class="form-control" value="@categories.FirstOrDefault(c => c.Id == Model.CategoryId)?.Title" readonly />
-            <input type="hidden" asp-for="CategoryId" />
+            <input type="text" class="form-control" value="@Model.Categories.FirstOrDefault(c => c.Id == Model.BaseProduct.CategoryId)?.Title" readonly />
+            <input type="hidden" asp-for="BaseProduct.CategoryId" />
         }
         else
         {
-            <select asp-for="CategoryId" class="form-select">
+            <select asp-for="BaseProduct.CategoryId" class="form-select">
                 <option value="">-- Оберіть категорію --</option>
-                @foreach (var cat in categories)
+                @foreach (var cat in Model.Categories)
                 {
-                    <option value="@cat.Id" selected="@(Model.CategoryId == cat.Id ? "selected" : null)">@cat.Title</option>
+                    <option value="@cat.Id" selected="@(Model.BaseProduct.CategoryId == cat.Id ? "selected" : null)">@cat.Title</option>
                 }
             </select>
         }
-        <span asp-validation-for="CategoryId" class="text-danger"></span>
+        <span asp-validation-for="BaseProduct.CategoryId" class="text-danger"></span>
     </div>
     <div class="form-check mb-3">
-        <input asp-for="IsUnderModeration" class="form-check-input" />
-        <label asp-for="IsUnderModeration" class="form-check-label">Під модерацією</label>
+        <input asp-for="BaseProduct.IsUnderModeration" class="form-check-input" />
+        <label asp-for="BaseProduct.IsUnderModeration" class="form-check-label">Під модерацією</label>
     </div>
 
     @if (isEditMode)
     {
         <div class="mb-3">
-            <label asp-for="AddedToDatabase" class="form-label">Дата створення</label>
-            <input asp-for="AddedToDatabase" class="form-control" readonly />
+            <label asp-for="BaseProduct.AddedToDatabase" class="form-label">Дата створення</label>
+            <input asp-for="BaseProduct.AddedToDatabase" class="form-control" readonly />
         </div>
     }
 

@@ -1,5 +1,5 @@
 ﻿using FluentValidation;
-using PriceComparisonMVCAdmin.Models.ManagerProducts;
+using PriceComparisonMVCAdmin.Models.ViewModels.ManagerProducts;
 
 namespace PriceComparisonWebAPI.Infrastructure.Validation.Product
 {

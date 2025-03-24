@@ -1,4 +1,4 @@
-﻿namespace PriceComparisonMVCAdmin.Models.DTOs.Request.Product
+﻿namespace PriceComparisonMVCAdmin.Models.ViewModels.ProductContent
 {
     public class ProductImageSetPrimaryViewModel
     {

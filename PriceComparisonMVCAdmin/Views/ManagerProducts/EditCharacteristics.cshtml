@@ -1,7 +1,6 @@
-﻿@model List<PriceComparisonMVCAdmin.Models.DTOs.ProductCharacteristicViewModel>
+﻿@model EditCharacteristicsViewModel
 @{
     Layout = "~/Views/Shared/_AdminLayout.cshtml";
-    var characteristicsMeta = ViewBag.CharacteristicsMeta as List<PriceComparisonMVCAdmin.Models.DTOs.Response.Category.CategoryCharacteristicResponseModel> ?? new List<PriceComparisonMVCAdmin.Models.DTOs.Response.Category.CategoryCharacteristicResponseModel>();
 }
 
 <div class="container my-4">
@@ -14,9 +13,9 @@
             <div class="col-4 text-center">Дії</div>
         </div>
 
-        @foreach (var characteristic in Model)
+        @foreach (var characteristic in Model.Characteristics)
         {
-            var meta = characteristicsMeta.FirstOrDefault(m => m.CharacteristicId == characteristic.CharacteristicId);
+            var meta = Model.CharacteristicsMeta.FirstOrDefault(m => m.CharacteristicId == characteristic.CharacteristicId);
 
             <div class="row align-items-center border-bottom py-2"
                  data-characteristic-id="@characteristic.CharacteristicId"

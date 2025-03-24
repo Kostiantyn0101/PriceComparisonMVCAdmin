@@ -1,17 +1,12 @@
-﻿@model PriceComparisonMVCAdmin.Models.DTOs.Request.Product.ProductCreateRequestModel
+﻿@model CreateVariantViewModel
 @{
     Layout = "~/Views/Shared/_AdminLayout.cshtml";
-    var groupTypes = ViewBag.GroupTypes as List<PriceComparisonMVCAdmin.Models.DTOs.Response.Product.ProductGroupTypeResponseModel>
-                      ?? new List<PriceComparisonMVCAdmin.Models.DTOs.Response.Product.ProductGroupTypeResponseModel>();
-    var colors = ViewBag.Colors as List<PriceComparisonMVCAdmin.Models.DTOs.Response.Product.ColorResponseModel>
-                      ?? new List<PriceComparisonMVCAdmin.Models.DTOs.Response.Product.ColorResponseModel>();
-    var baseProduct = ViewBag.baseProduct as PriceComparisonMVCAdmin.Models.DTOs.Response.Product.BaseProductResponseModel;
 }
 
 <div class="card shadow-sm mb-4">
     <div class="card-body">
         <h3 class="card-title text-dark">
-            Створення продукту: <span class="text-primary">@baseProduct!.Title</span>
+            Створення продукту: <span class="text-primary">@Model.BaseProduct.Title</span>
         </h3>
     </div>
 </div>
@@ -20,7 +15,7 @@
     <label for="groupTypeSelect" class="form-label">Тип групи продуктів</label>
     <select id="groupTypeSelect" class="form-select">
         <option value="">-- Оберіть тип групи --</option>
-        @foreach (var type in groupTypes)
+        @foreach (var type in Model.GroupTypes)
         {
             <option value="@type.Id">@type.Name</option>
         }
@@ -28,50 +23,54 @@
 </div>
 
 <form asp-action="CreateVariant" method="post">
-    <input type="hidden" asp-for="BaseProductId" />
+    <input type="hidden" asp-for="@Model.ProductVariant.BaseProductId" />
 
     <div class="mb-3">
         <label for="groupSelect" class="form-label">Група продукту</label>
-        <select id="groupSelect" asp-for="ProductGroupId" class="form-select">
+        <select id="groupSelect" asp-for="@Model.ProductVariant.ProductGroupId" class="form-select">
             <option value="">-- Оберіть групу --</option>
         </select>
-        <span asp-validation-for="ProductGroupId" class="text-danger"></span>
+        <span asp-validation-for="@Model.ProductVariant.ProductGroupId" class="text-danger"></span>
     </div>
 
     <div class="mb-3">
-        <label asp-for="ColorId" class="form-label">Колір</label>
-        <select asp-for="ColorId" class="form-select">
+        <label asp-for="@Model.ProductVariant.ColorId" class="form-label">Колір</label>
+        <select asp-for="@Model.ProductVariant.ColorId" class="form-select">
             <option value="">-- Оберіть колір --</option>
-            @foreach (var c in colors)
+            @foreach (var c in @Model.Colors)
             {
                 <option value="@c.Id">@c.Name</option>
             }
         </select>
-        <span asp-validation-for="ColorId" class="text-danger"></span>
+        <span asp-validation-for="@Model.ProductVariant.ColorId" class="text-danger"></span>
 
     </div>
 
     <div class="mb-3">
-        <label asp-for="ModelNumber" class="form-label">Model Number</label>
-        <input asp-for="ModelNumber" class="form-control" />
-        <span asp-validation-for="ModelNumber" class="text-danger"></span>
+        <label asp-for="@Model.ProductVariant.ModelNumber" class="form-label">Model Number</label>
+        <input asp-for="@Model.ProductVariant.ModelNumber" class="form-control" />
+        <span asp-validation-for="@Model.ProductVariant.ModelNumber" class="text-danger"></span>
 
     </div>
     <div class="mb-3">
-        <label asp-for="GTIN" class="form-label">GTIN</label>
-        <input asp-for="GTIN" class="form-control" />
-        <span asp-validation-for="GTIN" class="text-danger"></span>
+        <label asp-for="@Model.ProductVariant.GTIN" class="form-label">GTIN</label>
+        <input asp-for="@Model.ProductVariant.GTIN" class="form-control" />
+        <span asp-validation-for="@Model.ProductVariant.GTIN" class="text-danger"></span>
 
     </div>
     <div class="mb-3">
-        <label asp-for="UPC" class="form-label">UPC</label>
-        <input asp-for="UPC" class="form-control" />
-        <span asp-validation-for="UPC" class="text-danger"></span>
+        <label asp-for="@Model.ProductVariant.UPC" class="form-label">UPC</label>
+        <input asp-for="@Model.ProductVariant.UPC" class="form-control" />
+        <span asp-validation-for="@Model.ProductVariant.UPC" class="text-danger"></span>
 
     </div>
     <div class="form-check mb-3">
-        <input asp-for="IsDefault" class="form-check-input" />
-        <label asp-for="IsDefault" class="form-check-label">За замовчуванням</label>
+        <input asp-for="@Model.ProductVariant.IsDefault" class="form-check-input" />
+        <label asp-for="@Model.ProductVariant.IsDefault" class="form-check-label">За замовчуванням</label>
+    </div>
+    <div class="form-check mb-3">
+        <input asp-for="@Model.ProductVariant.IsUnderModeration" class="form-check-input" />
+        <label asp-for="@Model.ProductVariant.IsUnderModeration" class="form-check-label">Під модерацією</label>
     </div>
     <button type="submit" class="btn btn-primary">Створити продукт</button>
 </form>

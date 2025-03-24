@@ -1,12 +1,9 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using PriceComparisonMVCAdmin.Models.Constants;
 using PriceComparisonMVCAdmin.Models.DTOs;
-using PriceComparisonMVCAdmin.Models.DTOs.Request.Product;
-using PriceComparisonMVCAdmin.Models.DTOs.Response;
-using PriceComparisonMVCAdmin.Models.DTOs.Response.Category;
-using PriceComparisonMVCAdmin.Models.DTOs.Response.Product;
-using PriceComparisonMVCAdmin.Models.ManagerProducts;
+using PriceComparisonMVCAdmin.Models.ViewModels.ManagerProducts;
 using PriceComparisonMVCAdmin.Services;
 using PriceComparisonMVCAdmin.Services.Helper;
 
@@ -15,73 +12,53 @@ namespace PriceComparisonMVCAdmin.Controllers
     [Authorize(Policy = "AdminRights")]
     public class ManagerProductsController : BaseController<ManagerProductsController>
     {
-        private readonly IApiResponseDeserializerService _apiResponseDeserializerService;
+        private readonly IManagerProductsService _managerProductsService;
+        private readonly IProductCharacteristicService _characteristicService;
         private readonly IApiRequestService _apiRequestService;
-        public ManagerProductsController(IApiService apiService,
-            IApiResponseDeserializerService apiResponseDeserializerService,
+        public ManagerProductsController(
+            IProductCharacteristicService characteristicService,
+            IManagerProductsService managerProductsService,
             ILogger<ManagerProductsController> logger,
-            IApiRequestService apiRequestService)
+            IApiRequestService apiRequestService,
+            IApiService apiService)
                : base(apiService, logger)
         {
-            _apiResponseDeserializerService = apiResponseDeserializerService;
+            _managerProductsService = managerProductsService;
+            _characteristicService = characteristicService;
             _apiRequestService = apiRequestService;
         }
+
 
         [HttpGet]
         public async Task<IActionResult> Index()
         {
-            var model = new ModerationViewModel
-            {
-                BaseProducts = await _apiRequestService.GetBaseProductsOnModerationAsync(),
-                ProductVariants = await _apiRequestService.GetProductVariantsOnModerationAsync()
-            };
-
-            return View(model);
+            return View(await _managerProductsService.GetModerationViewModelAsync());
         }
-
 
         // CreateBaseProduct
         [HttpGet]
         public async Task<IActionResult> CreateBase()
         {
-            var categories = await _apiRequestService.GetAllCategoriesAsync();
-            var filteredCategories = categories?.Where(c => c.ParentCategoryId.HasValue).ToList();
-            ViewBag.Categories = filteredCategories;
-            var model = new BaseProductFormModel();
-            return View(model);
+            return View(await _managerProductsService.CreateBaseProductViewModelAsync(new BaseProductFormModel()));
         }
 
         // POST: CreateBaseProduct
         [HttpPost]
-        public async Task<IActionResult> CreateBase(BaseProductFormModel model)
+        public async Task<IActionResult> CreateBase(BaseProductViewModel model)
         {
             if (!ModelState.IsValid)
             {
-                var categories = await _apiRequestService.GetAllCategoriesAsync();
-                var filteredCategories = categories?.Where(c => c.ParentCategoryId.HasValue).ToList();
-                ViewBag.Categories = filteredCategories;
-                return View(model);
+                var refreshedViewModel = await _managerProductsService.CreateBaseProductViewModelAsync(model.BaseProduct);
+                return View(refreshedViewModel);
             }
 
-            var modelCreate = new BaseProductCreateRequestModel
-            {
-                Brand = model.Brand,
-                Title = model.Title,
-                Description = model.Description,
-                IsUnderModeration = model.IsUnderModeration,
-                CategoryId = model.CategoryId
-            };
-            var response = await _apiRequestService.CreateBaseProductAsync(modelCreate);
-            var product = _apiResponseDeserializerService.DeserializeData<BaseProductResponseModel>(response);
+            var (product, errorMessage) = await _managerProductsService.CreateBaseProductAsync(model.BaseProduct);
 
             if (product == null)
             {
-                return await ReturnWithError("Invalid response data.", modelCreate);
-            }
-
-            if (response.ReturnCode != AppSuccessCodes.CreateSuccess && response.ReturnCode != AppSuccessCodes.GerneralSuccess)
-            {
-                return await ReturnWithError(response.Message, modelCreate);
+                ModelState.AddModelError("", errorMessage ?? "Unknown error");
+                var refreshedViewModel = await _managerProductsService.CreateBaseProductViewModelAsync(model.BaseProduct);
+                return View(refreshedViewModel);
             }
 
             TempData["SuccessMessage"] = "Дані збережено успішно.";
@@ -90,216 +67,83 @@ namespace PriceComparisonMVCAdmin.Controllers
 
         // GET: EditBaseProduct
         [HttpGet]
-        public async Task<IActionResult> EditBaseProduct(int Id)
+        public async Task<IActionResult> EditBaseProduct(int id)
         {
-            var baseProduct = await _apiRequestService.GetBaseProductByIdAsync(Id);
-
-            if (baseProduct == null || baseProduct.Id == 0)
+            var viewModel = await _managerProductsService.GetEditBaseProductViewModelAsync(id);
+            if (viewModel == null)
             {
-                _logger.LogWarning("Базовий продукт з ID = {Id} не знайдено або API повернув пустий об'єкт.", Id);
+                _logger.LogWarning("Базовий продукт з ID = {Id} не знайдено або API повернув пустий об'єкт.", id);
                 return NotFound();
             }
 
-            var productVariants = await _apiRequestService.GetVariantsByBaseProductIdAsync(Id);
-            ViewBag.productVariants = productVariants;
-
-            var productColors = await _apiRequestService.GetAllColorsAsync();
-            ViewBag.productColors = productColors;
-
-            var categories = await _apiRequestService.GetAllCategoriesAsync();
-            var filteredCategories = categories.Where(c => c.ParentCategoryId.HasValue).ToList();
-            ViewBag.Categories = filteredCategories;
-
-            var model = new BaseProductFormModel
-            {
-                Id = baseProduct.Id,
-                Brand = baseProduct.Brand,
-                Title = baseProduct.Title,
-                Description = baseProduct.Description,
-                IsUnderModeration = baseProduct.IsUnderModeration,
-                AddedToDatabase = baseProduct.AddedToDatabase,
-                CategoryId = baseProduct.CategoryId
-            };
-
-            return View(model);
+            return View(viewModel);
         }
 
         // POST: EditBaseProduct
         [HttpPost]
-        public async Task<IActionResult> EditBaseProduct(BaseProductFormModel model)
+        public async Task<IActionResult> EditBaseProduct(BaseProductViewModel model)
         {
             if (!ModelState.IsValid)
             {
-                var categories = await _apiRequestService.GetAllCategoriesAsync();
-                var filteredCategories = categories.Where(c => c.ParentCategoryId.HasValue).ToList();
-                ViewBag.Categories = filteredCategories;
-
-                return View(model);
+                var refreshedViewModel = await _managerProductsService.GetEditBaseProductViewModelAsync(model.BaseProduct.Id ?? 0);
+                if (refreshedViewModel != null)
+                {
+                    refreshedViewModel = model;
+                }
+                return View(refreshedViewModel ?? model);
             }
 
-            var modelUpdate = new BaseProductUpdateRequestModel
+            var (success, errorMessage) = await _managerProductsService.UpdateBaseProductAsync(model);
+            if (!success)
             {
-                Id = model.Id!.Value,
-                Brand = model.Brand,
-                Title = model.Title,
-                Description = model.Description,
-                IsUnderModeration = model.IsUnderModeration,
-                AddedToDatabase = model.AddedToDatabase!.Value,
-                CategoryId = model.CategoryId
-            };
-
-            var response = await _apiRequestService.UpdateBaseProductAsync(modelUpdate);
-            if (response.ReturnCode != AppSuccessCodes.UpdateSuccess && response.ReturnCode != AppSuccessCodes.GerneralSuccess)
-            {
-                ModelState.AddModelError("", response.Message);
-                return View(model);
+                ModelState.AddModelError("", errorMessage ?? "Unknown error");
+                var refreshedViewModel = await _managerProductsService.GetEditBaseProductViewModelAsync(model.BaseProduct.Id ?? 0);
+                return View(refreshedViewModel ?? model);
             }
 
             TempData["SuccessMessage"] = "Дані збережено успішно.";
-            return RedirectToAction("EditBaseProduct", new { id = model.Id });
+            return RedirectToAction("EditBaseProduct", new { id = model.BaseProduct.Id });
         }
 
-        // Addcharacteristic for baseproduct
+
+        // AddCharacteristic
         [HttpGet]
-        public async Task<IActionResult> EditCharacteristics(int baseProductId, int categoryId, int? productId)
+        public async Task<IActionResult> EditCharacteristics(int baseProductId, int? productId)
         {
-            List<CategoryCharacteristicResponseModel> characteristics = new();
-            try
-            {
-                characteristics = await _apiService.GetAsync<List<CategoryCharacteristicResponseModel>>(
-                    $"api/CategoryCharacteristics/{categoryId}");
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Не вдалося отримати характеристики категорії {CategoryId}", categoryId);
-            }
-
-            List<ProductCharacteristicUpdateRequestModel> existingCharacteristics = new();
-
-            if (productId.HasValue)
-            {
-                try
-                {
-                    existingCharacteristics = await _apiService.GetAsync<List<ProductCharacteristicUpdateRequestModel>>(
-                        $"api/ProductCharacteristics/{productId}");
-                }
-                catch (Exception ex)
-                {
-                    _logger.LogError(ex, "Не вдалося отримати характеристики продукту з ідентифікатором {ProductId}", productId);
-                }
-
-            }
-            if (baseProductId > 0)
-            {
-                try
-                {
-                    var baseProductChars = await _apiService.GetAsync<List<ProductCharacteristicUpdateRequestModel>>(
-                        $"/api/ProductCharacteristics/baseproduct/{baseProductId}");
-
-                    foreach (var baseChar in baseProductChars)
-                    {
-                        if (!existingCharacteristics.Any(ec => ec.CharacteristicId == baseChar.CharacteristicId))
-                        {
-                            existingCharacteristics.Add(baseChar);
-                        }
-                    }
-                }
-                catch (Exception ex)
-                {
-                    _logger.LogError(ex, "Не вдалося отримати характеристики базового продукту {BaseProductId}", baseProductId);
-                }
-            }
-
-            var model = characteristics.Select(c =>
-            {
-                var existingCharacteristic = existingCharacteristics.FirstOrDefault(ec => ec.CharacteristicId == c.CharacteristicId);
-
-                return new ProductCharacteristicViewModel
-                {
-                    Id = existingCharacteristic?.Id ?? 0,
-                    BaseProductId = baseProductId,
-                    ProductId = productId,
-                    CharacteristicId = c.CharacteristicId,
-                    ValueText = existingCharacteristic?.ValueText,
-                    ValueNumber = existingCharacteristic?.ValueNumber,
-                    ValueBoolean = existingCharacteristic?.ValueBoolean ?? false,
-                    ValueDate = existingCharacteristic?.ValueDate
-                };
-            }).ToList();
-
-            ViewBag.CharacteristicsMeta = characteristics;
-            return View(model);
+            var viewModel = await _managerProductsService.GetEditCharacteristicsViewModelAsync(baseProductId, productId);
+            return View(viewModel);
         }
 
         [HttpPost]
         public async Task<IActionResult> CreateCharacteristic([FromBody] ProductCharacteristicViewModel model)
         {
-
-            var newModel = new ProductCharacteristicCreateRequestModel
+            var result = await _characteristicService.CreateCharacteristicAsync(model);
+            if (!result.success)
             {
-                BaseProductId = model.BaseProductId,
-                ProductId = model.ProductId,
-                CharacteristicId = model.CharacteristicId,
-                ValueText = !string.IsNullOrEmpty(model.ValueText) ? model.ValueText : null,
-                ValueNumber = model.ValueNumber.HasValue ? model.ValueNumber : null,
-                ValueDate = model.ValueDate.HasValue ? model.ValueDate : null,
-                ValueBoolean = (string.IsNullOrEmpty(model.ValueText) && !model.ValueNumber.HasValue && !model.ValueDate.HasValue)
-                        ? model.ValueBoolean : null
-            };
-
-            var response = await _apiService.PostAsync<ProductCharacteristicCreateRequestModel, GeneralApiResponseModel>(
-                "api/ProductCharacteristics/create", newModel);
-
-            if (response.ReturnCode != AppSuccessCodes.CreateSuccess && response.ReturnCode != AppSuccessCodes.GerneralSuccess)
-            {
-                return BadRequest(new { message = response.Message });
+                return BadRequest(new { message = result.errorMessage });
             }
-
-            var updatedCharacteristic = _apiResponseDeserializerService.DeserializeData<ProductCharacteristicResponseModel>(response);
-            return Ok(new { message = "Created successfully", updatedId = updatedCharacteristic?.Id });
+            return Ok(new { message = "Created successfully", updatedId = result.updatedId });
         }
 
         [HttpPut]
         public async Task<IActionResult> UpdateCharacteristic([FromBody] ProductCharacteristicViewModel model)
         {
-            var newModel = new ProductCharacteristicUpdateRequestModel
+            var result = await _characteristicService.UpdateCharacteristicAsync(model);
+            if (!result.success)
             {
-                Id = model.Id,
-                BaseProductId = model.BaseProductId,
-                ProductId = model.ProductId,
-                CharacteristicId = model.CharacteristicId,
-                ValueText = !string.IsNullOrEmpty(model.ValueText) ? model.ValueText : null,
-                ValueNumber = model.ValueNumber.HasValue ? model.ValueNumber : null,
-                ValueDate = model.ValueDate.HasValue ? model.ValueDate : null,
-                ValueBoolean = (string.IsNullOrEmpty(model.ValueText) && !model.ValueNumber.HasValue && !model.ValueDate.HasValue)
-                        ? model.ValueBoolean : null
-            };
-
-            var response = await _apiService.SendAsync<ProductCharacteristicUpdateRequestModel, GeneralApiResponseModel>(
-                HttpMethod.Put,
-                "api/ProductCharacteristics/update",
-                newModel
-            );
-
-            if (response.ReturnCode != AppSuccessCodes.UpdateSuccess)
-            {
-                return BadRequest(new { message = response.Message });
+                return BadRequest(new { message = result.errorMessage });
             }
-
-            var updatedCharacteristic = _apiResponseDeserializerService.DeserializeData<ProductCharacteristicResponseModel>(response);
-            return Ok(new { message = "Updated successfully", updatedId = updatedCharacteristic?.Id });
+            return Ok(new { message = "Updated successfully", updatedId = result.updatedId });
         }
 
         [HttpDelete]
         public async Task<IActionResult> DeleteCharacteristic(int id)
         {
-            var response = await _apiService.DeleteAsync<object, GeneralApiResponseModel>($"api/ProductCharacteristics/delete/{id}");
-
-            if (response.ReturnCode != AppSuccessCodes.DeleteSuccess)
+            var result = await _characteristicService.DeleteCharacteristicAsync(id);
+            if (!result.success)
             {
-                return BadRequest(new { message = response.Message });
+                return BadRequest(new { message = result.errorMessage });
             }
-
             return Ok(new { message = "Deleted successfully" });
         }
 
@@ -308,138 +152,87 @@ namespace PriceComparisonMVCAdmin.Controllers
         [HttpGet]
         public async Task<IActionResult> CreateVariant(int baseProductId)
         {
-            await LoadViewBagsCreateVariantAsync(baseProductId);
-
-            var baseProduct = await _apiService.GetAsync<BaseProductResponseModel>($"api/BaseProducts/{baseProductId}");
-            ViewBag.baseProduct = baseProduct;
-
-            var model = new ProductCreateRequestModel
-            {
-                BaseProductId = baseProductId
-            };
-            return View(model);
+            var viewModel = await _managerProductsService.GetCreateVariantViewModelAsync(baseProductId);
+            return View(viewModel);
         }
 
-
-
-        // POST: ManagerProducts/CreateVariant
         [HttpPost]
-        public async Task<IActionResult> CreateVariant(ProductCreateRequestModel model)
+        public async Task<IActionResult> CreateVariant(CreateVariantViewModel viewModel)
         {
             if (!ModelState.IsValid)
             {
-                await LoadViewBagsCreateVariantAsync(model.BaseProductId);
-
-                return View(model);
+                var refreshedViewModel = await _managerProductsService.GetCreateVariantViewModelAsync(viewModel.ProductVariant.BaseProductId);
+                return View(refreshedViewModel);
             }
 
-            var response = await _apiService.PostAsync<ProductCreateRequestModel, GeneralApiResponseModel>(
-                "api/Products/create", model);
-            var product = _apiResponseDeserializerService.DeserializeData<ProductResponseModel>(response);
+            var (product, errorMessage) = await _managerProductsService.CreateProductVariantAsync(viewModel.ProductVariant);
 
-
-            if (response.ReturnCode != AppSuccessCodes.CreateSuccess && response.ReturnCode != AppSuccessCodes.GerneralSuccess)
+            if (product == null)
             {
-                ModelState.AddModelError("", response.Message);
-
-                await LoadViewBagsCreateVariantAsync(model.BaseProductId);
-
-                return View(model);
+                ModelState.AddModelError("", errorMessage ?? "Unknown error");
+                var refreshedViewModel = await _managerProductsService.GetCreateVariantViewModelAsync(viewModel.ProductVariant.BaseProductId);
+                return View(refreshedViewModel);
             }
 
             TempData["SuccessMessage"] = "Дані збережено успішно.";
             return RedirectToAction("EditVariant", new { id = product.Id });
         }
 
-        private async Task LoadViewBagsCreateVariantAsync(int? baseProductId)
-        {
-            var groupTypes = await _apiService.GetAsync<List<ProductGroupTypeResponseModel>>("api/ProductGroupType/getall");
-            ViewBag.GroupTypes = groupTypes ?? [];
-
-            var colors = await _apiService.GetAsync<List<ColorResponseModel>>("api/ProductColor/getall");
-            ViewBag.Colors = colors ?? [];
-
-            var baseProduct = await _apiService.GetAsync<BaseProductResponseModel>($"api/BaseProducts/{baseProductId}");
-            ViewBag.baseProduct = baseProduct;
-        }
-
-
-
         // GET: EditVariant
         [HttpGet]
         public async Task<IActionResult> EditVariant(int id)
         {
-            var product = await _apiService.GetAsync<ProductResponseModel>($"api/Products/{id}");
-            if (product == null)
+            var viewModel = await _managerProductsService.GetEditVariantViewModelAsync(id);
+            if (viewModel == null)
             {
+                _logger.LogWarning("Варіант продукту з ID = {Id} не знайдено.", id);
                 return NotFound();
             }
-
-            await LoadViewBagsCreateVariantAsync(product.BaseProductId);
-
-            ViewBag.SelectedGroupTypeId = product.ProductGroup.ProductGroupTypeId;
-
-            var model = new ProductUpdateRequestModel()
-            {
-                Id = product.Id,
-                GTIN = product.GTIN,
-                UPC = product.UPC,
-                ModelNumber = product.ModelNumber,
-                IsUnderModeration = product.IsUnderModeration,
-                BaseProductId = product.BaseProductId,
-                ColorId = product.ColorId,
-                IsDefault = product.IsDefault,
-                ProductGroupId = product.ProductGroup.Id
-            };
-
-            return View(model);
+            return View(viewModel);
         }
 
         [HttpPost]
-        public async Task<IActionResult> EditVariant(ProductUpdateRequestModel model)
+        public async Task<IActionResult> EditVariant(EditVariantViewModel model)
         {
             if (!ModelState.IsValid)
             {
-                await LoadViewBagsCreateVariantAsync(model.BaseProductId);
-                return View(model);
+                var refreshedModel = await _managerProductsService.GetEditVariantViewModelAsync(model.ProductVariant.Id);
+                return View(refreshedModel);
             }
 
-            var response = await _apiService.SendAsync<ProductUpdateRequestModel, GeneralApiResponseModel>(
-                HttpMethod.Put,
-                "api/Products/update",
-                model
-            );
+            var response = await _apiRequestService.UpdateProductVariantAsync(model.ProductVariant);
 
             if (response.ReturnCode != AppSuccessCodes.UpdateSuccess)
             {
                 ModelState.AddModelError("", response.Message);
-                await LoadViewBagsCreateVariantAsync(model.BaseProductId);
-                return View(model);
+                var refreshedModel = await _managerProductsService.GetEditVariantViewModelAsync(model.ProductVariant.Id);
+                return View(refreshedModel);
             }
 
             TempData["SuccessMessage"] = "Дані збережено успішно.";
-            return RedirectToAction("EditVariant", new { id = model.Id });
+            return RedirectToAction("EditVariant", new { id = model.ProductVariant.Id });
         }
+
 
 
         // POST: DeleteVariantProduct
         [HttpPost]
         public async Task<IActionResult> DeleteVariant(int id)
         {
-            var response = await _apiService.DeleteAsync<object, GeneralApiResponseModel>($"api/Products/delete/{id}");
+            var response = await _apiRequestService.DeleteProductVariantAsync(id);
 
             if (response.ReturnCode != AppSuccessCodes.DeleteSuccess &&
                 response.ReturnCode != AppSuccessCodes.GerneralSuccess)
             {
                 TempData["Error"] = response.Message;
             }
-            return RedirectToAction("IndexBaseProducts");
+            return RedirectToAction("Index");
         }
 
         [HttpPost]
         public async Task<IActionResult> DeleteVariantByJS(int id)
         {
-            var response = await _apiService.DeleteAsync<object, GeneralApiResponseModel>($"api/Products/delete/{id}");
+            var response = await _apiRequestService.DeleteProductVariantAsync(id);
 
             if (response.ReturnCode != AppSuccessCodes.DeleteSuccess &&
                 response.ReturnCode != AppSuccessCodes.GerneralSuccess)
@@ -453,29 +246,23 @@ namespace PriceComparisonMVCAdmin.Controllers
         [HttpPost]
         public async Task<IActionResult> DeleteBaseProduct(int id)
         {
-            var response = new GeneralApiResponseModel();
-            try
+            var response = await _apiRequestService.DeleteBaseProductAsync(id);
+
+            if (response.ReturnCode != AppSuccessCodes.DeleteSuccess &&
+                response.ReturnCode != AppSuccessCodes.GerneralSuccess)
             {
-                response = await _apiService.DeleteAsync<object, GeneralApiResponseModel>($"api/BaseProducts/delete/{id}");
-            }
-            catch (Exception ex)
-            {
-                if (response.ReturnCode != AppSuccessCodes.DeleteSuccess &&
-                    response.ReturnCode != AppSuccessCodes.GerneralSuccess)
-                {
-                    TempData["Error"] = "\r\nНе вдалося видалити базовий продукт.";
-                }
-                _logger.LogError(ex, "Не вдалося видалити базовий продукт з ідентифікатором {Id}", id);
+                TempData["Error"] = "\r\nНе вдалося видалити базовий продукт.";
+                _logger.LogError("Не вдалося видалити базовий продукт з ідентифікатором {Id}", id);
                 return RedirectToAction("EditBaseProduct", new { id = id });
             }
 
-            return RedirectToAction("IndexBaseProducts");
+            return RedirectToAction("Index");
         }
 
         [HttpPost]
         public async Task<IActionResult> DeleteBaseByJS(int id)
         {
-            var response = await _apiService.DeleteAsync<object, GeneralApiResponseModel>($"api/BaseProducts/delete/{id}");
+            var response = await _apiRequestService.DeleteBaseProductAsync(id);
 
             if (response.ReturnCode != AppSuccessCodes.DeleteSuccess &&
                 response.ReturnCode != AppSuccessCodes.GerneralSuccess)
@@ -488,35 +275,8 @@ namespace PriceComparisonMVCAdmin.Controllers
         // GET: IndexBaseProducts
         public async Task<IActionResult> IndexBaseProducts()
         {
-            // Отримуємо всі категорії
-            var categories = await _apiService.GetAsync<List<CategoryResponseModel>>("api/Categories/getall");
-
-            if (categories == null || !categories.Any())
-            {
-                return View(new Dictionary<CategoryResponseModel, List<CategoryResponseModel>>());
-            }
-
-            var parentCategories = categories.Where(c => c.ParentCategoryId == null).ToList();
-
-            var groupedCategories = parentCategories.ToDictionary(
-                parent => parent,
-                parent => categories.Where(c => c.ParentCategoryId == parent.Id).ToList()
-            );
-
+            var groupedCategories = await _managerProductsService.GetGroupedCategoriesAsync();
             return View(groupedCategories);
         }
-
-
-        //helper method
-        private async Task<IActionResult> ReturnWithError(string errorMessage, BaseProductCreateRequestModel model)
-        {
-            ModelState.AddModelError("", errorMessage);
-            var categories = await _apiService.GetAsync<List<CategoryResponseModel>>("api/Categories/getall");
-            ViewBag.Categories = categories ?? [];
-            return View(model);
-        }
-
-
-
     }
 }
