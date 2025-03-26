@@ -5,6 +5,7 @@ using PriceComparisonMVCAdmin.Models.DTOs.Request.Product;
 using PriceComparisonMVCAdmin.Models.DTOs.Response.Category;
 using PriceComparisonMVCAdmin.Models.DTOs.Response.Product;
 using PriceComparisonMVCAdmin.Models.ViewModels.ManagerProducts;
+using PriceComparisonMVCAdmin.Services.ApiServices;
 using PriceComparisonMVCAdmin.Services.Helper;
 
 namespace PriceComparisonMVCAdmin.Services

@@ -8,30 +8,12 @@
     --danger-color: #BD1B10;
 }
 
-.btn-primary {
+.btn-main {
     width: 214px;
     height: 48px;
-    background-color: var(--primary-color);
-    color: var(--primary-text-color);
     font-size: 16px;
     border: none;
     border-radius: 0;
-    margin: 0 auto;
-    display: block;
-    transition: background-color 0.3s ease;
-    line-height: 1.2;
-}
-
-.btn-primary-add {
-    width: 214px;
-    height: 48px;
-    background-color: var(--success-color);
-    color: var(--primary-text-color);
-    font-size: 16px;
-    border: none;
-    border-radius: 0;
-    border-color: var(--success-border-color);
-    margin: 0 auto;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -41,6 +23,17 @@
     padding: 10px;
     transition: background-color 0.3s ease;
     line-height: 1.2;
+}
+
+.btn-primary {
+    
+    background-color: var(--primary-color);
+    color: var(--primary-text-color);
+}
+
+.btn-primary-add {
+    background-color: var(--success-color);
+    color: var(--primary-text-color);
 }
 
     .btn-primary-add:hover {
@@ -49,23 +42,8 @@
     }
 
 .btn-primary-remove {
-    width: 214px;
-    height: 48px;
     background-color: var(--danger-color);
     color: var(--primary-text-color);
-    font-size: 16px;
-    border: none;
-    border-radius: 0;
-    margin: 0 auto;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    text-align: center;
-    white-space: normal;
-    word-wrap: break-word;
-    padding: 10px;
-    transition: background-color 0.3s ease;
-    line-height: 1.2;
 }
 
 @media (max-width: 576px) {

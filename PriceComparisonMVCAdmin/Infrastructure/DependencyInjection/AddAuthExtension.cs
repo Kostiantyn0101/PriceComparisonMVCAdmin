@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using PriceComparisonMVCAdmin.Models.Configuration;
 using PriceComparisonMVCAdmin.Services;
+using PriceComparisonMVCAdmin.Services.ApiServices;
 
 namespace PriceComparisonMVCAdmin.Infrastructure.DependencyInjection
 {

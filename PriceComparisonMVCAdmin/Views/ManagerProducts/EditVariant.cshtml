@@ -83,23 +83,25 @@
         <input asp-for="@Model.ProductVariant.IsDefault" class="form-check-input" />
         <label asp-for="@Model.ProductVariant.IsDefault" class="form-check-label">За замовчуванням</label>
     </div>
+    <div class="text-center">
+        <button type="submit" class="btn btn-main btn-primary d-inline-flex align-items-center justify-content-center mt-3">Зберегти зміни</button>
+    </div>
 
-    <button type="submit" class="btn btn-primary">Зберегти зміни</button>
 </form>
 <div class="d-flex justify-content-between mt-4">
     <a asp-controller="ManagerProducts" asp-action="EditCharacteristics"
        asp-route-productId="@Model.ProductVariant.Id"
-       class="btn btn-success btn-primary-add d-inline-flex align-items-center justify-content-center">
+       class="btn btn-main btn-success btn-primary-add d-inline-flex align-items-center justify-content-center">
         <i class="bi bi-list-check me-2"></i> Додати/редагувати характеристики
     </a>
     <a asp-controller="ProductContent" asp-action="IndexVariantProduct"
        asp-route-id="@Model.ProductVariant.Id"
-       class="btn btn-success btn-primary-add d-inline-flex align-items-center justify-content-center">
+       class="btn btn-main btn-success btn-primary-add d-inline-flex align-items-center justify-content-center">
         <i class="bi bi-folder-plus me-2"></i> Додати контент
     </a>
     <form asp-controller="ManagerProducts" asp-action="DeleteVariant" method="post" class="d-inline-flex align-items-center justify-content-center" onsubmit="return confirm('Видалити продукт?');">
         <input type="hidden" name="id" value="@Model.ProductVariant.Id" />
-        <button type="submit" class="btn btn-danger btn-primary-remove d-inline-flex align-items-center justify-content-center">
+        <button type="submit" class="btn btn-main btn-danger btn-primary-remove d-inline-flex align-items-center justify-content-center">
             <i class="bi bi-trash me-2"></i> Видалити продукт
         </button>
     </form>

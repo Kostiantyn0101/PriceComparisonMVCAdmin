@@ -4,7 +4,18 @@
 }
 
 <h2 class="mb-4">Дані магазину</h2>
-
+@if (TempData["SuccessMessage"] != null)
+{
+    <div class="alert alert-success">
+        @TempData["SuccessMessage"]
+    </div>
+}
+@if (TempData["Error"] != null)
+{
+    <div class="alert alert-danger">
+        @TempData["Error"]
+    </div>
+}
 @if (Model != null)
 {
     <div class="card shadow-sm mb-4">
@@ -72,9 +83,9 @@
                     <span class="form-control-plaintext">@(Model.PublishPriceList ? "Опубліковано" : "Не опубліковано")</span>
                 </div>
             </div>
-            <div class="text-center">
+            <div class="d-flex align-items-center justify-content-center">
                 <a asp-controller="Seller" asp-action="Edit" asp-route-id="@Model.Id"
-                   class="btn btn-primary d-inline-flex align-items-center justify-content-center">
+                   class="btn btn-primary btn-main d-inline-flex align-items-center justify-content-center">
                     Редагувати дані
                 </a>
             </div>

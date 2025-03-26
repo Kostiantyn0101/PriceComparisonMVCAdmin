@@ -72,7 +72,11 @@
         <input asp-for="@Model.ProductVariant.IsUnderModeration" class="form-check-input" />
         <label asp-for="@Model.ProductVariant.IsUnderModeration" class="form-check-label">Під модерацією</label>
     </div>
-    <button type="submit" class="btn btn-primary">Створити продукт</button>
+    <div class="text-center">
+        <button type="submit" class="btn btn-main btn-primary d-inline-flex align-items-center justify-content-center mt-3">
+            Створити продукт
+        </button>
+    </div>
 </form>
 
 @section Scripts {

@@ -12,7 +12,9 @@
         <div class="mb-3">
             <input asp-for="PriceListFile" class="form-control" />
         </div>
-        <button type="submit" class="btn btn-primary">Завантажити</button>
+        <div class="d-flex align-items-center justify-content-center">
+            <button type="submit" class="btn btn-primary btn-main">Завантажити</button>
+        </div>
     </form>
 
     @if (!string.IsNullOrEmpty(Model.Message))

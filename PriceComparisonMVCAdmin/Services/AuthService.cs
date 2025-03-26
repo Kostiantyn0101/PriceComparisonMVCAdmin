@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using PriceComparisonMVCAdmin.Models.Response;
 using PriceComparisonMVCAdmin.Models.Request;
+using PriceComparisonMVCAdmin.Services.ApiServices;
 
 namespace PriceComparisonMVCAdmin.Services
 {

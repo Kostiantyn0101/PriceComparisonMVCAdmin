@@ -1,4 +1,4 @@
-﻿namespace PriceComparisonMVCAdmin.Services
+﻿namespace PriceComparisonMVCAdmin.Services.ApiServices
 {
     public interface IApiService
     {

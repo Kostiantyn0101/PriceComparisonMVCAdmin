@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using PriceComparisonMVCAdmin.Services;
+using PriceComparisonMVCAdmin.Services.ApiServices;
 
 namespace PriceComparisonMVCAdmin.Controllers
 {

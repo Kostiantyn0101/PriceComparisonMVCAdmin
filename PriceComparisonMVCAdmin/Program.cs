@@ -1,5 +1,6 @@
 using PriceComparisonMVCAdmin.Infrastructure;
 using PriceComparisonMVCAdmin.Services;
+using PriceComparisonMVCAdmin.Services.ApiServices;
 
 var builder = WebApplication.CreateBuilder(args);
 

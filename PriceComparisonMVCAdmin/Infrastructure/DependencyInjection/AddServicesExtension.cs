@@ -1,7 +1,6 @@
-﻿using PriceComparisonMVCAdmin.Models.Configuration;
-using PriceComparisonMVCAdmin.Services;
+﻿using PriceComparisonMVCAdmin.Services;
+using PriceComparisonMVCAdmin.Services.ApiServices;
 using PriceComparisonMVCAdmin.Services.Helper;
-using System.Net.Http.Headers;
 
 namespace PriceComparisonWebAPI.Infrastructure.DependencyInjection
 {
@@ -13,9 +12,10 @@ namespace PriceComparisonWebAPI.Infrastructure.DependencyInjection
             builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
             builder.Services.AddSingleton<IApiResponseDeserializerService, ApiResponseDeserializerService>();
             builder.Services.AddScoped<IProductCharacteristicService, ProductCharacteristicService>();
+            builder.Services.AddScoped<IValidationErrorProcessor, ValidationErrorProcessor>();
             builder.Services.AddScoped<IManagerProductsService, ManagerProductsService>();
             builder.Services.AddScoped<IApiRequestService, ApiRequestService>();
-
+            builder.Services.AddScoped<ISellerService, SellerService>();
         }
     }
 }

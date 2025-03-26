@@ -1,160 +1,163 @@
-﻿@model SellerAuctionRatesViewModel
+﻿@model SellerAuctionRatesGroupedViewModel
 @{
     Layout = "~/Views/Shared/_SellerLayout.cshtml";
 }
-
 <div class="container my-3">
     <h5 class="mb-3">Аукціонні ставки за категоріями</h5>
 
-    <div class="row row-cols-1 row-cols-md-2 g-3">
-        @foreach (var item in Model.Items)
-        {
-            <div class="col">
-                <div class="border rounded p-2 d-flex align-items-center justify-content-between"
-                     data-category-id="@item.CategoryId"
-                     data-rate-id="@item.AuctionClickRateId">
+    @foreach (var group in Model.GroupedCategories)
+    {
+        <div class="mb-3">
+            <button class="btn btn-link category-toggle d-flex align-items-center"
+                    data-target="children-@group.Key.Id">
+                <i class="bi bi-chevron-right toggle-icon me-2"></i>
+                @group.Key.Title
+            </button>
 
-                    <span class="fw-bold me-2">@item.CategoryTitle</span>
+            <div id="children-@group.Key.Id" class="d-none ms-3 list-group">
+                @foreach (var item in group.Value)
+                {
+                    <div class="list-group-item d-flex align-items-center justify-content-between"
+                         data-category-id="@item.CategoryId"
+                         data-rate-id="@item.AuctionClickRateId">
 
-                    <div class="d-flex align-items-center">
-                        <span class="rate-display me-2">
-                            @string.Format(System.Globalization.CultureInfo.InvariantCulture, "{0:F2}", item.AuctionClickRate)
-                        </span>
+                        <span class="fw-bold me-2">@item.CategoryTitle</span>
 
-                        <input type="number"
-                               class="form-control rate-input d-none"
-                               style="max-width: 80px;"
-                               step="0.01"
-                               value="@string.Format(System.Globalization.CultureInfo.InvariantCulture, "{0:F2}", item.AuctionClickRate)" />
+                        <div class="d-flex align-items-center">
+                            <span class="rate-display me-2">
+                                @string.Format(System.Globalization.CultureInfo.InvariantCulture, "{0:F2}", item.AuctionClickRate)
+                            </span>
 
-                        <button type="button" class="btn btn-sm btn-link edit-toggle-btn ms-2">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
-                                 fill="currentColor" class="bi bi-pencil" viewBox="0 0 16 16">
-                                <path d="M12.146.146a.5.5 0 0 1 .708 0l3
-                                       3a.5.5 0 0 1 0 .708l-10
-                                       10a.5.5 0 0 1-.168.11l-5
-                                       2a.5.5 0 0 1-.65-.65l2-5a.5.5
-                                       0 0 1 .11-.168zM11.207
-                                       2.5 13.5 4.793 14.793 3.5
-                                       12.5 1.207zm1.586
-                                       3L10.5 3.207 4
-                                       9.707V10h.5a.5.5 0 0
-                                       1 .5.5v.5h.5a.5.5 0 0
-                                       1 .5.5v.5h.293zm-9.761
-                                       5.175-.106.106-1.528
-                                       3.821 3.821-1.528.106-.106A.5.5
-                                       0 0 1 5 12.5V12h-.5a.5.5
-                                       0 0 1-.5-.5V11h-.5a.5.5
-                                       0 0 1-.468-.325" />
-                            </svg>
-                        </button>
+                            <input type="number"
+                                   class="form-control rate-input d-none"
+                                   style="max-width: 80px;"
+                                   step="0.01"
+                                   value="@string.Format(System.Globalization.CultureInfo.InvariantCulture, "{0:F2}", item.AuctionClickRate)" />
 
-                        <button type="button" class="btn btn-sm btn-link confirm-btn d-none ms-2">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
-                                 fill="currentColor" class="bi bi-check-lg" viewBox="0 0 16 16">
-                                <path d="M12.736 3.97a.733.733 0 0
-                                       1 1.047 0c.286.289.29.756.01
-                                       1.05L7.88 12.01a.733.733 0 0
-                                       1-1.065.02L3.217
-                                       8.384a.757.757 0 0 1
-                                       0-1.06.733.733 0 0
-                                       1 1.047 0l3.052
-                                       3.093 5.4-6.425z" />
-                            </svg>
-                        </button>
+                            <button type="button" class="btn btn-sm btn-link edit-toggle-btn ms-2">
+                                <i class="bi bi-pencil"></i>
+                            </button>
 
-                        <button type="button" class="btn btn-sm btn-link cancel-btn d-none ms-2">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
-                                 fill="currentColor" class="bi bi-x-lg" viewBox="0 0 16 16">
-                                <path d="M2.146 2.854a.5.5 0 1
-                                       1 .708-.708L8 7.293l5.146-5.147a.5.5
-                                       0 0 1 .708.708L8.707 8l5.147
-                                       5.146a.5.5 0 0 1-.708.708L8
-                                       8.707l-5.146 5.147a.5.5 0 0
-                                       1-.708-.708L7.293 8z" />
-                            </svg>
-                        </button>
+                            <button type="button" class="btn btn-sm btn-link text-success confirm-btn d-none ms-2">
+                                <i class="bi bi-check-lg"></i>
+                            </button>
+
+                            <button type="button" class="btn btn-sm btn-link text-danger cancel-btn d-none ms-2">
+                                <i class="bi bi-x-lg"></i>
+                            </button>
+                        </div>
                     </div>
-                </div>
+                }
             </div>
-        }
-    </div>
+        </div>
+    }
 </div>
 
-
 @section Scripts {
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
-        $(function(){
-            $(".edit-toggle-btn").click(function(){
-                var $row = $(this).closest("div.d-flex");
-                $row.find(".rate-display").addClass("d-none");
-                $row.find(".rate-input").removeClass("d-none");
-                $(this).addClass("d-none");
-                $row.find(".confirm-btn, .cancel-btn").removeClass("d-none");
+        document.addEventListener("DOMContentLoaded", () => {
+
+            // togl categories
+            document.querySelectorAll(".category-toggle").forEach(btn => {
+                btn.addEventListener("click", () => {
+                    const targetId = btn.getAttribute("data-target");
+                    const target = document.getElementById(targetId);
+                    const icon = btn.querySelector(".toggle-icon");
+
+                    if (target.classList.contains("d-none")) {
+                        target.classList.remove("d-none");
+                        icon.classList.remove("bi-chevron-right");
+                        icon.classList.add("bi-chevron-down");
+                    } else {
+                        target.classList.add("d-none");
+                        icon.classList.remove("bi-chevron-down");
+                        icon.classList.add("bi-chevron-right");
+                    }
+                });
             });
 
-            $(".cancel-btn").click(function(){
-                var $row = $(this).closest("div.d-flex");
-                var original = $row.find(".rate-display").text();
-                $row.find(".rate-input").val(original).addClass("d-none");
-                $row.find(".rate-display").removeClass("d-none");
-                $row.find(".confirm-btn, .cancel-btn").addClass("d-none");
-                $row.find(".edit-toggle-btn").removeClass("d-none");
+            // edit rate
+            document.querySelectorAll(".edit-toggle-btn").forEach(btn => {
+                btn.addEventListener("click", () => {
+                    const container = btn.closest(".d-flex");
+
+                    container.querySelector(".rate-display").classList.add("d-none");
+                    container.querySelector(".rate-input").classList.remove("d-none");
+                    btn.classList.add("d-none");
+                    container.querySelector(".confirm-btn").classList.remove("d-none");
+                    container.querySelector(".cancel-btn").classList.remove("d-none");
+                });
             });
 
-            $(".confirm-btn").click(function(){
-                var $container = $(this).closest("div.d-flex");
-                var $row = $(this).closest("div.border");
-                var categoryId = $row.data("category-id");
-                var rateId = $row.data("rate-id"); // Якщо існує, це update, інакше create
-                var newRate = parseFloat($container.find(".rate-input").val());
+            // cancel edit
+            document.querySelectorAll(".cancel-btn").forEach(btn => {
+                btn.addEventListener("click", () => {
+                    const container = btn.closest(".d-flex");
+                    const rateDisplay = container.querySelector(".rate-display");
+                    const rateInput = container.querySelector(".rate-input");
 
-                var payload = {
-                    CategoryId: categoryId,
-                    SellerId: @Model.SellerId, // SellerId передається через модель
-                    ClickRate: newRate
-                };
+                    rateInput.value = rateDisplay.textContent.trim();
+                    rateInput.classList.add("d-none");
+                    rateDisplay.classList.remove("d-none");
 
-                if(rateId){ // Ставка існує → оновлення
-                    payload.Id = rateId;
-                    $.ajax({
-                        url: window.apiBaseUrl +  "/api/AuctionClickRate/update",
-                        type: "PUT",
-                        contentType: "application/json",
-                        data: JSON.stringify(payload),
-                        success: function(response){
-                            $container.find(".rate-display").text(newRate);
-                            $container.find(".rate-input").addClass("d-none");
-                            $container.find(".rate-display").removeClass("d-none");
-                            $container.find(".confirm-btn, .cancel-btn").addClass("d-none");
-                            $container.find(".edit-toggle-btn").removeClass("d-none");
-                        },
-                        error: function(){
-                            alert("Помилка оновлення ставки.");
+                    container.querySelector(".confirm-btn").classList.add("d-none");
+                    container.querySelector(".cancel-btn").classList.add("d-none");
+                    container.querySelector(".edit-toggle-btn").classList.remove("d-none");
+                });
+            });
+
+            // aprove edit
+            document.querySelectorAll(".confirm-btn").forEach(btn => {
+                btn.addEventListener("click", async () => {
+                    const container = btn.closest(".d-flex");
+                    const row = btn.closest("[data-category-id]");
+                    const categoryId = row.getAttribute("data-category-id");
+                    const rateId = row.getAttribute("data-rate-id");
+                    const rateInput = container.querySelector(".rate-input");
+                    const newRate = parseFloat(rateInput.value);
+
+                    const payload = {
+                        CategoryId: parseInt(categoryId),
+                        SellerId: @Model.SellerId,
+                        ClickRate: newRate
+                    };
+
+                    if (rateId) {
+                        payload.Id = parseInt(rateId);
+                    }
+
+                    try {
+                        const response = await fetch(
+                            `/Seller/AuctionRate/${rateId ? 'update' : 'create'}`,
+                            {
+                                method: rateId ? 'PUT' : 'POST',
+                                headers: { 'Content-Type': 'application/json' },
+                                body: JSON.stringify(payload)
+                            }
+                        );
+
+                        if (!response.ok) throw new Error("Помилка запиту");
+
+                        const result = await response.json();
+
+                        if (!rateId && result.newId) {
+                            row.setAttribute("data-rate-id", result.newId);
                         }
-                    });
-                } else { // Ставки немає → створення
-                    $.ajax({
-                        url: window.apiBaseUrl +  "/api/AuctionClickRate/create",
-                        type: "POST",
-                        contentType: "application/json",
-                        data: JSON.stringify(payload),
-                        success: function(response){
-                            $row.attr("data-rate-id", response.newId);
-                            $container.find(".rate-display").text(newRate);
-                            $container.find(".rate-input").addClass("d-none");
-                            $container.find(".rate-display").removeClass("d-none");
-                            $container.find(".confirm-btn, .cancel-btn").addClass("d-none");
-                            $container.find(".edit-toggle-btn").removeClass("d-none");
-                        },
-                        error: function(){
-                            alert("Помилка створення ставки.");
-                        }
-                    });
-                }
+
+                        container.querySelector(".rate-display").textContent = newRate.toFixed(2);
+                        rateInput.classList.add("d-none");
+                        container.querySelector(".rate-display").classList.remove("d-none");
+
+                        container.querySelector(".confirm-btn").classList.add("d-none");
+                        container.querySelector(".cancel-btn").classList.add("d-none");
+                        container.querySelector(".edit-toggle-btn").classList.remove("d-none");
+
+                    } catch (error) {
+                        alert("Сталася помилка при збереженні ставки.");
+                    }
+                });
             });
+
         });
     </script>
 }
-

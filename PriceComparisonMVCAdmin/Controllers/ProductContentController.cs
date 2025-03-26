@@ -1,72 +1,36 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using PriceComparisonMVCAdmin.Services.Helper;
-using PriceComparisonMVCAdmin.Services;
-using PriceComparisonMVCAdmin.Models.DTOs.Response.Product;
 using PriceComparisonMVCAdmin.Models.Constants;
 using PriceComparisonMVCAdmin.Models.DTOs.Request.Product;
-using PriceComparisonMVCAdmin.Models.DTOs.Response;
-using System.Reflection;
 using Microsoft.AspNetCore.Authorization;
 using PriceComparisonMVCAdmin.Models.ViewModels.ProductContent;
+using PriceComparisonMVCAdmin.Services.ApiServices;
 
 namespace PriceComparisonMVCAdmin.Controllers
 {
     [Authorize(Policy = "AdminRights")]
     public class ProductContentController : BaseController<ProductContentController>
     {
-        private readonly IApiResponseDeserializerService _apiResponseDeserializerService;
+        IApiRequestService _apiRequestService;
 
         public ProductContentController(IApiService apiService,
+            IApiRequestService apiRequestService,
             IApiResponseDeserializerService apiResponseDeserializerService,
             ILogger<ProductContentController> logger)
             : base(apiService, logger)
         {
-            _apiResponseDeserializerService = apiResponseDeserializerService;
+            _apiRequestService = apiRequestService;
         }
 
         [HttpGet]
         public async Task<IActionResult> IndexBaseProduct(int id)
         {
-            var videos = new List<BaseProductVideoResponseModel>();
-            var reviews = new List<ReviewResponseModel>();
-            var instructions = new List<InstructionResponseModel>();
-
-            try
-            {
-                videos = await _apiService.GetAsync<List<BaseProductVideoResponseModel>>($"api/ProductVideo/{id}")
-                         ?? new List<BaseProductVideoResponseModel>();
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Помилка завантаження відео для продукту {Id}", id);
-            }
-
-            try
-            {
-                reviews = await _apiService.GetAsync<List<ReviewResponseModel>>($"api/Reviews/{id}")
-                        ?? new List<ReviewResponseModel>();
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Помилка завантаження оглядів для продукту {Id}", id);
-            }
-
-            try
-            {
-                instructions = await _apiService.GetAsync<List<InstructionResponseModel>>($"api/Instruction/{id}")
-                             ?? new List<InstructionResponseModel>();
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Помилка завантаження інструкцій для продукту {Id}", id);
-            }
-
             var model = new BaseProductContentViewModel
             {
                 BaseProductId = id,
-                Videos = videos,
-                Reviews = reviews,
-                Instructions = instructions,
+                Videos = await _apiRequestService.GetBaseProductVideosAsync(id),
+                Reviews = await _apiRequestService.GetReviewAsync(id),
+                Instructions = await _apiRequestService.GetIstructionAsync(id),
             };
 
             return View(model);
@@ -76,15 +40,19 @@ namespace PriceComparisonMVCAdmin.Controllers
         [HttpPost]
         public async Task<IActionResult> CreateVideo(ProductVideoCreateRequestModel model)
         {
-            var response = await _apiService.PostAsync<ProductVideoCreateRequestModel, GeneralApiResponseModel>("api/ProductVideo/create", model);
+            var response = await _apiRequestService.CreateBaseProductVideoAsync(model);
+            if (!ModelState.IsValid)
+            {
+                var errors = ModelState.Values.SelectMany(v => v.Errors)
+                                              .Select(e => e.ErrorMessage);
+                TempData["Error"] = string.Join("; ", errors);
+                return RedirectToAction("IndexBaseProduct", new { id = model.BaseProductId });
+            }
             if (response.ReturnCode == AppSuccessCodes.CreateSuccess)
             {
                 TempData["SuccessMessage"] = "Відео додано успішно.";
             }
-            else
-            {
-                TempData["Error"] = response.Message;
-            }
+
             return RedirectToAction("IndexBaseProduct", new { id = model.BaseProductId });
         }
 
@@ -92,7 +60,7 @@ namespace PriceComparisonMVCAdmin.Controllers
         [HttpPost]
         public async Task<IActionResult> DeleteVideo(int id, int baseProductId)
         {
-            var response = await _apiService.DeleteAsync<object, GeneralApiResponseModel>($"api/ProductVideo/delete/{id}");
+            var response = await _apiRequestService.DeleteBaseProductVideoAsync(id);
             if (response.ReturnCode == AppSuccessCodes.DeleteSuccess)
             {
                 TempData["SuccessMessage"] = "Відео видалено успішно.";
@@ -108,14 +76,17 @@ namespace PriceComparisonMVCAdmin.Controllers
         [HttpPost]
         public async Task<IActionResult> CreateReview(ReviewCreateRequestModel model)
         {
-            var response = await _apiService.PostAsync<ReviewCreateRequestModel, GeneralApiResponseModel>("api/Reviews/create", model);
+            var response = await _apiRequestService.CreateReviewAsync(model);
+            if (!ModelState.IsValid)
+            {
+                var errors = ModelState.Values.SelectMany(v => v.Errors)
+                                              .Select(e => e.ErrorMessage);
+                TempData["Error"] = string.Join("; ", errors);
+                return RedirectToAction("IndexBaseProduct", new { id = model.BaseProductId });
+            }
             if (response.ReturnCode == AppSuccessCodes.CreateSuccess)
             {
                 TempData["SuccessMessage"] = "Огляд додано успішно.";
-            }
-            else
-            {
-                TempData["Error"] = response.Message;
             }
             return RedirectToAction("IndexBaseProduct", new { id = model.BaseProductId });
         }
@@ -124,7 +95,7 @@ namespace PriceComparisonMVCAdmin.Controllers
         [HttpPost]
         public async Task<IActionResult> DeleteReview(int id, int baseProductId)
         {
-            var response = await _apiService.DeleteAsync<object, GeneralApiResponseModel>($"api/Reviews/delete/{id}");
+            var response = await _apiRequestService.DeleteReviewAsync(id);
             if (response.ReturnCode == AppSuccessCodes.DeleteSuccess)
             {
                 TempData["SuccessMessage"] = "Огляд видалено успішно.";
@@ -140,22 +111,26 @@ namespace PriceComparisonMVCAdmin.Controllers
         [HttpPost]
         public async Task<IActionResult> CreateInstruction(InstructionCreateRequestModel model)
         {
-            var response = await _apiService.PostAsync<InstructionCreateRequestModel, GeneralApiResponseModel>("api/Instruction/create", model);
+            var response = await _apiRequestService.CreateIstructionAsync(model);
+            if (!ModelState.IsValid)
+            {
+                var errors = ModelState.Values.SelectMany(v => v.Errors)
+                                              .Select(e => e.ErrorMessage);
+                TempData["Error"] = string.Join("; ", errors);
+                return RedirectToAction("IndexBaseProduct", new { id = model.BaseProductId });
+            }
             if (response.ReturnCode == AppSuccessCodes.CreateSuccess)
             {
                 TempData["SuccessMessage"] = "Інструкцію додано успішно.";
             }
-            else
-            {
-                TempData["Error"] = response.Message;
-            }
+
             return RedirectToAction("IndexBaseProduct", new { id = model.BaseProductId });
         }
 
         [HttpPost]
         public async Task<IActionResult> DeleteInstruction(int id, int baseProductId)
         {
-            var response = await _apiService.DeleteAsync<object, GeneralApiResponseModel>($"api/Instruction/delete/{id}");
+            var response = await _apiRequestService.DeleteIstructionAsync(id);
             if (response.ReturnCode == AppSuccessCodes.DeleteSuccess)
             {
                 TempData["SuccessMessage"] = "Інструкцію видалено успішно.";
@@ -171,21 +146,12 @@ namespace PriceComparisonMVCAdmin.Controllers
         [HttpGet]
         public async Task<IActionResult> IndexVariantProduct(int id)
         {
-            var images = new List<ProductImageResponseModel>();
-
-            try
-            {
-                images = await _apiService.GetAsync<List<ProductImageResponseModel>>($"api/ProductImage/{id}");
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Помилка завантаження зображень для продукту {Id}", id);
-            }
+            var response = await _apiRequestService.GetProductImagesAsync(id);
 
             var model = new VariantProductContentViewModel
             {
                 ProductId = id,
-                Images = images,
+                Images = response,
             };
 
             return View(model);
@@ -199,8 +165,7 @@ namespace PriceComparisonMVCAdmin.Controllers
                 return RedirectToAction("IndexVariantProduct", new { id = model.ProductId });
             }
 
-            var response = await _apiService.SendAsync<ProductImageCreateRequestModel, GeneralApiResponseModel>(
-                HttpMethod.Post, "api/ProductImage/add", model, useMultipartFormData: true);
+            var response = await _apiRequestService.AddProductImageAsync(model);
 
             if (response.ReturnCode == AppSuccessCodes.CreateSuccess)
             {
@@ -220,8 +185,7 @@ namespace PriceComparisonMVCAdmin.Controllers
             {
                 ProductImageIds = model.ProductImageIds
             };
-            var response = await _apiService.DeleteAsync<ProductImageDeleteRequestModel, GeneralApiResponseModel>(
-                "api/ProductImage/delete", requestModel);
+            var response = await _apiRequestService.DeleteProductImageAsync(requestModel);
 
             if (response.ReturnCode == AppSuccessCodes.DeleteSuccess)
             {
@@ -241,8 +205,9 @@ namespace PriceComparisonMVCAdmin.Controllers
             {
                 ProductImageId = model.ProductImageId
             };
-            var response = await _apiService.SendAsync<ProductImageSetPrimaryRequestModel, GeneralApiResponseModel>(
-                HttpMethod.Put, "api/ProductImage/setprimary", requestModel, useMultipartFormData: false);
+
+            var response = await _apiRequestService.SetPrimaryImageAsync(requestModel);
+
             if (response.ReturnCode == AppSuccessCodes.UpdateSuccess)
             {
                 TempData["SuccessMessage"] = "Основне зображення встановлено успішно.";

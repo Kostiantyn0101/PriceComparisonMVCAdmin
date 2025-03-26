@@ -1,8 +1,10 @@
 ﻿using System.Text.Json;
 using System.Text;
 using System.Net.Http.Headers;
+using System.Net;
+using PriceComparisonMVCAdmin.Models.DTOs.Response;
 
-namespace PriceComparisonMVCAdmin.Services
+namespace PriceComparisonMVCAdmin.Services.ApiServices
 {
     public class ApiService : IApiService
     {
@@ -47,8 +49,8 @@ namespace PriceComparisonMVCAdmin.Services
                 SetAuthorizationHeader();
                 var response = await requestFunc();
 
-                
-                if (response.StatusCode == System.Net.HttpStatusCode.Unauthorized)
+
+                if (response.StatusCode == HttpStatusCode.Unauthorized)
                 {
                     var newToken = await _tokenManager.RefreshTokenAsync();
                     if (!string.IsNullOrEmpty(newToken))
@@ -58,12 +60,30 @@ namespace PriceComparisonMVCAdmin.Services
                     }
                 }
 
-                response.EnsureSuccessStatusCode();
+                //response.EnsureSuccessStatusCode();
                 var json = await response.Content.ReadAsStringAsync();
-                if (string.IsNullOrWhiteSpace(json))
+                if (response.StatusCode == HttpStatusCode.BadRequest)
                 {
-                    throw new Exception("Порожня відповідь від API.");
+                    var validationModel = JsonSerializer.Deserialize<ApiValidationErrorResponseModel>(json,
+                            new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+
+                    var result = new GeneralApiResponseModel
+                    {
+                        ReturnCode = "ValidationError",
+                        Message = validationModel?.Title ?? "Bad Request",
+                        Data = validationModel
+                    };
+
+                    return (T)(object)result!;
                 }
+
+                if (!response.IsSuccessStatusCode)
+                {
+                    throw new HttpRequestException($"API error {response.StatusCode}: {json}");
+                }
+
+                if (string.IsNullOrWhiteSpace(json))
+                    throw new Exception("Порожня відповідь від API.");
 
                 return JsonSerializer.Deserialize<T>(json, new JsonSerializerOptions { PropertyNameCaseInsensitive = true })!;
             }
@@ -114,7 +134,7 @@ namespace PriceComparisonMVCAdmin.Services
                 if (value == null)
                     continue;
 
-                if (value is IFormFile singleFile)
+                if (value is IFormFile singleFile && singleFile.Length > 0)
                 {
                     var fileContent = new StreamContent(singleFile.OpenReadStream());
                     fileContent.Headers.ContentType = new MediaTypeHeaderValue(singleFile.ContentType);
@@ -152,7 +172,7 @@ namespace PriceComparisonMVCAdmin.Services
                 var response = await _httpClient.SendAsync(request);
 
                 // Перевірка на 401 Unauthorized + рефреш токена
-                if (response.StatusCode == System.Net.HttpStatusCode.Unauthorized)
+                if (response.StatusCode == HttpStatusCode.Unauthorized)
                 {
                     var newToken = await _tokenManager.RefreshTokenAsync();
                     if (!string.IsNullOrEmpty(newToken))
@@ -163,10 +183,25 @@ namespace PriceComparisonMVCAdmin.Services
                 }
 
                 // Кидає виняток, якщо код статусу не 2xx
-                response.EnsureSuccessStatusCode();
+                //response.EnsureSuccessStatusCode();
 
                 // Читаємо відповідь як JSON
                 var json = await response.Content.ReadAsStringAsync();
+                if (response.StatusCode == HttpStatusCode.BadRequest)
+                {
+                    var validationModel = JsonSerializer.Deserialize<ApiValidationErrorResponseModel>(json,
+                            new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+
+                    var result = new GeneralApiResponseModel
+                    {
+                        ReturnCode = "ValidationError",
+                        Message = validationModel?.Title ?? "Bad Request",
+                        Data = validationModel
+                    };
+
+                    return (TResponse)(object)result!;
+                }
+
                 return JsonSerializer.Deserialize<TResponse>(json, new JsonSerializerOptions
                 {
                     PropertyNameCaseInsensitive = true

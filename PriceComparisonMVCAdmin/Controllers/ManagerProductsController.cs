@@ -1,11 +1,10 @@
-﻿using AutoMapper;
-using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using PriceComparisonMVCAdmin.Models.Constants;
 using PriceComparisonMVCAdmin.Models.DTOs;
 using PriceComparisonMVCAdmin.Models.ViewModels.ManagerProducts;
 using PriceComparisonMVCAdmin.Services;
-using PriceComparisonMVCAdmin.Services.Helper;
+using PriceComparisonMVCAdmin.Services.ApiServices;
 
 namespace PriceComparisonMVCAdmin.Controllers
 {

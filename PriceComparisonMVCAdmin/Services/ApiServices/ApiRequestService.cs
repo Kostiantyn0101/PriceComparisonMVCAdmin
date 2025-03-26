@@ -3,8 +3,15 @@ using PriceComparisonMVCAdmin.Models.DTOs.Response.Category;
 using PriceComparisonMVCAdmin.Models.DTOs.Response.Product;
 using PriceComparisonMVCAdmin.Models.DTOs.Response;
 using System.Text.Json;
+using PriceComparisonMVCAdmin.Models.DTOs.Request.Categoty;
+using PriceComparisonMVCAdmin.Models.Response.Seller;
+using PriceComparisonMVCAdmin.Models.DTOs.Request.Seller;
+using PriceComparisonMVCAdmin.Models.Request.Seller;
+using System.Reflection;
+using PriceComparisonMVCAdmin.Models.ViewModels.Seller;
+using PriceComparisonMVCAdmin.Models.DTOs.Request.Auction;
 
-namespace PriceComparisonMVCAdmin.Services
+namespace PriceComparisonMVCAdmin.Services.ApiServices
 {
     public class ApiRequestService : IApiRequestService
     {
@@ -60,14 +67,90 @@ namespace PriceComparisonMVCAdmin.Services
             => SafeRequestAsync<object, GeneralApiResponseModel>(HttpMethod.Delete, $"api/ProductCharacteristics/delete/{id}", null);
 
 
+        //Seller
+        public Task<SellerResponseModel> GetSellerByUserIdAsync(int userId)
+            => GetSafeAsync<SellerResponseModel>($"api/Seller/getByUserId/{userId}");
+        public Task<SellerResponseModel> GetSellerByIdAsync(int id)
+            => GetSafeAsync<SellerResponseModel>($"api/Seller/{id}");
+        public Task<GeneralApiResponseModel> UpdateSellerAsync(SellerUpdateRequestModel model)
+           => SafeRequestAsync<SellerUpdateRequestModel, GeneralApiResponseModel>(HttpMethod.Put, "api/Seller/update", model, useMultipartFormData: true);
+
+        //SellerProductDetails
+        public Task<GeneralApiResponseModel> UploadPriceListAsync(SellerProductXmlRequestModel model)
+            => SafeRequestAsync<SellerProductXmlRequestModel, GeneralApiResponseModel>(
+         HttpMethod.Post, "api/SellerProductDetails/upload-file", model, useMultipartFormData: true);
+
+
+        //ProductReferenceClick
+        public Task<List<ProductSellerReferenceClickResponseModel>> GetProductReferenceClickAsync(ProductSellerReferenceClickStaisticRequestModel model)
+            => PostSafeAsync<ProductSellerReferenceClickStaisticRequestModel, List<ProductSellerReferenceClickResponseModel>>($"api/ProductReferenceClick/statistic", model);
+
+        //AuctionClickRate
+        public Task<List<AuctionClickRateResponseModel>> GetAuctionClickRateAsync(int id)
+            => GetSafeAsync<List<AuctionClickRateResponseModel>>($"api/AuctionClickRate/getBySellerId/{id}");
+        public Task<GeneralApiResponseModel> CreateAuctionClickRateAsync(AuctionClickRateRequestModel model)
+            => PostSafeAsync<AuctionClickRateRequestModel, GeneralApiResponseModel>("api/AuctionClickRate/create", model);
+        public Task<GeneralApiResponseModel> UpdateAuctionClickRateAsync(AuctionClickRateRequestModel model)
+            => SafeRequestAsync<AuctionClickRateRequestModel, GeneralApiResponseModel>(HttpMethod.Put, "api/AuctionClickRate/update", model);
+
+
+
         //Other
         public Task<List<ColorResponseModel>> GetAllColorsAsync()
             => GetSafeAsync<List<ColorResponseModel>>("api/ProductColor/getall");
         public Task<List<ProductGroupTypeResponseModel>> GetAllProductGroupTypesAsync()
            => GetSafeAsync<List<ProductGroupTypeResponseModel>>("api/ProductGroupType/getall");
+
+
+        //Categories
         public Task<List<CategoryResponseModel>> GetAllCategoriesAsync()
             => GetSafeAsync<List<CategoryResponseModel>>("api/Categories/getall");
+        public Task<CategoryResponseModel> GetCategoryByIdAsync(int id)
+            => GetSafeAsync<CategoryResponseModel>($"api/Categories/{id}");
+        public Task<GeneralApiResponseModel> CreateCategoryAsync(CategoryCreateRequestModel model)
+            => PostSafeAsync<CategoryCreateRequestModel, GeneralApiResponseModel>("api/Categories/create", model);
+        public Task<GeneralApiResponseModel> UpdateCategoryAsync(CategoryUpdateRequestModel model)
+            => SafeRequestAsync<CategoryUpdateRequestModel, GeneralApiResponseModel>(HttpMethod.Put, "api/Categories/update", model, useMultipartFormData: true);
+        public Task<GeneralApiResponseModel> DeleteCategoryAsync(int id)
+            => SafeRequestAsync<object, GeneralApiResponseModel>(HttpMethod.Delete, $"api/Categories/delete/{id}", null);
 
+
+        //Videos
+        public Task<List<BaseProductVideoResponseModel>> GetBaseProductVideosAsync(int baseProductId)
+           => GetSafeAsync<List<BaseProductVideoResponseModel>>($"api/ProductVideo/{baseProductId}");
+        public Task<GeneralApiResponseModel> CreateBaseProductVideoAsync(ProductVideoCreateRequestModel model)
+            => PostSafeAsync<ProductVideoCreateRequestModel, GeneralApiResponseModel>("api/ProductVideo/create", model);
+        public Task<GeneralApiResponseModel> DeleteBaseProductVideoAsync(int id)
+           => SafeRequestAsync<object, GeneralApiResponseModel>(HttpMethod.Delete, $"api/ProductVideo/delete/{id}", null);
+
+
+        //Instructions
+        public Task<List<InstructionResponseModel>> GetIstructionAsync(int id)
+            => GetSafeAsync<List<InstructionResponseModel>>($"api/Instruction/{id}");
+        public Task<GeneralApiResponseModel> CreateIstructionAsync(InstructionCreateRequestModel model)
+            => PostSafeAsync<InstructionCreateRequestModel, GeneralApiResponseModel>("api/Instruction/create", model);
+        public Task<GeneralApiResponseModel> DeleteIstructionAsync(int id)
+           => SafeRequestAsync<object, GeneralApiResponseModel>(HttpMethod.Delete, $"api/Instruction/delete/{id}", null);
+
+
+        //Reviews
+        public Task<List<ReviewResponseModel>> GetReviewAsync(int id)
+            => GetSafeAsync<List<ReviewResponseModel>>($"api/Reviews/{id}");
+        public Task<GeneralApiResponseModel> CreateReviewAsync(ReviewCreateRequestModel model)
+            => PostSafeAsync<ReviewCreateRequestModel, GeneralApiResponseModel>("api/Reviews/create", model);
+        public Task<GeneralApiResponseModel> DeleteReviewAsync(int id)
+           => SafeRequestAsync<object, GeneralApiResponseModel>(HttpMethod.Delete, $"api/Reviews/delete/{id}", null);
+
+
+        //Images
+        public Task<List<ProductImageResponseModel>> GetProductImagesAsync(int id)
+            => GetSafeAsync<List<ProductImageResponseModel>>($"api/ProductImage/{id}");
+        public Task<GeneralApiResponseModel> AddProductImageAsync(ProductImageCreateRequestModel model)
+            => SafeRequestAsync<ProductImageCreateRequestModel, GeneralApiResponseModel>(HttpMethod.Post, $"api/ProductImage/add", model, useMultipartFormData: true);
+        public Task<GeneralApiResponseModel> DeleteProductImageAsync(ProductImageDeleteRequestModel model)
+           => SafeRequestAsync<ProductImageDeleteRequestModel, GeneralApiResponseModel>(HttpMethod.Delete, $"api/ProductImage/delete/", model);
+        public Task<GeneralApiResponseModel> SetPrimaryImageAsync(ProductImageSetPrimaryRequestModel model)
+           => SafeRequestAsync<ProductImageSetPrimaryRequestModel, GeneralApiResponseModel>(HttpMethod.Put, $"api/ProductImage/setprimary/", model);
 
 
 

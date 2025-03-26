@@ -7,5 +7,6 @@
         public IFormFile? Icon { get; set; }
         public int? ParentCategoryId { get; set; }
         public int DisplayOrder { get; set; }
+        public bool IsParent { get; set; }
     }
 }
