@@ -113,38 +113,7 @@ namespace PriceComparisonMVCAdmin.Controllers
             return View(viewModel);
         }
 
-        [HttpPost]
-        public async Task<IActionResult> CreateCharacteristic([FromBody] ProductCharacteristicViewModel model)
-        {
-            var result = await _characteristicService.CreateCharacteristicAsync(model);
-            if (!result.success)
-            {
-                return BadRequest(new { message = result.errorMessage });
-            }
-            return Ok(new { message = "Created successfully", updatedId = result.updatedId });
-        }
-
-        [HttpPut]
-        public async Task<IActionResult> UpdateCharacteristic([FromBody] ProductCharacteristicViewModel model)
-        {
-            var result = await _characteristicService.UpdateCharacteristicAsync(model);
-            if (!result.success)
-            {
-                return BadRequest(new { message = result.errorMessage });
-            }
-            return Ok(new { message = "Updated successfully", updatedId = result.updatedId });
-        }
-
-        [HttpDelete]
-        public async Task<IActionResult> DeleteCharacteristic(int id)
-        {
-            var result = await _characteristicService.DeleteCharacteristicAsync(id);
-            if (!result.success)
-            {
-                return BadRequest(new { message = result.errorMessage });
-            }
-            return Ok(new { message = "Deleted successfully" });
-        }
+        
 
 
         // GET: CreateVariant
@@ -271,11 +240,52 @@ namespace PriceComparisonMVCAdmin.Controllers
             return Json(new { success = true });
         }
 
+
         // GET: IndexBaseProducts
         public async Task<IActionResult> IndexBaseProducts()
         {
             var groupedCategories = await _managerProductsService.GetGroupedCategoriesAsync();
             return View(groupedCategories);
+        }
+
+        [HttpGet("ManagerProducts/ProductGroup/bytype/{groupTypeId}")]
+        public async Task<IActionResult> GetByGroupType(int groupTypeId)
+        {
+            var groups = await _apiRequestService.GetGroupsByTypeIdAsync(groupTypeId);
+            return Json(groups);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> CreateCharacteristic([FromBody] ProductCharacteristicViewModel model)
+        {
+            var result = await _characteristicService.CreateCharacteristicAsync(model);
+            if (!result.success)
+            {
+                return BadRequest(new { message = result.errorMessage });
+            }
+            return Ok(new { message = "Created successfully", updatedId = result.updatedId });
+        }
+
+        [HttpPut]
+        public async Task<IActionResult> UpdateCharacteristic([FromBody] ProductCharacteristicViewModel model)
+        {
+            var result = await _characteristicService.UpdateCharacteristicAsync(model);
+            if (!result.success)
+            {
+                return BadRequest(new { message = result.errorMessage });
+            }
+            return Ok(new { message = "Updated successfully", updatedId = result.updatedId });
+        }
+
+        [HttpDelete]
+        public async Task<IActionResult> DeleteCharacteristic(int id)
+        {
+            var result = await _characteristicService.DeleteCharacteristicAsync(id);
+            if (!result.success)
+            {
+                return BadRequest(new { message = result.errorMessage });
+            }
+            return Ok(new { message = "Deleted successfully" });
         }
     }
 }

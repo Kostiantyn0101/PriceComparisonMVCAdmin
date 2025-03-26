@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using PriceComparisonMVCAdmin.Models.Constants;
 using PriceComparisonMVCAdmin.Models.DTOs.Request.Seller;
 using PriceComparisonMVCAdmin.Models.DTOs.Response;
 using PriceComparisonMVCAdmin.Models.Request.Seller;
@@ -88,22 +89,15 @@ namespace PriceComparisonMVCAdmin.Services
                 return (false, "Будь ласка, виберіть файл для завантаження.");
             }
 
-            try
-            {
-                var request = new SellerProductXmlRequestModel { PriceXML = file };
-                var response = await _apiRequestService.UploadPriceListAsync(request);
+            var request = new SellerProductXmlRequestModel { PriceXML = file };
+            var response = await _apiRequestService.UploadPriceListAsync(request);
 
-                if (response.ReturnCode == "Ok" || response.ReturnCode == "SUCCESS")
-                {
-                    return (true, "Файл успішно завантажено!");
-                }
-
-                return (false, $"Сталася помилка: {response.Message}");
-            }
-            catch (Exception ex)
+            if (response.ReturnCode == AppSuccessCodes.GerneralSuccess)
             {
-                return (false, $"Виникла помилка: {ex.Message}");
+                return (true, "Файл успішно завантажено!");
             }
+
+            return (false, $"Сталася помилка: {response.Message}");
         }
 
         public async Task<SellerAuctionRatesGroupedViewModel> GetAuctionRatesViewModelAsync(ClaimsPrincipal user)
@@ -116,7 +110,7 @@ namespace PriceComparisonMVCAdmin.Services
 
             var seller = await _apiRequestService.GetSellerByUserIdAsync(sellerId);
             model.SellerId = seller.Id;
-            
+
             var auctionRates = await _apiRequestService.GetAuctionClickRateAsync(seller.Id);
             var categories = await _apiRequestService.GetAllCategoriesAsync();
 

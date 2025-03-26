@@ -46,7 +46,10 @@ namespace PriceComparisonMVCAdmin.Services.ApiServices
         Task<GeneralApiResponseModel> CreateCharacteristicAsync(ProductCharacteristicCreateRequestModel model);
         Task<GeneralApiResponseModel> UpdateCharacteristicAsync(ProductCharacteristicUpdateRequestModel model);
         Task<GeneralApiResponseModel> DeleteCharacteristicAsync(int id);
+
         Task<List<ProductGroupTypeResponseModel>> GetAllProductGroupTypesAsync();
+        Task<List<ProductGroupTypeResponseModel>> GetGroupsByTypeIdAsync(int id);
+
         Task<GeneralApiResponseModel> CreateProductVariantAsync(ProductCreateRequestModel model);
         Task<ProductResponseModel> GetProductVariantByIdAsync(int id);
         Task<GeneralApiResponseModel> UpdateProductVariantAsync(ProductUpdateRequestModel model);

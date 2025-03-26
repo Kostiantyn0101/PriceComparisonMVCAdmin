@@ -95,8 +95,8 @@
                 groupSelect.appendChild(defaultOption);
 
                 if (groupTypeId) {
-                    fetch(window.apiBaseUrl + '/api/ProductGroup/getByProductGroupType/' + groupTypeId)
-                        .then(response => {
+                        fetch(`/ManagerProducts/ProductGroup/bytype/${groupTypeId}`)
+                            .then(response => {
                             if (!response.ok) {
                                 throw new Error('Помилка отримання груп');
                             }

@@ -98,8 +98,12 @@ namespace PriceComparisonMVCAdmin.Services.ApiServices
         //Other
         public Task<List<ColorResponseModel>> GetAllColorsAsync()
             => GetSafeAsync<List<ColorResponseModel>>("api/ProductColor/getall");
+
+        //GroupTypes
         public Task<List<ProductGroupTypeResponseModel>> GetAllProductGroupTypesAsync()
-           => GetSafeAsync<List<ProductGroupTypeResponseModel>>("api/ProductGroupType/getall");
+            => GetSafeAsync<List<ProductGroupTypeResponseModel>>("api/ProductGroupType/getall");
+        public Task<List<ProductGroupTypeResponseModel>> GetGroupsByTypeIdAsync(int id)
+            => GetSafeAsync<List<ProductGroupTypeResponseModel>>($"api/ProductGroup/getByProductGroupType/{id}");
 
 
         //Categories
