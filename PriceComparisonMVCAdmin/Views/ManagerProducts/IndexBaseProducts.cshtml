@@ -52,158 +52,156 @@
 
 @section Scripts {
     <script>
-        $(function () {
-            // Тогл для категорій
-            $(".category-toggle").click(function () {
-                var $button = $(this);
-                var $icon = $button.find(".toggle-icon");
-                var targetId = $button.attr("data-target");
-                var $target = $("#" + targetId);
+        // Тогл для категорій
+        document.querySelectorAll(".category-toggle").forEach(button => {
+            button.addEventListener("click", () => {
+                const icon = button.querySelector(".toggle-icon");
+                const targetId = button.getAttribute("data-target");
+                const target = document.getElementById(targetId);
 
-                if ($target.hasClass("d-none")) {
-                    $target.removeClass("d-none");
-                    $icon.removeClass("bi-chevron-right").addClass("bi-chevron-down");
-                } else {
-                    $target.addClass("d-none");
-                    $icon.removeClass("bi-chevron-down").addClass("bi-chevron-right");
-                }
+                target.classList.toggle("d-none");
+                icon.classList.toggle("bi-chevron-right");
+                icon.classList.toggle("bi-chevron-down");
             });
+        });
 
-            // Тогл для підкатегорій + завантаження базових продуктів
-            $(".subcategory-toggle").click(function () {
-                var $button = $(this);
-                var $icon = $button.find(".toggle-icon");
-                var categoryId = $button.data("category-id");
-                var $baseProductsContainer = $("#base-products-" + categoryId);
 
-                if ($baseProductsContainer.hasClass("d-none")) {
-                    $baseProductsContainer.removeClass("d-none");
-                    $icon.removeClass("bi-chevron-right").addClass("bi-chevron-down");
+        // Тогл для підкатегорій + завантаження базових продуктів
+        document.querySelectorAll(".subcategory-toggle").forEach(button => {
+            button.addEventListener("click", () => {
+                const icon = button.querySelector(".toggle-icon");
+                const categoryId = button.dataset.categoryId;
+                const baseProductsContainer = document.getElementById("base-products-" + categoryId);
 
-                    // Приховуємо всі інші базові продукти в поточній категорії
-                    $(".base-products-container").not($baseProductsContainer).addClass("d-none");
+                if (baseProductsContainer.classList.contains("d-none")) {
+                    baseProductsContainer.classList.remove("d-none");
+                    icon.classList.replace("bi-chevron-right", "bi-chevron-down");
 
-                    // Завантажуємо базові продукти (якщо ще не завантажені)
-                    if ($baseProductsContainer.is(":empty")) {
-                        loadBaseProducts(categoryId, $baseProductsContainer);
+                    document.querySelectorAll(".base-products-container").forEach(el => {
+                        if (el !== baseProductsContainer) {
+                            el.classList.add("d-none");
+                        }
+                    });
+
+                    if (!baseProductsContainer.hasChildNodes()) {
+                        loadBaseProducts(categoryId, baseProductsContainer);
                     }
                 } else {
-                    $baseProductsContainer.addClass("d-none");
-                    $icon.removeClass("bi-chevron-down").addClass("bi-chevron-right");
+                    baseProductsContainer.classList.add("d-none");
+                    icon.classList.replace("bi-chevron-down", "bi-chevron-right");
                 }
             });
+        });
 
-            // Тогл для базових продуктів + завантаження варіантів продуктів
-            $(document).on("click", ".base-product-toggle", function () {
-                var $button = $(this);
-                var $icon = $button.find(".toggle-icon");
-                var productId = $button.data("product-id");
-                var $variantsContainer = $("#variants-" + productId);
-                var categoryId = $button.data("category-id");
 
-                if ($variantsContainer.hasClass("d-none")) {
-                    $variantsContainer.removeClass("d-none");
-                    $icon.removeClass("bi-chevron-right").addClass("bi-chevron-down");
+        // Тогл для базових продуктів + завантаження варіантів продуктів
+        document.addEventListener("click", (e) => {
+            const button = e.target.closest(".base-product-toggle");
+            if (!button) return;
 
-                    // Закриваємо всі інші відкриті варіанти
-                    $(".variants-container").not($variantsContainer).addClass("d-none");
+            const icon = button.querySelector(".toggle-icon");
+            const productId = button.dataset.productId;
+            const categoryId = button.dataset.categoryId;
+            const variantsContainer = document.getElementById("variants-" + productId);
 
-                    // Завантажуємо варіанти продукту (якщо ще не завантажені)
-                    if ($variantsContainer.is(":empty")) {
-                        loadProductVariants(productId, $variantsContainer, categoryId);
-                    }
-                } else {
-                    $variantsContainer.addClass("d-none");
-                    $icon.removeClass("bi-chevron-down").addClass("bi-chevron-right");
+            if (variantsContainer.classList.contains("d-none")) {
+                variantsContainer.classList.remove("d-none");
+                icon.classList.replace("bi-chevron-right", "bi-chevron-down");
+
+                document.querySelectorAll(".variants-container").forEach(el => {
+                    if (el !== variantsContainer) el.classList.add("d-none");
+                });
+
+                if (!variantsContainer.hasChildNodes()) {
+                    loadProductVariants(productId, variantsContainer, categoryId);
                 }
-            });
+            } else {
+                variantsContainer.classList.add("d-none");
+                icon.classList.replace("bi-chevron-down", "bi-chevron-right");
+            }
+        });
 
-            // Завантаження базових продуктів
-            function loadBaseProducts(categoryId, container) {
-                $.ajax({
-                    url: window.apiBaseUrl +  "/api/BaseProducts/bycategory/" + categoryId,
-                    type: "GET",
-                    success: function (data) {
-                        container.empty().removeClass("d-none").addClass("base-products-container");
-                        if (data.length > 0) {
-                            data.forEach(function (product) {
-                                container.append(`
-                                    <li class="list-group-item id="baseProduct-${product.id}">
-                                        <div class="d-flex justify-content-between align-items-center">
-                                            <button class="btn btn-link base-product-toggle d-flex align-items-center"
-                                                    data-product-id="${product.id}"
-                                                    data-category-id="${product.categoryId}">
-                                                <i class="bi bi-chevron-right toggle-icon me-2"></i> ${product.title}
-                                            </button>
-                                            <div class="d-flex align-items-center">
-                                                <a href="/ManagerProducts/EditBaseProduct/${product.id}"
-                                                class="btn btn-sm btn-link text-primary" data-bs-toggle="tooltip" title="Редагувати базовий продукт">
-                                                    <i class="bi bi-pencil"></i>
-                                                </a>
-                                                <a href="/ManagerProducts/EditCharacteristics?baseProductId=${product.id}"
-                                                   class="btn btn-sm btn-link text-success" data-bs-toggle="tooltip" title="Додати/редагувати характеристики">
-                                                    <i class="bi bi-list-check"></i>
-                                                </a>
-                                                <a href="/ManagerProducts/CreateVariant?baseProductId=${product.id}"
-                                                   class="btn btn-sm btn-link text-success" data-bs-toggle="tooltip" title="Додати варіант продукту">
-                                                    <i class="bi bi-plus-lg"></i>
-                                                </a>
-                                                <form action="/ManagerProducts/DeleteBaseByJS" method="post" class="delete-product-form d-inline" data-id="${product.id}">
-                                                    <input type="hidden" name="id" value="${product.id}" />
-                                                    <button type="submit" class="btn btn-sm btn-link text-danger" data-bs-toggle="tooltip" title="Видалення базового продукту">
-                                                        <i class="bi bi-trash"></i>
+
+        // Завантаження базових продуктів
+        function loadBaseProducts(categoryId, container) {
+            fetch(`/ManagerProducts/GetBaseProductsByCategory/${categoryId}`)
+                .then(response => response.json())
+                .then(data => {
+                    container.innerHTML = "";
+                    container.classList.remove("d-none");
+                    container.classList.add("base-products-container");
+
+                    if (data.length > 0) {
+                        data.forEach(product => {
+                            container.insertAdjacentHTML("beforeend", `
+                                <li class="list-group-item" id="baseProduct-${product.id}">
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <button class="btn btn-link base-product-toggle d-flex align-items-center"
+                                                data-product-id="${product.id}"
+                                                data-category-id="${product.categoryId}">
+                                            <i class="bi bi-chevron-right toggle-icon me-2"></i> ${product.title}
+                                        </button>
+                                        <div class="d-flex align-items-center">
+                                            <a href="/ManagerProducts/EditBaseProduct/${product.id}"
+                                               class="btn btn-sm btn-link text-primary" title="Редагувати базовий продукт">
+                                                <i class="bi bi-pencil"></i>
+                                            </a>
+                                            <a href="/ManagerProducts/EditCharacteristics?baseProductId=${product.id}"
+                                               class="btn btn-sm btn-link text-success" title="Додати/редагувати характеристики">
+                                                <i class="bi bi-list-check"></i>
+                                            </a>
+                                            <a href="/ManagerProducts/CreateVariant?baseProductId=${product.id}"
+                                               class="btn btn-sm btn-link text-success" title="Додати варіант продукту">
+                                                <i class="bi bi-plus-lg"></i>
+                                            </a>
+                                            <form action="/ManagerProducts/DeleteBaseByJS" method="post" class="delete-product-form d-inline" data-id="${product.id}">
+                                                <input type="hidden" name="id" value="${product.id}" />
+                                                <button type="submit" class="btn btn-sm btn-link text-danger" title="Видалення базового продукту">
+                                                    <i class="bi bi-trash"></i>
                                                 </button>
                                             </form>
-
-                                            </div>
                                         </div>
-                                        <ul id="variants-${product.id}" class="list-unstyled ms-4 d-none variants-container"></ul>
-                                    </li>
-                                `);
-                            });
-                        } else {
-                            container.append("<li class='text-muted'>Немає базових продуктів</li>");
-                        }
-                    },
-                    error: function () {
-                        alert("Помилка завантаження базових продуктів");
+                                    </div>
+                                    <ul id="variants-${product.id}" class="list-unstyled ms-4 d-none variants-container"></ul>
+                                </li>
+                            `);
+                        });
+                    } else {
+                        container.innerHTML = "<li class='text-muted'>Немає базових продуктів</li>";
                     }
-                });
-            }
+                })
+                .catch(() => alert("Помилка завантаження базових продуктів"));
+        }
+
 
         function loadProductVariants(baseProductId, container, categoryId) {
-            $.ajax({
-                url: window.apiBaseUrl + "/api/Products/bybaseproduct/" + baseProductId,
-                type: "GET",
-                success: function (data) {
-                    container.empty().removeClass("d-none");
+            fetch(`/ManagerProducts/GetProductsVariantsByBaseProduct/${baseProductId}`)
+                .then(response => response.json())
+                .then(data => {
+                    container.innerHTML = "";
+                    container.classList.remove("d-none");
+
                     if (data.length > 0) {
-                        data.forEach(function (variant) {
-                            container.append(`
+                        data.forEach(variant => {
+                            const model = variant.modelNumber ? ` | модель - ${variant.modelNumber}` : '';
+                            const gtin = variant.gtin ? ` | GTIN - ${variant.gtin}` : (variant.upc ? ` | UPC - ${variant.upc}` : '');
+
+                            container.insertAdjacentHTML("beforeend", `
                                 <li class="list-group-item" id="variant-${variant.id}">
                                     <div class="d-flex justify-content-between align-items-center">
-                                        <span>
-                                            ${variant.productGroup.name || ''}
-                                            ${variant.modelNumber ? ' | модель - ' + variant.modelNumber : ''}
-                                            ${variant.gtin
-                                                ? ' | GTIN - ' + variant.gtin
-                                                : (variant.upc ? ' | UPC - ' + variant.upc : '')
-                                            }
-                                        </span>
+                                        <span>${variant.productGroup.name || ''}${model}${gtin}</span>
                                         <div class="d-flex align-items-center">
                                             <a href="/ManagerProducts/EditVariant/${variant.id}"
-                                               class="btn btn-sm btn-link text-primary"
-                                               title="Редагувати варіант продукту">
+                                               class="btn btn-sm btn-link text-primary" title="Редагувати варіант продукту">
                                                 <i class="bi bi-pencil"></i>
                                             </a>
                                             <a href="/ManagerProducts/EditCharacteristics?productId=${variant.id}"
-                                               class="btn btn-sm btn-link text-success" data-bs-toggle="tooltip"
-                                               title="Додати/редагувати характеристики">
+                                               class="btn btn-sm btn-link text-success" title="Додати/редагувати характеристики">
                                                 <i class="bi bi-list-check"></i>
                                             </a>
                                             <form action="/ManagerProducts/DeleteVariantByJS" method="post" class="delete-product-form d-inline" data-id="${variant.id}">
                                                 <input type="hidden" name="id" value="${variant.id}" />
-                                                <button type="submit" class="btn btn-sm btn-link text-danger" data-bs-toggle="tooltip" title="Видалення продукту">
+                                                <button type="submit" class="btn btn-sm btn-link text-danger" title="Видалення продукту">
                                                     <i class="bi bi-trash"></i>
                                                 </button>
                                             </form>
@@ -213,40 +211,36 @@
                             `);
                         });
                     } else {
-                        container.append("<li class='text-muted'>Немає варіантів</li>");
+                        container.innerHTML = "<li class='text-muted'>Немає варіантів</li>";
                     }
-                },
-                error: function () {
-                    alert("Помилка завантаження варіантів продуктів");
-                }
-            });
+                })
+                .catch(() => alert("Помилка завантаження варіантів продуктів"));
         }
-        });
-        $(document).on('submit', '.delete-product-form', function (e) {
+
+        document.addEventListener("submit", (e) => {
+            const form = e.target.closest(".delete-product-form");
+            if (!form) return;
+
             e.preventDefault();
 
-            if (!confirm('Видалити продукт?')) {
-                return;
-            }
+            if (!confirm("Видалити продукт?")) return;
 
-            var $form = $(this);
-            var id = $form.find('input[name="id"]').val();
+            const formData = new FormData(form);
 
-            $.ajax({
-                url: $form.attr('action'),
-                type: 'POST',
-                data: $form.serialize(),
-                success: function (response) {
-                    if (response.success) {
-                        $form.closest("li").remove();
-                    } else {
-                        alert("Помилка: " + response.message);
-                    }
-                },
-                error: function () {
-                    alert("Помилка видалення продукту");
+            fetch(form.action, {
+                method: "POST",
+                body: formData
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.success) {
+                    form.closest("li").remove();
+                } else {
+                    alert("Помилка: " + data.message);
                 }
-            });
+            })
+            .catch(() => alert("Помилка видалення продукту"));
         });
+
     </script>
 }

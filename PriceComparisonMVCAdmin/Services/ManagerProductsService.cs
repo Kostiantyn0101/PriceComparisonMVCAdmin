@@ -108,9 +108,10 @@ namespace PriceComparisonMVCAdmin.Services
         public async Task<EditCharacteristicsViewModel> GetEditCharacteristicsViewModelAsync(int baseProductId, int? productId)
         {
             BaseProductResponseModel baseProduct;
+            ProductResponseModel? product = null;
             if (productId.HasValue)
             {
-                var product = await _apiRequestService.GetProductVariantByIdAsync(productId.Value);
+                product = await _apiRequestService.GetProductVariantByIdAsync(productId.Value);
                 baseProduct = await _apiRequestService.GetBaseProductByIdAsync(product.BaseProductId);
             }
             else
@@ -154,13 +155,26 @@ namespace PriceComparisonMVCAdmin.Services
                 };
             }).ToList();
 
+            string? variantTitle = null;
+            if (product != null)
+            {
+                var model = !string.IsNullOrEmpty(product.ModelNumber) ? $" | модель - {product.ModelNumber}" : "";
+                var gtinOrUpc = !string.IsNullOrEmpty(product.GTIN)
+                    ? $" | GTIN - {product.GTIN}"
+                    : (!string.IsNullOrEmpty(product.UPC) ? $" | UPC - {product.UPC}" : "");
+
+                variantTitle = $"{product.ProductGroup?.Name ?? ""}{model}{gtinOrUpc}";
+            }
+
             return new EditCharacteristicsViewModel
             {
-                BaseProductId = baseProductId,
+                BaseProductId = baseProduct.Id,
                 CategoryId = categoryId,
                 ProductId = productId,
                 Characteristics = characteristicViewModels,
-                CharacteristicsMeta = characteristics
+                CharacteristicsMeta = characteristics,
+                BaseProductTitle = baseProduct.Title,
+                ProductVariantTitle = variantTitle
             };
         }
 
@@ -238,6 +252,23 @@ namespace PriceComparisonMVCAdmin.Services
             );
 
             return groupedCategories;
+        }
+
+        public string GetVariantTitle(ProductResponseModel product)
+        {
+            if (product == null) return string.Empty;
+
+            var title = product.ProductGroup?.Name ?? string.Empty;
+
+            if (!string.IsNullOrWhiteSpace(product.ModelNumber))
+                title += $" | модель - {product.ModelNumber}";
+
+            if (!string.IsNullOrWhiteSpace(product.GTIN))
+                title += $" | GTIN - {product.GTIN}";
+            else if (!string.IsNullOrWhiteSpace(product.UPC))
+                title += $" | UPC - {product.UPC}";
+
+            return title;
         }
 
     }

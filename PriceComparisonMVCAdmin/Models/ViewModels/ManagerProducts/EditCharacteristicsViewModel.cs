@@ -10,6 +10,9 @@ namespace PriceComparisonMVCAdmin.Models.ViewModels.ManagerProducts
         public int? ProductId { get; set; }
         public List<ProductCharacteristicViewModel> Characteristics { get; set; } = new();
         public List<CategoryCharacteristicResponseModel> CharacteristicsMeta { get; set; } = new();
+
+        public string BaseProductTitle { get; set; } = string.Empty;
+        public string? ProductVariantTitle { get; set; }
     }
 
 }

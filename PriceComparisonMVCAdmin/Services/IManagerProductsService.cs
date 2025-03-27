@@ -21,5 +21,7 @@ namespace PriceComparisonMVCAdmin.Services
         Task<(ProductResponseModel? product, string? errorMessage)> CreateProductVariantAsync(ProductCreateRequestModel model);
 
         Task<Dictionary<CategoryResponseModel, List<CategoryResponseModel>>> GetGroupedCategoriesAsync();
+        string GetVariantTitle(ProductResponseModel product);
+
     }
 }

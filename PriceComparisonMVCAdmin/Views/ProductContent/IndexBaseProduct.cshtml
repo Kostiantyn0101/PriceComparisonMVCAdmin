@@ -3,7 +3,12 @@
     Layout = "~/Views/Shared/_AdminLayout.cshtml";
 }
 
-<h2>Контент продукту (ID: @Model.BaseProductId)</h2>
+<h2>
+    Контент продукту
+</h2>
+<h5>
+    <a href="/ManagerProducts/EditBaseProduct/@Model.BaseProductId">@Model.BaseProductTitle</a>
+</h5>
 
 @if (TempData["SuccessMessage"] != null)
 {
@@ -54,7 +59,9 @@
                 <label>Посилання на відео</label>
                 <input type="text" name="VideoUrl" class="form-control" />
             </div>
-            <button type="submit" class="btn btn-success btn-primary-add">Додати відео</button>
+            <div class="d-flex align-items-center justify-content-center">
+                <button type="submit" class="btn btn-primary btn-main">Додати відео</button>
+            </div>
         </form>
     </div>
 
@@ -86,7 +93,9 @@
                 <label>Посилання на огляд</label>
                 <input type="text" name="ReviewUrl" class="form-control" />
             </div>
-            <button type="submit" class="btn btn-success btn-primary-add">Додати огляд</button>
+            <div class="d-flex align-items-center justify-content-center">
+                <button type="submit" class="btn btn-primary btn-main">Додати огляд</button>
+            </div>
         </form>
     </div>
 
@@ -118,7 +127,9 @@
                 <label>Посилання на інструкцію</label>
                 <input type="text" name="InstructionUrl" class="form-control" />
             </div>
-            <button type="submit" class="btn btn-success btn-primary-add">Додати інструкцію</button>
+            <div class="d-flex align-items-center justify-content-center">
+            <button type="submit" class="btn btn-primary btn-main">Додати інструкцію</button>
+            </div>
         </form>
     </div>
 </div>

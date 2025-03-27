@@ -29,12 +29,16 @@ namespace PriceComparisonMVCAdmin.Services.ApiServices
             => GetSafeAsync<List<BaseProductResponseModel>>("api/BaseProducts/onmoderation");
         public Task<BaseProductResponseModel> GetBaseProductByIdAsync(int id)
             => GetSafeAsync<BaseProductResponseModel>($"api/BaseProducts/{id}");
+        public Task<List<BaseProductResponseModel>> GetBaseProductByCategoryIdAsync(int id)
+            => GetSafeAsync<List<BaseProductResponseModel>>($"api/BaseProducts/bycategory/{id}");
         public Task<GeneralApiResponseModel> CreateBaseProductAsync(BaseProductCreateRequestModel model)
             => PostSafeAsync<BaseProductCreateRequestModel, GeneralApiResponseModel>("api/BaseProducts/create", model);
         public Task<GeneralApiResponseModel> UpdateBaseProductAsync(BaseProductUpdateRequestModel model)
             => SafeRequestAsync<BaseProductUpdateRequestModel, GeneralApiResponseModel>(HttpMethod.Put, "api/BaseProducts/update", model);
         public Task<GeneralApiResponseModel> DeleteBaseProductAsync(int id)
             => SafeRequestAsync<object, GeneralApiResponseModel>(HttpMethod.Delete, $"api/BaseProducts/delete/{id}", null);
+
+
 
 
         //Product Variants

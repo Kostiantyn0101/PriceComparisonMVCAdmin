@@ -22,8 +22,8 @@ namespace PriceComparisonMVCAdmin.Services
         {
             var createModel = new ProductCharacteristicCreateRequestModel
             {
-                BaseProductId = model.BaseProductId,
-                ProductId = model.ProductId,
+                BaseProductId = model.BaseProductId > 0 ? model.BaseProductId : null,
+                ProductId = model.ProductId > 0 ? model.ProductId : null,
                 CharacteristicId = model.CharacteristicId,
                 ValueText = !string.IsNullOrEmpty(model.ValueText) ? model.ValueText : null,
                 ValueNumber = model.ValueNumber.HasValue ? model.ValueNumber : null,
@@ -47,8 +47,8 @@ namespace PriceComparisonMVCAdmin.Services
             var updateModel = new ProductCharacteristicUpdateRequestModel
             {
                 Id = model.Id,
-                BaseProductId = model.BaseProductId,
-                ProductId = model.ProductId,
+                BaseProductId = model.BaseProductId > 0 ? model.BaseProductId : null,
+                ProductId = model.ProductId > 0 ? model.ProductId : null,
                 CharacteristicId = model.CharacteristicId,
                 ValueText = !string.IsNullOrEmpty(model.ValueText) ? model.ValueText : null,
                 ValueNumber = model.ValueNumber.HasValue ? model.ValueNumber : null,

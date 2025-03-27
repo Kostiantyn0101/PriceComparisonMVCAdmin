@@ -107,48 +107,60 @@
     </form>
 </div>
 @section Scripts {
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
-        $(function(){
-            var initialGroupId = $('#currentGroupId').val();
-            var selectedGroupTypeId = '@(Model.SelectedGroupTypeId)';
+        document.addEventListener("DOMContentLoaded", () => {
+            const groupTypeSelect = document.getElementById("groupTypeSelect");
+            const groupSelect = document.getElementById("groupSelect");
+            const initialGroupId = document.getElementById("currentGroupId")?.value;
+            const selectedGroupTypeId = "@(Model.SelectedGroupTypeId)";
 
-            function loadGroups(groupTypeId) {
-                var $groupSelect = $('#groupSelect');
-                $groupSelect.empty();
-                $groupSelect.append('<option value="">-- Оберіть групу --</option>');
+            async function loadGroups(groupTypeId) {
+                groupSelect.innerHTML = "";
 
-                if (groupTypeId) {
-                    $.ajax({
-                        url: window.apiBaseUrl + '/api/ProductGroup/getByProductGroupType/' + groupTypeId,
-                        type: 'GET',
-                        dataType: 'json',
-                        success: function(data) {
-                            $.each(data, function(index, group) {
-                                var isSelected = group.id == initialGroupId ? 'selected' : '';
-                                $groupSelect.append(`<option value="${group.id}" ${isSelected}>${group.name}</option>`);
-                            });
-                        },
-                        error: function(){
-                            alert('Помилка отримання груп');
+                const defaultOption = document.createElement("option");
+                defaultOption.value = "";
+                defaultOption.textContent = "-- Оберіть групу --";
+                groupSelect.appendChild(defaultOption);
+
+                if (!groupTypeId) return;
+
+                try {
+                    const response = await fetch(`/ManagerProducts/ProductGroup/bytype/${groupTypeId}`);
+                    if (!response.ok) throw new Error("Помилка отримання груп");
+
+                    const data = await response.json();
+
+                    data.forEach(group => {
+                        const option = document.createElement("option");
+                        option.value = group.id;
+                        option.textContent = group.name;
+
+                        if (initialGroupId && group.id.toString() === initialGroupId) {
+                            option.selected = true;
                         }
+
+                        groupSelect.appendChild(option);
                     });
+
+                } catch (error) {
+                    alert(error.message || "Помилка отримання груп");
                 }
             }
 
             if (selectedGroupTypeId) {
-                $('#groupTypeSelect').val(selectedGroupTypeId);
+                groupTypeSelect.value = selectedGroupTypeId;
                 loadGroups(selectedGroupTypeId);
             }
 
-            $('#groupTypeSelect').change(function(){
-                loadGroups($(this).val());
+            groupTypeSelect.addEventListener("change", () => {
+                const groupTypeId = groupTypeSelect.value;
+                loadGroups(groupTypeId);
             });
 
-            $('#groupSelect').change(function(){
-                var newGroupId = $(this).val();
+            groupSelect.addEventListener("change", () => {
+                const newGroupId = groupSelect.value;
                 if (newGroupId !== initialGroupId) {
-                    console.log('Група змінена! Нове значення: ' + newGroupId);
+                    console.log("Група змінена! Нове значення: " + newGroupId);
                 }
             });
         });

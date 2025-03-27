@@ -5,6 +5,7 @@ using PriceComparisonMVCAdmin.Models.DTOs.Request.Product;
 using Microsoft.AspNetCore.Authorization;
 using PriceComparisonMVCAdmin.Models.ViewModels.ProductContent;
 using PriceComparisonMVCAdmin.Services.ApiServices;
+using PriceComparisonMVCAdmin.Services;
 
 namespace PriceComparisonMVCAdmin.Controllers
 {
@@ -12,25 +13,32 @@ namespace PriceComparisonMVCAdmin.Controllers
     public class ProductContentController : BaseController<ProductContentController>
     {
         IApiRequestService _apiRequestService;
+        IManagerProductsService _managerProductsService;
+
 
         public ProductContentController(IApiService apiService,
             IApiRequestService apiRequestService,
+            IManagerProductsService managerProductsService,
             IApiResponseDeserializerService apiResponseDeserializerService,
             ILogger<ProductContentController> logger)
             : base(apiService, logger)
         {
+            _managerProductsService = managerProductsService;
             _apiRequestService = apiRequestService;
         }
 
         [HttpGet]
         public async Task<IActionResult> IndexBaseProduct(int id)
         {
+            var baseProduct = await _apiRequestService.GetBaseProductByIdAsync(id);
+
             var model = new BaseProductContentViewModel
             {
                 BaseProductId = id,
+                BaseProductTitle = baseProduct.Title,
                 Videos = await _apiRequestService.GetBaseProductVideosAsync(id),
                 Reviews = await _apiRequestService.GetReviewAsync(id),
-                Instructions = await _apiRequestService.GetIstructionAsync(id),
+                Instructions = await _apiRequestService.GetIstructionAsync(id)
             };
 
             return View(model);
@@ -146,12 +154,16 @@ namespace PriceComparisonMVCAdmin.Controllers
         [HttpGet]
         public async Task<IActionResult> IndexVariantProduct(int id)
         {
-            var response = await _apiRequestService.GetProductImagesAsync(id);
+            var product = await _apiRequestService.GetProductVariantByIdAsync(id);
+            var baseProduct = await _apiRequestService.GetBaseProductByIdAsync(product.BaseProductId);
 
             var model = new VariantProductContentViewModel
             {
                 ProductId = id,
-                Images = response,
+                BaseProductId = product.BaseProductId,
+                BaseProductTitle = baseProduct.Title,
+                ProductVariantTitle = _managerProductsService.GetVariantTitle(product),
+                Images = await _apiRequestService.GetProductImagesAsync(id)
             };
 
             return View(model);

@@ -3,7 +3,14 @@
     Layout = "~/Views/Shared/_AdminLayout.cshtml";
 }
 
-<h2 class="mb-4">Зображення (ID: @Model.ProductId)</h2>
+<h2 class="mb-4">Зображення</h2>
+<div class="mb-3">
+    <h5>
+        <a href="/ManagerProducts/EditBaseProduct/@Model.BaseProductId">@Model.BaseProductTitle</a>
+        <span class="mx-2">→</span>
+        <a href="/ManagerProducts/EditVariant/@Model.ProductId">@Model.ProductVariantTitle</a>
+    </h5>
+</div>
 
 @if (TempData["SuccessMessage"] != null)
 {
@@ -86,9 +93,11 @@
                 <label class="form-label">Завантажити зображення</label>
                 <input type="file" name="Images" class="form-control" multiple />
             </div>
-            <button type="submit" class="btn btn-success btn-primary-add">
-                Додати зображення
-            </button>
+            <div class="d-flex align-items-center justify-content-center">
+                <button type="submit" class="btn btn-primary btn-main">
+                    Додати зображення
+                </button>
+            </div>
         </form>
     </div>
 </div>

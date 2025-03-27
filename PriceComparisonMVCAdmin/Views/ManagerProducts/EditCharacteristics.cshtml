@@ -5,7 +5,20 @@
 
 <div class="container my-4">
     <h2 class="mb-3">Редагування характеристик</h2>
-
+    <div class="mb-3">
+        <h5>
+            @if (Model.ProductId.HasValue)
+            {
+                <a href="/ManagerProducts/EditBaseProduct/@Model.BaseProductId" class="me-2">@Model.BaseProductTitle</a>
+                <span class="mx-2">→</span>
+                <a href="/ManagerProducts/EditVariant/@Model.ProductId">@Model.ProductVariantTitle</a>
+            }
+            else
+            {
+                <a href="/ManagerProducts/EditBaseProduct/@Model.BaseProductId">@Model.BaseProductTitle</a>
+            }
+        </h5>
+    </div>
     <div class="d-flex flex-column">
         <div class="row fw-bold border-bottom py-2">
             <div class="col-4 text-start">Характеристика</div>
@@ -78,118 +91,137 @@
 </div>
 
 @section Scripts {
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script>
-        $(function(){
-            $(".edit-toggle-btn").click(function(){
-                var $row = $(this).closest(".row");
-                $row.find(".characteristic-input").removeClass("d-none");
-                $row.find(".characteristic-display").addClass("d-none");
-                $(this).addClass("d-none");
-                $row.find(".confirm-btn, .cancel-btn").removeClass("d-none");
-            });
+        <script>
+            document.addEventListener("DOMContentLoaded", () => {
+                // Редагування характеристики
+                document.querySelectorAll(".edit-toggle-btn").forEach(button => {
+                    button.addEventListener("click", () => {
+                        const row = button.closest(".row");
+                        row.querySelector(".characteristic-input").classList.remove("d-none");
+                        row.querySelector(".characteristic-display").classList.add("d-none");
+                        button.classList.add("d-none");
+                        row.querySelector(".confirm-btn").classList.remove("d-none");
+                        row.querySelector(".cancel-btn").classList.remove("d-none");
+                    });
+                });
 
-            $(".cancel-btn").click(function(){
-                var $row = $(this).closest(".row");
-                $row.find(".characteristic-input").addClass("d-none");
-                $row.find(".characteristic-display").removeClass("d-none");
-                $row.find(".confirm-btn, .cancel-btn").addClass("d-none");
-                $row.find(".edit-toggle-btn").removeClass("d-none");
-            });
+                // Скасування редагування
+                document.querySelectorAll(".cancel-btn").forEach(button => {
+                    button.addEventListener("click", () => {
+                        const row = button.closest(".row");
+                        row.querySelector(".characteristic-input").classList.add("d-none");
+                        row.querySelector(".characteristic-display").classList.remove("d-none");
+                        row.querySelector(".confirm-btn").classList.add("d-none");
+                        row.querySelector(".cancel-btn").classList.add("d-none");
+                        row.querySelector(".edit-toggle-btn").classList.remove("d-none");
+                    });
+                });
 
-            $(".confirm-btn").click(function(){
-                var $row = $(this).closest(".row");
-                var characteristicId = $row.data("characteristic-id");
-                var baseProductId = $row.data("base-product-id") || null;
-                var productId = $row.data("product-id") || null;
-                var characteristicType = $row.data("characteristic-type");
-                var characteristicRecordId = $row.data("record-id") || 0;
+                // Підтвердження редагування
+                document.querySelectorAll(".confirm-btn").forEach(button => {
+                    button.addEventListener("click", async () => {
+                        const row = button.closest(".row");
+                        const characteristicId = row.dataset.characteristicId;
+                        const baseProductId = row.dataset.baseProductId || null;
+                        const productId = row.dataset.productId || null;
+                        const type = row.dataset.characteristicType;
+                        const recordId = parseInt(row.dataset.recordId || "0");
 
-                // Отримання нового значення залежно від типу поля
-                var inputField = $row.find(".characteristic-input");
-                var newValue = inputField.val();
+                        const input = row.querySelector(".characteristic-input");
+                        let newValue = input.value;
 
-                if (inputField.attr("type") === "checkbox") {
-                    newValue = inputField.prop("checked");
-                } else if (inputField.attr("type") === "number") {
-                    newValue = parseFloat(newValue) || null;
-                } else if (inputField.attr("type") === "date") {
-                    newValue = newValue ? new Date(newValue).toISOString() : null;
-                }
-
-                var payload = {
-                    Id: characteristicRecordId > 0 ? characteristicRecordId : null,
-                    BaseProductId: baseProductId,
-                    ProductId: productId,
-                    CharacteristicId: characteristicId,
-                    ValueText: characteristicType === "string" ? newValue : null,
-                    ValueNumber: characteristicType === "decimal" ? newValue : null,
-                    ValueBoolean: characteristicType === "bool" ? (newValue === "true" || newValue === true) : false,
-                    ValueDate: characteristicType === "datetime" ? newValue : null
-                };
-
-                var apiUrl = characteristicRecordId > 0
-                    ? "/ManagerProducts/UpdateCharacteristic"
-                    : "/ManagerProducts/CreateCharacteristic";
-                var methodType = characteristicRecordId > 0 ? "PUT" : "POST";
-
-                $.ajax({
-                    url: apiUrl,
-                    type: methodType,
-                    contentType: "application/json",
-                    data: JSON.stringify(payload),
-                    success: function(response){
-                        var displayValue = newValue;
-                        if (characteristicType === "bool") {
-                            displayValue = newValue ? "Так" : "Ні";
-                        } else if (characteristicType === "datetime") {
-                            displayValue = new Date(newValue).toLocaleDateString("uk-UA");
+                        if (input.type === "checkbox") {
+                            newValue = input.checked;
+                        } else if (input.type === "number") {
+                            newValue = parseFloat(newValue) || null;
+                        } else if (input.type === "date") {
+                            newValue = newValue ? new Date(newValue).toISOString() : null;
                         }
 
-                        $row.find(".characteristic-display").text(newValue || "Немає");
-                        $row.find(".characteristic-input").addClass("d-none");
-                        $row.find(".characteristic-display").removeClass("d-none");
-                        $row.find(".confirm-btn, .cancel-btn").addClass("d-none");
-                        $row.find(".edit-toggle-btn").removeClass("d-none");
+                        const payload = {
+                            Id: recordId > 0 ? recordId : null,
+                            BaseProductId: baseProductId,
+                            ProductId: productId,
+                            CharacteristicId: characteristicId,
+                            ValueText: type === "string" ? newValue : null,
+                            ValueNumber: type === "decimal" ? newValue : null,
+                            ValueBoolean: type === "bool" ? newValue === true || newValue === "true" : false,
+                            ValueDate: type === "datetime" ? newValue : null
+                        };
 
-                        if (characteristicRecordId === 0 && response.updatedId) {
-                            $row.data("record-id", response.updatedId);
+                        const url = recordId > 0 ? "/ManagerProducts/UpdateCharacteristic" : "/ManagerProducts/CreateCharacteristic";
+                        const method = recordId > 0 ? "PUT" : "POST";
+
+                        try {
+                            const res = await fetch(url, {
+                                method,
+                                headers: { "Content-Type": "application/json" },
+                                body: JSON.stringify(payload)
+                            });
+
+                            if (!res.ok) throw new Error("Request failed");
+
+                            const response = await res.json();
+
+                            let display = newValue;
+                            if (type === "bool") {
+                                display = newValue ? "Так" : "Ні";
+                            } else if (type === "datetime") {
+                                display = newValue ? new Date(newValue).toLocaleDateString("uk-UA") : "Немає";
+                            }
+
+                            row.querySelector(".characteristic-display").textContent = display || "Немає";
+                            row.querySelector(".characteristic-input").classList.add("d-none");
+                            row.querySelector(".characteristic-display").classList.remove("d-none");
+                            row.querySelector(".confirm-btn").classList.add("d-none");
+                            row.querySelector(".cancel-btn").classList.add("d-none");
+                            row.querySelector(".edit-toggle-btn").classList.remove("d-none");
+
+                            if (recordId === 0 && response.updatedId) {
+                                row.dataset.recordId = response.updatedId;
+                            }
+                        } catch {
+                            alert("Помилка оновлення/створення");
                         }
-                    },
-                    error: function(){
-                        alert("Помилка оновлення/створення");
-                    }
+                    });
+                });
+
+                // Видалення характеристики
+                document.querySelectorAll(".delete-btn").forEach(button => {
+                    button.addEventListener("click", async () => {
+                        const row = button.closest(".row");
+                        const recordId = row.dataset.recordId;
+
+                        if (!recordId || recordId === "0") {
+                            alert("Характеристика ще не була збережена.");
+                            return;
+                        }
+
+                        try {
+                            const res = await fetch(`/ManagerProducts/DeleteCharacteristic/${recordId}`, {
+                                method: "DELETE"
+                            });
+
+                            if (!res.ok) throw new Error();
+
+                            const input = row.querySelector(".characteristic-input");
+                            if (input.type === "checkbox") input.checked = false;
+                            else input.value = "";
+
+                            row.querySelector(".characteristic-display").textContent = "Немає";
+                            row.dataset.recordId = "0";
+                            row.querySelector(".confirm-btn").classList.add("d-none");
+                            row.querySelector(".cancel-btn").classList.add("d-none");
+                            row.querySelector(".edit-toggle-btn").classList.remove("d-none");
+
+                            alert("Значення характеристики видалено");
+                        } catch {
+                            alert("Помилка видалення");
+                        }
+                    });
                 });
             });
-
-            $(".delete-btn").click(function(){
-                var $row = $(this).closest(".row");
-                var characteristicRecordId = $row.data("record-id");
-
-                if (!characteristicRecordId) {
-                    alert("Характеристика ще не була збережена.");
-                    return;
-                }
-                $.ajax({
-                    url: "/ManagerProducts/DeleteCharacteristic/" + characteristicRecordId,
-                    type: "DELETE",
-                    success: function(){
-                        $row.find(".characteristic-input").val("").prop("checked", false);
-                        $row.find(".characteristic-display").text("Немає");
-                        $row.removeData("record-id");
-                        $row.attr("data-record-id", "0");
-                        $row.find(".confirm-btn, .cancel-btn").addClass("d-none");
-                        $row.find(".edit-toggle-btn").removeClass("d-none");
-
-                        alert("Значення характеристики видалено");                    
-                    },
-                    error: function(){
-                        alert("Помилка видалення");
-                    }
-                });
-            });
-        });
-    </script>
+        </script>
 }
 
 

@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using PriceComparisonMVCAdmin.Models.Constants;
 using PriceComparisonMVCAdmin.Models.DTOs;
+using PriceComparisonMVCAdmin.Models.DTOs.Request.Product;
 using PriceComparisonMVCAdmin.Models.ViewModels.ManagerProducts;
 using PriceComparisonMVCAdmin.Services;
 using PriceComparisonMVCAdmin.Services.ApiServices;
@@ -287,5 +288,56 @@ namespace PriceComparisonMVCAdmin.Controllers
             }
             return Ok(new { message = "Deleted successfully" });
         }
+
+        [HttpGet]
+        public async Task<IActionResult> GetBaseProductsByCategory(int id)
+        {
+            var baseProducts = await _apiRequestService.GetBaseProductByCategoryIdAsync(id);
+            return Json(baseProducts);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GetProductsVariantsByBaseProduct(int id)
+        {
+            var productVariants = await _apiRequestService.GetVariantsByBaseProductIdAsync(id);
+            return Json(productVariants);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GetVariantsOnModeration()
+        {
+            var variants = await _apiRequestService.GetProductVariantsOnModerationAsync();
+            return Json(variants);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> ReassignVariantToBase(int variantId, int newBaseProductId)
+        {
+            var variant = await _apiRequestService.GetProductVariantByIdAsync(variantId);
+            if (variant == null)
+                return Json(new { success = false, message = "Продукт не знайдено." });
+
+            var updateModel = new ProductUpdateRequestModel
+            {
+                Id = variant.Id,
+                GTIN = variant.GTIN,
+                UPC = variant.UPC,
+                ModelNumber = variant.ModelNumber,
+                IsUnderModeration = variant.IsUnderModeration,
+                BaseProductId = newBaseProductId,
+                ColorId = variant.ColorId,
+                IsDefault = variant.IsDefault,
+                ProductGroupId = variant.ProductGroup?.Id
+            };
+
+            var response = await _apiRequestService.UpdateProductVariantAsync(updateModel);
+
+            return Json(new
+            {
+                success = response.ReturnCode == AppSuccessCodes.UpdateSuccess,
+                message = response.Message
+            });
+        }
+
     }
 }

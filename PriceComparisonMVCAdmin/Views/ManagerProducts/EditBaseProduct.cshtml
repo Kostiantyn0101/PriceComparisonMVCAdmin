@@ -43,6 +43,20 @@
         </button>
     </form>
 </div>
+<h5 class="mt-4">Прив’язати продукт на модерації</h5>
+<div class="row mb-3">
+    <div class="col-md-9">
+        <select class="form-select" id="variantToReassign">
+            <option value="">-- Оберіть продукт --</option>
+        </select>
+    </div>
+    <div class="col-md-3">
+        <button type="button" class="btn btn-outline-primary w-100" id="btnReassignVariant"
+                data-base-id="@Model.BaseProduct.Id">
+            Прив’язати
+        </button>
+    </div>
+</div>
 @if (Model.productVariants != null && Model.productVariants.Any())
 {
     <h3 class="mt-4">Список варіантів</h3>
@@ -85,19 +99,23 @@
                         @{
                             if (!string.IsNullOrEmpty(variant.ModelNumber))
                             {
-                                <text>Модель - @variant.ModelNumber</text>;
+                                <text>Модель - @variant.ModelNumber</text>
+                                ;
                             }
                             else if (!string.IsNullOrEmpty(variant.GTIN))
                             {
-                                <text>GTIN - @variant.GTIN</text>;
+                                <text>GTIN - @variant.GTIN</text>
+                                ;
                             }
                             else if (!string.IsNullOrEmpty(variant.UPC))
                             {
-                                <text>UPC - @variant.UPC</text>;
+                                <text>UPC - @variant.UPC</text>
+                                ;
                             }
                             else
                             {
-                                <text>Невідомо</text>;
+                                <text>Невідомо</text>
+                                ;
                             }
                         }
                     </div>
@@ -116,7 +134,7 @@
                     </a>
 
                     <form asp-controller="ManagerProducts" asp-action="DeleteVariant" method="post"
-                          class="d-inline-flex align-items-center justify-content-center flex-fill" 
+                          class="d-inline-flex align-items-center justify-content-center flex-fill"
                           onsubmit="return confirm('Видалити варіант?');">
                         <input type="hidden" name="id" value="@variant.Id" />
                         <button type="submit"
@@ -133,3 +151,48 @@ else
 {
     <p class="text-muted mt-4">Немає варіантів продуктів</p>
 }
+@section Scripts {
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            const select = document.getElementById("variantToReassign");
+            const baseId = document.getElementById("btnReassignVariant").dataset.baseId;
+
+            // Завантаження продуктів на модерації
+            fetch("/ManagerProducts/GetVariantsOnModeration")
+                .then(res => res.json())
+                .then(data => {
+                    data.forEach(p => {
+                        const model = p.modelNumber ? ` | модель - ${p.modelNumber}` : '';
+                        const gtin = p.gtin ? ` | GTIN - ${p.gtin}` : (p.upc ? ` | UPC - ${p.upc}` : '');
+                        const label = `${p.productGroup?.name ?? ''}${model}${gtin}`;
+
+                        const opt = document.createElement("option");
+                        opt.value = p.id;
+                        opt.textContent = label;
+                        select.appendChild(opt);
+                    });
+                });
+
+            // Прив’язка продукту
+            document.getElementById("btnReassignVariant").addEventListener("click", async () => {
+                const variantId = parseInt(select.value);
+                if (!variantId) return alert("Оберіть продукт.");
+
+                try {
+                    const res = await fetch("/ManagerProducts/ReassignVariantToBase", {
+                        method: "POST",
+                        headers: { "Content-Type": "application/x-www-form-urlencoded" },
+                        body: `variantId=${variantId}&newBaseProductId=${baseId}`
+                    });
+
+                    const data = await res.json();
+                    alert(data.message || "Варіант продукту успішно додано до поточного базового продукту.");
+                    if (data.success) window.location.reload();
+                } catch {
+                    alert("Сталася помилка при призначенні.");
+                }
+            });
+        });
+    </script>
+}
+

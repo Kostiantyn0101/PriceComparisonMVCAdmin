@@ -37,6 +37,8 @@ namespace PriceComparisonMVCAdmin.Services.ApiServices
 
         Task<GeneralApiResponseModel> CreateBaseProductAsync(BaseProductCreateRequestModel model);
         Task<BaseProductResponseModel> GetBaseProductByIdAsync(int id);
+        Task<List<BaseProductResponseModel>> GetBaseProductByCategoryIdAsync(int id);
+
         Task<List<ProductResponseModel>> GetVariantsByBaseProductIdAsync(int baseProductId);
         Task<List<ColorResponseModel>> GetAllColorsAsync();
         Task<GeneralApiResponseModel> UpdateBaseProductAsync(BaseProductUpdateRequestModel model);
