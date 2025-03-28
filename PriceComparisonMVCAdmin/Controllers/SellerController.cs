@@ -11,8 +11,8 @@ namespace PriceComparisonMVCAdmin.Controllers
     [Authorize(Policy = "SellerRights")]
     public class SellerController : BaseController<SellerController>
     {
-        IApiRequestService _apiRequestService;
-        ISellerService _sellerService;
+        private readonly IApiRequestService _apiRequestService;
+        private readonly ISellerService _sellerService;
 
         public SellerController(IApiService apiService,
             IApiRequestService apiRequestService,
@@ -68,11 +68,11 @@ namespace PriceComparisonMVCAdmin.Controllers
             var response = await _sellerService.UpdateSellerAsync(model);
             if (response == null)
             {
+                TempData["Error"] = "Сталась помилка при запиті.";
                 return NotFound();
             }
 
-            TempData["SuccessMessage"] = "Оновлення успішне.";
-            return RedirectToAction("Settings");
+            return HandleApiResponse(response, "Settings");
         }
 
         public async Task<IActionResult> Settings()

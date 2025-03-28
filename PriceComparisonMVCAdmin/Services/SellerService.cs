@@ -13,10 +13,14 @@ namespace PriceComparisonMVCAdmin.Services
     public class SellerService : ISellerService
     {
         private readonly IApiRequestService _apiRequestService;
+        private readonly ICategoryService _categoryService;
         private readonly IMapper _mapper;
-        public SellerService(IApiRequestService apiRequestService, IMapper mapper)
+        public SellerService(IApiRequestService apiRequestService, 
+            IMapper mapper, 
+            ICategoryService categoryService)
         {
             _apiRequestService = apiRequestService;
+            _categoryService = categoryService;
             _mapper = mapper;
         }
 
@@ -109,10 +113,8 @@ namespace PriceComparisonMVCAdmin.Services
             model.SellerId = seller.Id;
 
             var auctionRates = await _apiRequestService.GetAuctionClickRateAsync(seller.Id);
-            var categories = await _apiRequestService.GetAllCategoriesAsync();
 
-            var parents = categories.Where(c => c.ParentCategoryId == null).ToList();
-            var children = categories.Where(c => c.ParentCategoryId != null).ToList();
+            var (parents, children) = await _categoryService.GetParentAndChildCategoriesAsync();
 
             foreach (var parent in parents)
             {
