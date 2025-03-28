@@ -89,7 +89,7 @@
 
 </form>
 <div class="d-flex justify-content-between mt-4">
-    <a asp-controller="ManagerProducts" asp-action="EditCharacteristics"
+    <a asp-controller="ProductCharacteristics" asp-action="Edit"
        asp-route-productId="@Model.ProductVariant.Id"
        class="btn btn-main btn-success btn-primary-add d-inline-flex align-items-center justify-content-center">
         <i class="bi bi-list-check me-2"></i> Додати/редагувати характеристики
@@ -125,7 +125,7 @@
                 if (!groupTypeId) return;
 
                 try {
-                    const response = await fetch(`/ManagerProducts/ProductGroup/bytype/${groupTypeId}`);
+                    const response = await fetch(`/api/products/productgroup/bytype/${groupTypeId}`);
                     if (!response.ok) throw new Error("Помилка отримання груп");
 
                     const data = await response.json();

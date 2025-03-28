@@ -13,13 +13,10 @@ namespace PriceComparisonMVCAdmin.Services
     public class SellerService : ISellerService
     {
         private readonly IApiRequestService _apiRequestService;
-        private readonly IApiResponseDeserializerService _apiResponseDeserializerService;
         private readonly IMapper _mapper;
-        public SellerService(IApiRequestService apiRequestService, IMapper mapper,
-            IApiResponseDeserializerService apiResponseDeserializerService)
+        public SellerService(IApiRequestService apiRequestService, IMapper mapper)
         {
             _apiRequestService = apiRequestService;
-            _apiResponseDeserializerService = apiResponseDeserializerService;
             _mapper = mapper;
         }
 

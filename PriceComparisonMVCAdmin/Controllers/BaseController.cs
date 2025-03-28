@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using PriceComparisonMVCAdmin.Controllers;
+using PriceComparisonMVCAdmin.Models.Constants;
 using PriceComparisonMVCAdmin.Models.DTOs.Response;
 using PriceComparisonMVCAdmin.Models.Response.Seller;
 using PriceComparisonMVCAdmin.Services.ApiServices;
@@ -46,5 +47,22 @@ public abstract class BaseController<T> : Controller
         }
 
         await next();
+    }
+
+    protected IActionResult HandleApiResponse(GeneralApiResponseModel response, string successRedirect, object? routeValues = null)
+    {
+        if (response.ReturnCode == AppSuccessCodes.CreateSuccess ||
+            response.ReturnCode == AppSuccessCodes.UpdateSuccess ||
+            response.ReturnCode == AppSuccessCodes.DeleteSuccess ||
+            response.ReturnCode == AppSuccessCodes.GerneralSuccess)
+        {
+            TempData["SuccessMessage"] = string.IsNullOrWhiteSpace(response.Message)
+                        ? "Успішно."
+                        : response.Message;
+            return RedirectToAction(successRedirect, routeValues);
+        }
+
+        TempData["Error"] = response.Message ?? "Сталася помилка.";
+        return RedirectToAction(successRedirect, routeValues);
     }
 }

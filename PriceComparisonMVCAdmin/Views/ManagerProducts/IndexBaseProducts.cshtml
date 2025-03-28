@@ -124,7 +124,7 @@
 
         // Завантаження базових продуктів
         function loadBaseProducts(categoryId, container) {
-            fetch(`/ManagerProducts/GetBaseProductsByCategory/${categoryId}`)
+            fetch(`/api/products/getbaseproduct/bycategory/${categoryId}`)
                 .then(response => response.json())
                 .then(data => {
                     container.innerHTML = "";
@@ -146,7 +146,7 @@
                                                class="btn btn-sm btn-link text-primary" title="Редагувати базовий продукт">
                                                 <i class="bi bi-pencil"></i>
                                             </a>
-                                            <a href="/ManagerProducts/EditCharacteristics?baseProductId=${product.id}"
+                                            <a href="/ProductCharacteristics/Edit?baseProductId=${product.id}"
                                                class="btn btn-sm btn-link text-success" title="Додати/редагувати характеристики">
                                                 <i class="bi bi-list-check"></i>
                                             </a>
@@ -154,7 +154,7 @@
                                                class="btn btn-sm btn-link text-success" title="Додати варіант продукту">
                                                 <i class="bi bi-plus-lg"></i>
                                             </a>
-                                            <form action="/ManagerProducts/DeleteBaseByJS" method="post" class="delete-product-form d-inline" data-id="${product.id}">
+                                            <form action="/api/products/deletebase" method="post" class="delete-product-form d-inline" data-id="${product.id}">
                                                 <input type="hidden" name="id" value="${product.id}" />
                                                 <button type="submit" class="btn btn-sm btn-link text-danger" title="Видалення базового продукту">
                                                     <i class="bi bi-trash"></i>
@@ -175,7 +175,7 @@
 
 
         function loadProductVariants(baseProductId, container, categoryId) {
-            fetch(`/ManagerProducts/GetProductsVariantsByBaseProduct/${baseProductId}`)
+            fetch(`/api/products/variants/bybase/${baseProductId}`)
                 .then(response => response.json())
                 .then(data => {
                     container.innerHTML = "";
@@ -195,11 +195,11 @@
                                                class="btn btn-sm btn-link text-primary" title="Редагувати варіант продукту">
                                                 <i class="bi bi-pencil"></i>
                                             </a>
-                                            <a href="/ManagerProducts/EditCharacteristics?productId=${variant.id}"
+                                            <a href="/ProductCharacteristics/Edit?productId=${variant.id}"
                                                class="btn btn-sm btn-link text-success" title="Додати/редагувати характеристики">
                                                 <i class="bi bi-list-check"></i>
                                             </a>
-                                            <form action="/ManagerProducts/DeleteVariantByJS" method="post" class="delete-product-form d-inline" data-id="${variant.id}">
+                                            <form action="/api/products/deletevariant" method="post" class="delete-product-form d-inline" data-id="${variant.id}">
                                                 <input type="hidden" name="id" value="${variant.id}" />
                                                 <button type="submit" class="btn btn-sm btn-link text-danger" title="Видалення продукту">
                                                     <i class="bi bi-trash"></i>

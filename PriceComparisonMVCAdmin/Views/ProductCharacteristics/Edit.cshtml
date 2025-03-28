@@ -149,7 +149,7 @@
                             ValueDate: type === "datetime" ? newValue : null
                         };
 
-                        const url = recordId > 0 ? "/ManagerProducts/UpdateCharacteristic" : "/ManagerProducts/CreateCharacteristic";
+        const url = recordId > 0 ? "/ProductCharacteristics/Update" : "/ProductCharacteristics/Create";
                         const method = recordId > 0 ? "PUT" : "POST";
 
                         try {
@@ -198,7 +198,7 @@
                         }
 
                         try {
-                            const res = await fetch(`/ManagerProducts/DeleteCharacteristic/${recordId}`, {
+                        const res = await fetch(`/ProductCharacteristics/Delete/${recordId}`, {
                                 method: "DELETE"
                             });
 

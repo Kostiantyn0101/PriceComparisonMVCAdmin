@@ -1,8 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using PriceComparisonMVCAdmin.Models.Constants;
-using PriceComparisonMVCAdmin.Models.DTOs;
-using PriceComparisonMVCAdmin.Models.DTOs.Request.Product;
 using PriceComparisonMVCAdmin.Models.ViewModels.ManagerProducts;
 using PriceComparisonMVCAdmin.Services;
 using PriceComparisonMVCAdmin.Services.ApiServices;
@@ -12,34 +10,50 @@ namespace PriceComparisonMVCAdmin.Controllers
     [Authorize(Policy = "AdminRights")]
     public class ManagerProductsController : BaseController<ManagerProductsController>
     {
-        private readonly IManagerProductsService _managerProductsService;
         private readonly IProductCharacteristicService _characteristicService;
+        private readonly IProductModerationService _productModerationService;
+        private readonly IVariantProductService _variantProductService;
+        private readonly IBaseProductService _baseProductService;
         private readonly IApiRequestService _apiRequestService;
+        private readonly ICategoryService _categoryService;
         public ManagerProductsController(
             IProductCharacteristicService characteristicService,
-            IManagerProductsService managerProductsService,
+            IProductModerationService productModerationService,
+            IVariantProductService variantProductService,
             ILogger<ManagerProductsController> logger,
+            IBaseProductService baseProductService,
             IApiRequestService apiRequestService,
+            ICategoryService categoryService,
             IApiService apiService)
                : base(apiService, logger)
         {
-            _managerProductsService = managerProductsService;
+            _productModerationService = productModerationService;
             _characteristicService = characteristicService;
+            _variantProductService = variantProductService;
+            _baseProductService = baseProductService;
             _apiRequestService = apiRequestService;
+            _categoryService = categoryService;
         }
 
 
         [HttpGet]
         public async Task<IActionResult> Index()
         {
-            return View(await _managerProductsService.GetModerationViewModelAsync());
+            return View(await _productModerationService.GetModerationViewModelAsync());
+        }
+
+        // GET: IndexBaseProducts
+        public async Task<IActionResult> IndexBaseProducts()
+        {
+            var groupedCategories = await _categoryService.GetGroupedCategoriesAsync();
+            return View(groupedCategories);
         }
 
         // CreateBaseProduct
         [HttpGet]
         public async Task<IActionResult> CreateBase()
         {
-            return View(await _managerProductsService.CreateBaseProductViewModelAsync(new BaseProductFormModel()));
+            return View(await _baseProductService.CreateBaseProductViewModelAsync(new BaseProductFormModel()));
         }
 
         // POST: CreateBaseProduct
@@ -48,16 +62,16 @@ namespace PriceComparisonMVCAdmin.Controllers
         {
             if (!ModelState.IsValid)
             {
-                var refreshedViewModel = await _managerProductsService.CreateBaseProductViewModelAsync(model.BaseProduct);
+                var refreshedViewModel = await _baseProductService.CreateBaseProductViewModelAsync(model.BaseProduct);
                 return View(refreshedViewModel);
             }
 
-            var (product, errorMessage) = await _managerProductsService.CreateBaseProductAsync(model.BaseProduct);
+            var (product, errorMessage) = await _baseProductService.CreateBaseProductAsync(model.BaseProduct);
 
             if (product == null)
             {
                 ModelState.AddModelError("", errorMessage ?? "Unknown error");
-                var refreshedViewModel = await _managerProductsService.CreateBaseProductViewModelAsync(model.BaseProduct);
+                var refreshedViewModel = await _baseProductService.CreateBaseProductViewModelAsync(model.BaseProduct);
                 return View(refreshedViewModel);
             }
 
@@ -69,7 +83,7 @@ namespace PriceComparisonMVCAdmin.Controllers
         [HttpGet]
         public async Task<IActionResult> EditBaseProduct(int id)
         {
-            var viewModel = await _managerProductsService.GetEditBaseProductViewModelAsync(id);
+            var viewModel = await _baseProductService.GetEditBaseProductViewModelAsync(id);
             if (viewModel == null)
             {
                 _logger.LogWarning("Базовий продукт з ID = {Id} не знайдено або API повернув пустий об'єкт.", id);
@@ -85,7 +99,7 @@ namespace PriceComparisonMVCAdmin.Controllers
         {
             if (!ModelState.IsValid)
             {
-                var refreshedViewModel = await _managerProductsService.GetEditBaseProductViewModelAsync(model.BaseProduct.Id ?? 0);
+                var refreshedViewModel = await _baseProductService.GetEditBaseProductViewModelAsync(model.BaseProduct.Id ?? 0);
                 if (refreshedViewModel != null)
                 {
                     refreshedViewModel = model;
@@ -93,11 +107,11 @@ namespace PriceComparisonMVCAdmin.Controllers
                 return View(refreshedViewModel ?? model);
             }
 
-            var (success, errorMessage) = await _managerProductsService.UpdateBaseProductAsync(model);
+            var (success, errorMessage) = await _baseProductService.UpdateBaseProductAsync(model);
             if (!success)
             {
                 ModelState.AddModelError("", errorMessage ?? "Unknown error");
-                var refreshedViewModel = await _managerProductsService.GetEditBaseProductViewModelAsync(model.BaseProduct.Id ?? 0);
+                var refreshedViewModel = await _baseProductService.GetEditBaseProductViewModelAsync(model.BaseProduct.Id ?? 0);
                 return View(refreshedViewModel ?? model);
             }
 
@@ -105,23 +119,28 @@ namespace PriceComparisonMVCAdmin.Controllers
             return RedirectToAction("EditBaseProduct", new { id = model.BaseProduct.Id });
         }
 
-
-        // AddCharacteristic
-        [HttpGet]
-        public async Task<IActionResult> EditCharacteristics(int baseProductId, int? productId)
+        // POST: DeleteBaseProduct
+        [HttpPost]
+        public async Task<IActionResult> DeleteBaseProduct(int id)
         {
-            var viewModel = await _managerProductsService.GetEditCharacteristicsViewModelAsync(baseProductId, productId);
-            return View(viewModel);
+            var response = await _apiRequestService.DeleteBaseProductAsync(id);
+
+            if (response.ReturnCode != AppSuccessCodes.DeleteSuccess &&
+                response.ReturnCode != AppSuccessCodes.GerneralSuccess)
+            {
+                TempData["Error"] = "\r\nНе вдалося видалити базовий продукт.";
+                _logger.LogError("Не вдалося видалити базовий продукт з ідентифікатором {Id}", id);
+                return RedirectToAction("EditBaseProduct", new { id = id });
+            }
+
+            return RedirectToAction("Index");
         }
-
-        
-
 
         // GET: CreateVariant
         [HttpGet]
         public async Task<IActionResult> CreateVariant(int baseProductId)
         {
-            var viewModel = await _managerProductsService.GetCreateVariantViewModelAsync(baseProductId);
+            var viewModel = await _variantProductService.GetCreateVariantViewModelAsync(baseProductId);
             return View(viewModel);
         }
 
@@ -130,16 +149,16 @@ namespace PriceComparisonMVCAdmin.Controllers
         {
             if (!ModelState.IsValid)
             {
-                var refreshedViewModel = await _managerProductsService.GetCreateVariantViewModelAsync(viewModel.ProductVariant.BaseProductId);
+                var refreshedViewModel = await _variantProductService.GetCreateVariantViewModelAsync(viewModel.ProductVariant.BaseProductId);
                 return View(refreshedViewModel);
             }
 
-            var (product, errorMessage) = await _managerProductsService.CreateProductVariantAsync(viewModel.ProductVariant);
+            var (product, errorMessage) = await _variantProductService.CreateProductVariantAsync(viewModel.ProductVariant);
 
             if (product == null)
             {
                 ModelState.AddModelError("", errorMessage ?? "Unknown error");
-                var refreshedViewModel = await _managerProductsService.GetCreateVariantViewModelAsync(viewModel.ProductVariant.BaseProductId);
+                var refreshedViewModel = await _variantProductService.GetCreateVariantViewModelAsync(viewModel.ProductVariant.BaseProductId);
                 return View(refreshedViewModel);
             }
 
@@ -151,7 +170,7 @@ namespace PriceComparisonMVCAdmin.Controllers
         [HttpGet]
         public async Task<IActionResult> EditVariant(int id)
         {
-            var viewModel = await _managerProductsService.GetEditVariantViewModelAsync(id);
+            var viewModel = await _variantProductService.GetEditVariantViewModelAsync(id);
             if (viewModel == null)
             {
                 _logger.LogWarning("Варіант продукту з ID = {Id} не знайдено.", id);
@@ -165,7 +184,7 @@ namespace PriceComparisonMVCAdmin.Controllers
         {
             if (!ModelState.IsValid)
             {
-                var refreshedModel = await _managerProductsService.GetEditVariantViewModelAsync(model.ProductVariant.Id);
+                var refreshedModel = await _variantProductService.GetEditVariantViewModelAsync(model.ProductVariant.Id);
                 return View(refreshedModel);
             }
 
@@ -174,7 +193,7 @@ namespace PriceComparisonMVCAdmin.Controllers
             if (response.ReturnCode != AppSuccessCodes.UpdateSuccess)
             {
                 ModelState.AddModelError("", response.Message);
-                var refreshedModel = await _managerProductsService.GetEditVariantViewModelAsync(model.ProductVariant.Id);
+                var refreshedModel = await _variantProductService.GetEditVariantViewModelAsync(model.ProductVariant.Id);
                 return View(refreshedModel);
             }
 
@@ -197,147 +216,5 @@ namespace PriceComparisonMVCAdmin.Controllers
             }
             return RedirectToAction("Index");
         }
-
-        [HttpPost]
-        public async Task<IActionResult> DeleteVariantByJS(int id)
-        {
-            var response = await _apiRequestService.DeleteProductVariantAsync(id);
-
-            if (response.ReturnCode != AppSuccessCodes.DeleteSuccess &&
-                response.ReturnCode != AppSuccessCodes.GerneralSuccess)
-            {
-                return Json(new { success = false, message = response.Message });
-            }
-            return Json(new { success = true });
-        }
-
-        // POST: DeleteBaseProduct
-        [HttpPost]
-        public async Task<IActionResult> DeleteBaseProduct(int id)
-        {
-            var response = await _apiRequestService.DeleteBaseProductAsync(id);
-
-            if (response.ReturnCode != AppSuccessCodes.DeleteSuccess &&
-                response.ReturnCode != AppSuccessCodes.GerneralSuccess)
-            {
-                TempData["Error"] = "\r\nНе вдалося видалити базовий продукт.";
-                _logger.LogError("Не вдалося видалити базовий продукт з ідентифікатором {Id}", id);
-                return RedirectToAction("EditBaseProduct", new { id = id });
-            }
-
-            return RedirectToAction("Index");
-        }
-
-        [HttpPost]
-        public async Task<IActionResult> DeleteBaseByJS(int id)
-        {
-            var response = await _apiRequestService.DeleteBaseProductAsync(id);
-
-            if (response.ReturnCode != AppSuccessCodes.DeleteSuccess &&
-                response.ReturnCode != AppSuccessCodes.GerneralSuccess)
-            {
-                return Json(new { success = false, message = response.Message });
-            }
-            return Json(new { success = true });
-        }
-
-
-        // GET: IndexBaseProducts
-        public async Task<IActionResult> IndexBaseProducts()
-        {
-            var groupedCategories = await _managerProductsService.GetGroupedCategoriesAsync();
-            return View(groupedCategories);
-        }
-
-        [HttpGet("ManagerProducts/ProductGroup/bytype/{groupTypeId}")]
-        public async Task<IActionResult> GetByGroupType(int groupTypeId)
-        {
-            var groups = await _apiRequestService.GetGroupsByTypeIdAsync(groupTypeId);
-            return Json(groups);
-        }
-
-        [HttpPost]
-        public async Task<IActionResult> CreateCharacteristic([FromBody] ProductCharacteristicViewModel model)
-        {
-            var result = await _characteristicService.CreateCharacteristicAsync(model);
-            if (!result.success)
-            {
-                return BadRequest(new { message = result.errorMessage });
-            }
-            return Ok(new { message = "Created successfully", updatedId = result.updatedId });
-        }
-
-        [HttpPut]
-        public async Task<IActionResult> UpdateCharacteristic([FromBody] ProductCharacteristicViewModel model)
-        {
-            var result = await _characteristicService.UpdateCharacteristicAsync(model);
-            if (!result.success)
-            {
-                return BadRequest(new { message = result.errorMessage });
-            }
-            return Ok(new { message = "Updated successfully", updatedId = result.updatedId });
-        }
-
-        [HttpDelete]
-        public async Task<IActionResult> DeleteCharacteristic(int id)
-        {
-            var result = await _characteristicService.DeleteCharacteristicAsync(id);
-            if (!result.success)
-            {
-                return BadRequest(new { message = result.errorMessage });
-            }
-            return Ok(new { message = "Deleted successfully" });
-        }
-
-        [HttpGet]
-        public async Task<IActionResult> GetBaseProductsByCategory(int id)
-        {
-            var baseProducts = await _apiRequestService.GetBaseProductByCategoryIdAsync(id);
-            return Json(baseProducts);
-        }
-
-        [HttpGet]
-        public async Task<IActionResult> GetProductsVariantsByBaseProduct(int id)
-        {
-            var productVariants = await _apiRequestService.GetVariantsByBaseProductIdAsync(id);
-            return Json(productVariants);
-        }
-
-        [HttpGet]
-        public async Task<IActionResult> GetVariantsOnModeration()
-        {
-            var variants = await _apiRequestService.GetProductVariantsOnModerationAsync();
-            return Json(variants);
-        }
-
-        [HttpPost]
-        public async Task<IActionResult> ReassignVariantToBase(int variantId, int newBaseProductId)
-        {
-            var variant = await _apiRequestService.GetProductVariantByIdAsync(variantId);
-            if (variant == null)
-                return Json(new { success = false, message = "Продукт не знайдено." });
-
-            var updateModel = new ProductUpdateRequestModel
-            {
-                Id = variant.Id,
-                GTIN = variant.GTIN,
-                UPC = variant.UPC,
-                ModelNumber = variant.ModelNumber,
-                IsUnderModeration = variant.IsUnderModeration,
-                BaseProductId = newBaseProductId,
-                ColorId = variant.ColorId,
-                IsDefault = variant.IsDefault,
-                ProductGroupId = variant.ProductGroup?.Id
-            };
-
-            var response = await _apiRequestService.UpdateProductVariantAsync(updateModel);
-
-            return Json(new
-            {
-                success = response.ReturnCode == AppSuccessCodes.UpdateSuccess,
-                message = response.Message
-            });
-        }
-
     }
 }
