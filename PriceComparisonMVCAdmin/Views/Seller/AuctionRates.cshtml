@@ -2,12 +2,12 @@
 @{
     Layout = "~/Views/Shared/_SellerLayout.cshtml";
 }
-<div class="container my-3">
+<div class="container my-3 list-group">
     <h5 class="mb-3">Аукціонні ставки за категоріями</h5>
 
     @foreach (var group in Model.GroupedCategories)
     {
-        <div class="mb-3">
+        <div class="list-group-item">
             <button class="btn btn-link category-toggle d-flex align-items-center"
                     data-target="children-@group.Key.Id">
                 <i class="bi bi-chevron-right toggle-icon me-2"></i>

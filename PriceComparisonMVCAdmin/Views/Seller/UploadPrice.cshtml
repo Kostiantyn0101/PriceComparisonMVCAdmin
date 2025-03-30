@@ -8,10 +8,12 @@
 <div class="container mt-4">
     <h2>Завантаження прайс-листа</h2>
 
-    <form asp-action="UploadPrice" method="post" enctype="multipart/form-data">
-        <div class="mb-3">
-            <input asp-for="PriceListFile" class="form-control" />
+    <form id="uploadForm" asp-action="UploadPrice" method="post" enctype="multipart/form-data">
+        <div id="dropZone" class="border border-2 p-4 text-center mb-3" style="cursor: pointer;">
+            <p id="dropZoneText">Перетягніть XML-файл сюди або натисніть, щоб вибрати</p>
+            <input asp-for="PriceListFile" id="fileInput" class="form-control d-none" />
         </div>
+
         <div class="d-flex align-items-center justify-content-center">
             <button type="submit" class="btn btn-primary btn-main">Завантажити</button>
         </div>
@@ -24,3 +26,40 @@
         </div>
     }
 </div>
+
+@section Scripts {
+    <script>
+        const dropZone = document.getElementById("dropZone");
+        const fileInput = document.getElementById("fileInput");
+        const dropZoneText = document.getElementById("dropZoneText");
+
+        dropZone.addEventListener("click", () => fileInput.click());
+
+        dropZone.addEventListener("dragover", (e) => {
+            e.preventDefault();
+            dropZone.classList.add("bg-light");
+        });
+
+        dropZone.addEventListener("dragleave", () => {
+            dropZone.classList.remove("bg-light");
+        });
+
+        dropZone.addEventListener("drop", (e) => {
+            e.preventDefault();
+            dropZone.classList.remove("bg-light");
+
+            const files = e.dataTransfer.files;
+            if (files.length > 0) {
+                fileInput.files = files;
+
+                dropZoneText.innerText = `Файл: ${files[0].name}`;
+            }
+        });
+
+        fileInput.addEventListener("change", () => {
+            if (fileInput.files.length > 0) {
+                dropZoneText.innerText = `Файл: ${fileInput.files[0].name}`;
+            }
+        });
+    </script>
+}

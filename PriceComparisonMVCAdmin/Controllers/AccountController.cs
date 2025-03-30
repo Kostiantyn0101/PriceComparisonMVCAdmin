@@ -94,7 +94,10 @@ namespace PriceComparisonMVCAdmin.Controllers
             return RedirectToAction("Login", "Account");
         }
 
-
-
+        [HttpGet]
+        public IActionResult NoAccess()
+        {
+            return View();
+        }
     }
 }

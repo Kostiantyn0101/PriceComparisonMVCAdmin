@@ -1,15 +1,14 @@
-﻿using PriceComparisonMVCAdmin.Models.DTOs.Request.Product;
+﻿using PriceComparisonMVCAdmin.Models.DTOs.Request.Auction;
+using PriceComparisonMVCAdmin.Models.DTOs.Request.Categoty;
+using PriceComparisonMVCAdmin.Models.DTOs.Request.Product;
+using PriceComparisonMVCAdmin.Models.DTOs.Request.Seller;
+using PriceComparisonMVCAdmin.Models.DTOs.Response;
 using PriceComparisonMVCAdmin.Models.DTOs.Response.Category;
 using PriceComparisonMVCAdmin.Models.DTOs.Response.Product;
-using PriceComparisonMVCAdmin.Models.DTOs.Response;
-using System.Text.Json;
-using PriceComparisonMVCAdmin.Models.DTOs.Request.Categoty;
-using PriceComparisonMVCAdmin.Models.Response.Seller;
-using PriceComparisonMVCAdmin.Models.DTOs.Request.Seller;
 using PriceComparisonMVCAdmin.Models.Request.Seller;
-using System.Reflection;
+using PriceComparisonMVCAdmin.Models.Response.Seller;
 using PriceComparisonMVCAdmin.Models.ViewModels.Seller;
-using PriceComparisonMVCAdmin.Models.DTOs.Request.Auction;
+using System.Text.Json;
 
 namespace PriceComparisonMVCAdmin.Services.ApiServices
 {
@@ -25,10 +24,10 @@ namespace PriceComparisonMVCAdmin.Services.ApiServices
         }
 
         //Base Products
-        public Task<List<BaseProductResponseModel>> GetBaseProductsOnModerationAsync()
-            => GetSafeAsync<List<BaseProductResponseModel>>("api/BaseProducts/onmoderation");
         public Task<BaseProductResponseModel> GetBaseProductByIdAsync(int id)
             => GetSafeAsync<BaseProductResponseModel>($"api/BaseProducts/{id}");
+        public Task<List<BaseProductResponseModel>> GetBaseProductsOnModerationAsync()
+            => GetSafeAsync<List<BaseProductResponseModel>>("api/BaseProducts/onmoderation");
         public Task<List<BaseProductResponseModel>> GetBaseProductByCategoryIdAsync(int id)
             => GetSafeAsync<List<BaseProductResponseModel>>($"api/BaseProducts/bycategory/{id}");
         public Task<GeneralApiResponseModel> CreateBaseProductAsync(BaseProductCreateRequestModel model)
@@ -42,12 +41,12 @@ namespace PriceComparisonMVCAdmin.Services.ApiServices
 
 
         //Product Variants
+        public Task<ProductResponseModel> GetProductVariantByIdAsync(int id)
+            => GetSafeAsync<ProductResponseModel>($"api/Products/{id}");
         public Task<List<ProductResponseModel>> GetProductVariantsOnModerationAsync()
             => GetSafeAsync<List<ProductResponseModel>>("api/Products/onmoderation");
         public Task<List<ProductResponseModel>> GetVariantsByBaseProductIdAsync(int baseProductId)
             => GetSafeAsync<List<ProductResponseModel>>($"api/Products/bybaseproduct/{baseProductId}");
-        public Task<ProductResponseModel> GetProductVariantByIdAsync(int id)
-            => GetSafeAsync<ProductResponseModel>($"api/Products/{id}");
         public Task<GeneralApiResponseModel> CreateProductVariantAsync(ProductCreateRequestModel model)
             => PostSafeAsync<ProductCreateRequestModel, GeneralApiResponseModel>("api/Products/create", model);
         public Task<GeneralApiResponseModel> UpdateProductVariantAsync(ProductUpdateRequestModel model)
@@ -74,10 +73,13 @@ namespace PriceComparisonMVCAdmin.Services.ApiServices
         //Seller
         public Task<SellerResponseModel> GetSellerByUserIdAsync(int userId)
             => GetSafeAsync<SellerResponseModel>($"api/Seller/getByUserId/{userId}");
+        public Task<SellerResponseModel> GetAllSellerAsync()
+            => GetSafeAsync<SellerResponseModel>($"api/Seller/getall");
         public Task<SellerResponseModel> GetSellerByIdAsync(int id)
             => GetSafeAsync<SellerResponseModel>($"api/Seller/{id}");
         public Task<GeneralApiResponseModel> UpdateSellerAsync(SellerUpdateRequestModel model)
            => SafeRequestAsync<SellerUpdateRequestModel, GeneralApiResponseModel>(HttpMethod.Put, "api/Seller/update", model, useMultipartFormData: true);
+
 
         //SellerProductDetails
         public Task<GeneralApiResponseModel> UploadPriceListAsync(SellerProductXmlRequestModel model)
@@ -88,6 +90,7 @@ namespace PriceComparisonMVCAdmin.Services.ApiServices
         //ProductReferenceClick
         public Task<List<ProductSellerReferenceClickResponseModel>> GetProductReferenceClickAsync(ProductSellerReferenceClickStaisticRequestModel model)
             => PostSafeAsync<ProductSellerReferenceClickStaisticRequestModel, List<ProductSellerReferenceClickResponseModel>>($"api/ProductReferenceClick/statistic", model);
+
 
         //AuctionClickRate
         public Task<List<AuctionClickRateResponseModel>> GetAuctionClickRateAsync(int id)

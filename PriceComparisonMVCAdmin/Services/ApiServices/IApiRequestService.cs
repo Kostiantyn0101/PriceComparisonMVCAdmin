@@ -13,67 +13,93 @@ namespace PriceComparisonMVCAdmin.Services.ApiServices
 {
     public interface IApiRequestService
     {
-        Task<List<BaseProductResponseModel>> GetBaseProductsOnModerationAsync();
-        Task<List<ProductResponseModel>> GetProductVariantsOnModerationAsync();
-
-        Task<List<CategoryResponseModel>> GetAllCategoriesAsync();
-        Task<CategoryResponseModel> GetCategoryByIdAsync(int id);
-        Task<GeneralApiResponseModel> CreateCategoryAsync(CategoryCreateRequestModel model);
-        Task<GeneralApiResponseModel> UpdateCategoryAsync(CategoryUpdateRequestModel model);
-        Task<GeneralApiResponseModel> DeleteCategoryAsync(int id);
-
-        Task<SellerResponseModel> GetSellerByUserIdAsync(int userId);
-        Task<SellerResponseModel> GetSellerByIdAsync(int id);
-        Task<GeneralApiResponseModel> UpdateSellerAsync(SellerUpdateRequestModel model);
-
-        Task<GeneralApiResponseModel> UploadPriceListAsync(SellerProductXmlRequestModel model);
-
-        Task<List<AuctionClickRateResponseModel>> GetAuctionClickRateAsync(int id);
-        Task<GeneralApiResponseModel> CreateAuctionClickRateAsync(AuctionClickRateRequestModel model);
-        Task<GeneralApiResponseModel> UpdateAuctionClickRateAsync(AuctionClickRateRequestModel model);
+        //Base Products
+        public Task<BaseProductResponseModel> GetBaseProductByIdAsync(int id);
+        public Task<List<BaseProductResponseModel>> GetBaseProductsOnModerationAsync();
+        public Task<List<BaseProductResponseModel>> GetBaseProductByCategoryIdAsync(int id);
+        public Task<GeneralApiResponseModel> CreateBaseProductAsync(BaseProductCreateRequestModel model);
+        public Task<GeneralApiResponseModel> UpdateBaseProductAsync(BaseProductUpdateRequestModel model);
+        public Task<GeneralApiResponseModel> DeleteBaseProductAsync(int id);
 
 
-        Task<List<ProductSellerReferenceClickResponseModel>> GetProductReferenceClickAsync(ProductSellerReferenceClickStaisticRequestModel model);
+        //Product Variants
+        public Task<ProductResponseModel> GetProductVariantByIdAsync(int id);
+        public Task<List<ProductResponseModel>> GetProductVariantsOnModerationAsync();
+        public Task<List<ProductResponseModel>> GetVariantsByBaseProductIdAsync(int baseProductId);
+        public Task<GeneralApiResponseModel> CreateProductVariantAsync(ProductCreateRequestModel model);
+        public Task<GeneralApiResponseModel> UpdateProductVariantAsync(ProductUpdateRequestModel model);
+        public Task<GeneralApiResponseModel> DeleteProductVariantAsync(int id);
 
-        Task<GeneralApiResponseModel> CreateBaseProductAsync(BaseProductCreateRequestModel model);
-        Task<BaseProductResponseModel> GetBaseProductByIdAsync(int id);
-        Task<List<BaseProductResponseModel>> GetBaseProductByCategoryIdAsync(int id);
 
-        Task<List<ProductResponseModel>> GetVariantsByBaseProductIdAsync(int baseProductId);
-        Task<List<ColorResponseModel>> GetAllColorsAsync();
-        Task<GeneralApiResponseModel> UpdateBaseProductAsync(BaseProductUpdateRequestModel model);
-        Task<List<CategoryCharacteristicResponseModel>> GetCategoryCharacteristicsAsync(int categoryId);
-        Task<List<ProductCharacteristicUpdateRequestModel>> GetCharacteristicsForProductAsync(int productId);
-        Task<List<ProductCharacteristicUpdateRequestModel>> GetCharacteristicsForBaseProductAsync(int baseProductId);
-        Task<GeneralApiResponseModel> CreateCharacteristicAsync(ProductCharacteristicCreateRequestModel model);
-        Task<GeneralApiResponseModel> UpdateCharacteristicAsync(ProductCharacteristicUpdateRequestModel model);
-        Task<GeneralApiResponseModel> DeleteCharacteristicAsync(int id);
+        //Characteristics
+        public Task<List<CategoryCharacteristicResponseModel>> GetCategoryCharacteristicsAsync(int categoryId);
+        public Task<List<ProductCharacteristicUpdateRequestModel>> GetCharacteristicsForProductAsync(int productId);
+        public Task<List<ProductCharacteristicUpdateRequestModel>> GetCharacteristicsForBaseProductAsync(int baseProductId);
+        public Task<GeneralApiResponseModel> CreateCharacteristicAsync(ProductCharacteristicCreateRequestModel model);
+        public Task<GeneralApiResponseModel> UpdateCharacteristicAsync(ProductCharacteristicUpdateRequestModel model);
+        public Task<GeneralApiResponseModel> DeleteCharacteristicAsync(int id);
 
-        Task<List<ProductGroupTypeResponseModel>> GetAllProductGroupTypesAsync();
-        Task<List<ProductGroupTypeResponseModel>> GetGroupsByTypeIdAsync(int id);
 
-        Task<GeneralApiResponseModel> CreateProductVariantAsync(ProductCreateRequestModel model);
-        Task<ProductResponseModel> GetProductVariantByIdAsync(int id);
-        Task<GeneralApiResponseModel> UpdateProductVariantAsync(ProductUpdateRequestModel model);
-        Task<GeneralApiResponseModel> DeleteProductVariantAsync(int id);
-        Task<GeneralApiResponseModel> DeleteBaseProductAsync(int id);
+        //Seller
+        public Task<SellerResponseModel> GetSellerByUserIdAsync(int userId);
+        public Task<SellerResponseModel> GetAllSellerAsync();
+        public Task<SellerResponseModel> GetSellerByIdAsync(int id);
+        public Task<GeneralApiResponseModel> UpdateSellerAsync(SellerUpdateRequestModel model);
 
-        Task<List<BaseProductVideoResponseModel>> GetBaseProductVideosAsync(int baseProductId);
-        Task<List<InstructionResponseModel>> GetIstructionAsync(int id);
-        Task<List<ReviewResponseModel>> GetReviewAsync(int id);
 
-        Task<GeneralApiResponseModel> CreateBaseProductVideoAsync(ProductVideoCreateRequestModel model);
-        Task<GeneralApiResponseModel> CreateIstructionAsync(InstructionCreateRequestModel model);
-        Task<GeneralApiResponseModel> CreateReviewAsync(ReviewCreateRequestModel model);
+        //SellerProductDetails
+        public Task<GeneralApiResponseModel> UploadPriceListAsync(SellerProductXmlRequestModel model);
 
-        Task<GeneralApiResponseModel> DeleteBaseProductVideoAsync(int id);
-        Task<GeneralApiResponseModel> DeleteIstructionAsync(int id);
-        Task<GeneralApiResponseModel> DeleteReviewAsync(int id);
 
-        Task<List<ProductImageResponseModel>> GetProductImagesAsync(int id);
-        Task<GeneralApiResponseModel> AddProductImageAsync(ProductImageCreateRequestModel model);
-        Task<GeneralApiResponseModel> DeleteProductImageAsync(ProductImageDeleteRequestModel model);
-        Task<GeneralApiResponseModel> SetPrimaryImageAsync(ProductImageSetPrimaryRequestModel model);
+        //ProductReferenceClick
+        public Task<List<ProductSellerReferenceClickResponseModel>> GetProductReferenceClickAsync(ProductSellerReferenceClickStaisticRequestModel model);
 
+
+        //AuctionClickRate
+        public Task<List<AuctionClickRateResponseModel>> GetAuctionClickRateAsync(int id);
+        public Task<GeneralApiResponseModel> CreateAuctionClickRateAsync(AuctionClickRateRequestModel model);
+        public Task<GeneralApiResponseModel> UpdateAuctionClickRateAsync(AuctionClickRateRequestModel model);
+
+
+        //Other
+        public Task<List<ColorResponseModel>> GetAllColorsAsync();
+
+
+        //GroupTypes
+        public Task<List<ProductGroupTypeResponseModel>> GetAllProductGroupTypesAsync();
+        public Task<List<ProductGroupTypeResponseModel>> GetGroupsByTypeIdAsync(int id);
+
+
+        //Categories
+        public Task<List<CategoryResponseModel>> GetAllCategoriesAsync();
+        public Task<CategoryResponseModel> GetCategoryByIdAsync(int id);
+        public Task<GeneralApiResponseModel> CreateCategoryAsync(CategoryCreateRequestModel model);
+        public Task<GeneralApiResponseModel> UpdateCategoryAsync(CategoryUpdateRequestModel model);
+        public Task<GeneralApiResponseModel> DeleteCategoryAsync(int id);
+
+
+        //Videos
+        public Task<List<BaseProductVideoResponseModel>> GetBaseProductVideosAsync(int baseProductId);
+        public Task<GeneralApiResponseModel> CreateBaseProductVideoAsync(ProductVideoCreateRequestModel model);
+        public Task<GeneralApiResponseModel> DeleteBaseProductVideoAsync(int id);
+
+
+        //Instructions
+        public Task<List<InstructionResponseModel>> GetIstructionAsync(int id);
+        public Task<GeneralApiResponseModel> CreateIstructionAsync(InstructionCreateRequestModel model);
+        public Task<GeneralApiResponseModel> DeleteIstructionAsync(int id);
+
+
+        //Reviews
+        public Task<List<ReviewResponseModel>> GetReviewAsync(int id);
+        public Task<GeneralApiResponseModel> CreateReviewAsync(ReviewCreateRequestModel model);
+        public Task<GeneralApiResponseModel> DeleteReviewAsync(int id);
+
+
+        //Images
+        public Task<List<ProductImageResponseModel>> GetProductImagesAsync(int id);
+        public Task<GeneralApiResponseModel> AddProductImageAsync(ProductImageCreateRequestModel model);
+        public Task<GeneralApiResponseModel> DeleteProductImageAsync(ProductImageDeleteRequestModel model);
+        public Task<GeneralApiResponseModel> SetPrimaryImageAsync(ProductImageSetPrimaryRequestModel model);
     }
 }
