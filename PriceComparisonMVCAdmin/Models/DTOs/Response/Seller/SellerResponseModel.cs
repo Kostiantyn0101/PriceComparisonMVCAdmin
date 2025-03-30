@@ -1,4 +1,4 @@
-﻿namespace PriceComparisonMVCAdmin.Models.Response.Seller
+﻿namespace PriceComparisonMVCAdmin.Models.DTOs.Response.Seller
 {
     public class SellerResponseModel
     {

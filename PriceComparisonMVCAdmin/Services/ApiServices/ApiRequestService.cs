@@ -5,8 +5,8 @@ using PriceComparisonMVCAdmin.Models.DTOs.Request.Seller;
 using PriceComparisonMVCAdmin.Models.DTOs.Response;
 using PriceComparisonMVCAdmin.Models.DTOs.Response.Category;
 using PriceComparisonMVCAdmin.Models.DTOs.Response.Product;
+using PriceComparisonMVCAdmin.Models.DTOs.Response.Seller;
 using PriceComparisonMVCAdmin.Models.Request.Seller;
-using PriceComparisonMVCAdmin.Models.Response.Seller;
 using PriceComparisonMVCAdmin.Models.ViewModels.Seller;
 using System.Text.Json;
 
@@ -73,8 +73,8 @@ namespace PriceComparisonMVCAdmin.Services.ApiServices
         //Seller
         public Task<SellerResponseModel> GetSellerByUserIdAsync(int userId)
             => GetSafeAsync<SellerResponseModel>($"api/Seller/getByUserId/{userId}");
-        public Task<SellerResponseModel> GetAllSellerAsync()
-            => GetSafeAsync<SellerResponseModel>($"api/Seller/getall");
+        public Task<List<SellerResponseModel>> GetAllSellersAsync()
+            => GetSafeAsync<List<SellerResponseModel>>($"api/Seller/getall");
         public Task<SellerResponseModel> GetSellerByIdAsync(int id)
             => GetSafeAsync<SellerResponseModel>($"api/Seller/{id}");
         public Task<GeneralApiResponseModel> UpdateSellerAsync(SellerUpdateRequestModel model)

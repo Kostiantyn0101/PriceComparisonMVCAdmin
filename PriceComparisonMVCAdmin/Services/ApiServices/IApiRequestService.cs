@@ -3,11 +3,11 @@ using PriceComparisonMVCAdmin.Models.DTOs.Response.Category;
 using PriceComparisonMVCAdmin.Models.DTOs.Response.Product;
 using PriceComparisonMVCAdmin.Models.DTOs.Response;
 using PriceComparisonMVCAdmin.Models.DTOs.Request.Categoty;
-using PriceComparisonMVCAdmin.Models.Response.Seller;
 using PriceComparisonMVCAdmin.Models.DTOs.Request.Seller;
 using PriceComparisonMVCAdmin.Models.Request.Seller;
 using PriceComparisonMVCAdmin.Models.ViewModels.Seller;
 using PriceComparisonMVCAdmin.Models.DTOs.Request.Auction;
+using PriceComparisonMVCAdmin.Models.DTOs.Response.Seller;
 
 namespace PriceComparisonMVCAdmin.Services.ApiServices
 {
@@ -42,7 +42,7 @@ namespace PriceComparisonMVCAdmin.Services.ApiServices
 
         //Seller
         public Task<SellerResponseModel> GetSellerByUserIdAsync(int userId);
-        public Task<SellerResponseModel> GetAllSellerAsync();
+        public Task<List<SellerResponseModel>> GetAllSellersAsync();
         public Task<SellerResponseModel> GetSellerByIdAsync(int id);
         public Task<GeneralApiResponseModel> UpdateSellerAsync(SellerUpdateRequestModel model);
 

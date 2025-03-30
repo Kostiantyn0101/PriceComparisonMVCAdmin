@@ -1,0 +1,84 @@
+﻿@model AdminSellerEditViewModel
+@{
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+<div class="container my-4">
+    <h2 class="mb-4">Редагування продавця</h2>
+    <div class="card shadow-sm">
+        <div class="card-body">
+            <form asp-action="Edit" method="post" enctype="multipart/form-data">
+                <input type="hidden" asp-for="Id" />
+
+                <div class="row mb-3">
+                    <label asp-for="StoreName" class="col-sm-2 col-form-label fw-bold"></label>
+                    <div class="col-sm-10">
+                        <input asp-for="StoreName" class="form-control" />
+                        <span asp-validation-for="StoreName" class="text-danger"></span>
+                    </div>
+                </div>
+
+                <div class="row mb-3">
+                    <label asp-for="WebsiteUrl" class="col-sm-2 col-form-label fw-bold"></label>
+                    <div class="col-sm-10">
+                        <input asp-for="WebsiteUrl" class="form-control" />
+                        <span asp-validation-for="WebsiteUrl" class="text-danger"></span>
+                    </div>
+                </div>
+
+                <div class="row mb-3">
+                    <label asp-for="ApiKey" class="col-sm-2 col-form-label fw-bold"></label>
+                    <div class="col-sm-10">
+                        <input asp-for="ApiKey" class="form-control" readonly />
+                    </div>
+                </div>
+
+                <div class="row mb-3">
+                    <label asp-for="AccountBalance" class="col-sm-2 col-form-label fw-bold"></label>
+                    <div class="col-sm-10">
+                        <input asp-for="AccountBalance" class="form-control"/>
+                    </div>
+                </div>
+
+                <div class="row mb-3">
+                    <label class="col-sm-2 col-form-label fw-bold">Активний</label>
+                    <div class="col-sm-10">
+                        <div class="form-check form-switch">
+                            <input asp-for="IsActive" class="form-check-input" type="checkbox" />
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row mb-3">
+                    <label class="col-sm-2 col-form-label fw-bold">Публікація прайс-листа</label>
+                    <div class="col-sm-10">
+                        <div class="form-check form-switch">
+                            <input asp-for="PublishPriceList" class="form-check-input" />
+                        </div>
+                        <span asp-validation-for="PublishPriceList" class="text-danger"></span>
+                    </div>
+                </div>
+
+                <div class="row mb-3">
+                    <label class="col-sm-2 col-form-label fw-bold">Поточний логотип</label>
+                    <div class="col-sm-10">
+                        <img src="@Model.CurrentLogoImageUrl" alt="Логотип" class="img-fluid img-thumbnail" style="max-width: 200px;" />
+                    </div>
+                </div>
+
+                <div class="row mb-3">
+                    <label asp-for="NewLogoImage" class="col-sm-2 col-form-label fw-bold">Новий логотип</label>
+                    <div class="col-sm-10">
+                        <input asp-for="NewLogoImage" type="file" class="form-control" />
+                        <span asp-validation-for="NewLogoImage" class="text-danger"></span>
+                    </div>
+                </div>
+
+                <div class="d-flex align-items-center justify-content-center">
+                    <button type="submit" class="btn btn-primary btn-main px-4">
+                        Зберегти зміни
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

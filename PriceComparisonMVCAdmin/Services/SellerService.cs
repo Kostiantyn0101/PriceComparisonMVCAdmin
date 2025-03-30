@@ -2,6 +2,7 @@
 using PriceComparisonMVCAdmin.Models.Constants;
 using PriceComparisonMVCAdmin.Models.DTOs.Request.Seller;
 using PriceComparisonMVCAdmin.Models.DTOs.Response;
+using PriceComparisonMVCAdmin.Models.DTOs.Response.Seller;
 using PriceComparisonMVCAdmin.Models.Request.Seller;
 using PriceComparisonMVCAdmin.Models.ViewModels.Seller;
 using PriceComparisonMVCAdmin.Services.ApiServices;
@@ -24,31 +25,71 @@ namespace PriceComparisonMVCAdmin.Services
             _mapper = mapper;
         }
 
-        public async Task<ProductReferenceStatisticsViewModel> GetReferenceStatisticsAsync(DateTime startDate, DateTime endDate, ClaimsPrincipal user)
+        //public async Task<ProductReferenceStatisticsViewModel> GetReferenceStatisticsAsync(DateTime startDate, DateTime endDate, ClaimsPrincipal user)
+        //{
+        //    var model = new ProductReferenceStatisticsViewModel
+        //    {
+        //        StartDate = startDate,
+        //        EndDate = endDate
+        //    };
+
+        //    var userId = user.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        //    if (!string.IsNullOrEmpty(userId) && int.TryParse(userId, out var sellerId))
+        //    {
+        //        var seller = await _apiRequestService.GetSellerByUserIdAsync(sellerId);
+
+        //        var requestModel = new ProductSellerReferenceClickStaisticRequestModel
+        //        {
+        //            SellerId = seller.Id,
+        //            StartDate = startDate,
+        //            EndDate = endDate
+        //        };
+
+        //        var response = await _apiRequestService.GetProductReferenceClickAsync(requestModel);
+        //        model.Results = response;
+        //    }
+
+        //    return model;
+        //}
+
+        public async Task<ProductReferenceStatisticsViewModel> GetReferenceStatisticsAsync(DateTime startDate, DateTime endDate, int sellerId)
         {
             var model = new ProductReferenceStatisticsViewModel
             {
                 StartDate = startDate,
+                EndDate = endDate,
+                SellerId = sellerId
+            };
+
+            var requestModel = new ProductSellerReferenceClickStaisticRequestModel
+            {
+                SellerId = sellerId,
+                StartDate = startDate,
                 EndDate = endDate
             };
 
+            var response = await _apiRequestService.GetProductReferenceClickAsync(requestModel);
+            model.Results = response;
+
+            return model;
+        }
+
+        public async Task<ProductReferenceStatisticsViewModel> GetReferenceStatisticsAsync(DateTime startDate, DateTime endDate, ClaimsPrincipal user)
+        {
             var userId = user.FindFirst(ClaimTypes.NameIdentifier)?.Value;
             if (!string.IsNullOrEmpty(userId) && int.TryParse(userId, out var sellerId))
             {
                 var seller = await _apiRequestService.GetSellerByUserIdAsync(sellerId);
 
-                var requestModel = new ProductSellerReferenceClickStaisticRequestModel
-                {
-                    SellerId = seller.Id,
-                    StartDate = startDate,
-                    EndDate = endDate
-                };
-
-                var response = await _apiRequestService.GetProductReferenceClickAsync(requestModel);
-                model.Results = response;
+                return await GetReferenceStatisticsAsync(startDate, endDate, seller.Id);
             }
 
-            return model;
+            return new ProductReferenceStatisticsViewModel
+            {
+                StartDate = startDate,
+                EndDate = endDate,
+                Results = new()
+            };
         }
 
         public async Task<SellerEditViewModel?> GetSellerEditViewModelAsync(int id)
@@ -142,6 +183,55 @@ namespace PriceComparisonMVCAdmin.Services
             }
 
             return model;
+        }
+
+        public async Task<List<SellerResponseModel>> GetAllSellersAsync()
+        {
+            return await _apiRequestService.GetAllSellersAsync();
+        }
+
+        public async Task<GeneralApiResponseModel> UpdateAdminSellerAsync(AdminSellerEditViewModel model)
+        {
+            var originalSeller = await _apiRequestService.GetSellerByIdAsync(model.Id);
+            if (originalSeller == null)
+                return null;
+
+            var updateModel = new SellerUpdateRequestModel
+            {
+                Id = originalSeller.Id,
+                ApiKey = originalSeller.ApiKey, //dont update
+                StoreName = model.StoreName,
+                WebsiteUrl = model.WebsiteUrl,
+                IsActive = model.IsActive, 
+                AccountBalance = model.AccountBalance,
+                UserId = originalSeller.UserId,
+                DeleteCurrentLogoImage = model.NewLogoImage != null, //if new image is uploaded, delete the old one
+                NewLogoImage = model.NewLogoImage,
+                PublishPriceList = model.PublishPriceList
+            };
+
+            return await _apiRequestService.UpdateSellerAsync(updateModel);
+        }
+
+        public async Task<AdminSellerEditViewModel?> GetAdminSellerEditViewModelAsync(int id)
+        {
+            var sellerResponse = await _apiRequestService.GetSellerByIdAsync(id);
+            if (sellerResponse == null)
+                return null;
+
+            return _mapper.Map<AdminSellerEditViewModel>(sellerResponse);
+        }
+
+        public async Task<AdminSellerInfoPartialViewModel> GetAdminSellerInfoPartialViewModelAsync(int id)
+        {
+            var seller = await _apiRequestService.GetSellerByIdAsync(id);
+            var statistic = await GetReferenceStatisticsAsync(DateTime.Today.AddMonths(-1), DateTime.Today, seller.Id);
+
+            return new AdminSellerInfoPartialViewModel
+            {
+                Seller = seller,
+                ClickStatistics = statistic.Results
+            };
         }
     }
 }

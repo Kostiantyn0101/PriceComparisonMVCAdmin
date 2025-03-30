@@ -23,9 +23,6 @@ public class ProductCharacteristicsController : Controller
         return View(viewModel);
     }
 
-
-
-
     [HttpPost]
     public async Task<IActionResult> Create([FromBody] ProductCharacteristicViewModel model)
     {

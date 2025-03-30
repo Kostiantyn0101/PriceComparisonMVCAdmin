@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Mvc.Filters;
 using PriceComparisonMVCAdmin.Controllers;
 using PriceComparisonMVCAdmin.Models.Constants;
 using PriceComparisonMVCAdmin.Models.DTOs.Response;
-using PriceComparisonMVCAdmin.Models.Response.Seller;
+using PriceComparisonMVCAdmin.Models.DTOs.Response.Seller;
 using PriceComparisonMVCAdmin.Services.ApiServices;
 using System.Security.Claims;
 using System.Text.Json;

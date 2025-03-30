@@ -1,4 +1,5 @@
 ﻿using PriceComparisonMVCAdmin.Models.DTOs.Response;
+using PriceComparisonMVCAdmin.Models.DTOs.Response.Seller;
 using PriceComparisonMVCAdmin.Models.ViewModels.Seller;
 using System.Security.Claims;
 
@@ -12,5 +13,10 @@ namespace PriceComparisonMVCAdmin.Services
         Task<(bool IsSuccess, string Message)> UploadPriceListAsync(IFormFile? file);
         Task<SellerAuctionRatesGroupedViewModel> GetAuctionRatesViewModelAsync(ClaimsPrincipal user);
 
+        //admin methods
+        Task<List<SellerResponseModel>> GetAllSellersAsync();
+        Task<GeneralApiResponseModel> UpdateAdminSellerAsync(AdminSellerEditViewModel model);
+        Task<AdminSellerEditViewModel?> GetAdminSellerEditViewModelAsync(int id);
+        Task<AdminSellerInfoPartialViewModel> GetAdminSellerInfoPartialViewModelAsync(int id);
     }
 }

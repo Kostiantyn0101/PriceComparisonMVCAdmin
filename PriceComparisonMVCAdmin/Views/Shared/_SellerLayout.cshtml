@@ -24,7 +24,7 @@
 
                 @if (ViewBag.Seller != null)
                 {
-                    var sellerModel = (PriceComparisonMVCAdmin.Models.Response.Seller.SellerResponseModel)ViewBag.Seller;
+                    var sellerModel = (SellerResponseModel)ViewBag.Seller;
                     <div class="col text-center text-md-center">
                         <div class="col d-flex flex-wrap justify-content-center align-items-center gap-2">
                             <img src="@sellerModel.LogoImageUrl"

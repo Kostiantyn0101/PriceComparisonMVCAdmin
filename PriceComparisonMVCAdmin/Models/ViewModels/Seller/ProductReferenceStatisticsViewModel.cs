@@ -7,7 +7,6 @@ namespace PriceComparisonMVCAdmin.Models.ViewModels.Seller
         public DateTime StartDate { get; set; }
         public DateTime EndDate { get; set; }
         public int SellerId { get; set; }
-        public List<ProductSellerReferenceClickResponseModel> Results { get; set; }
-            = new List<ProductSellerReferenceClickResponseModel>();
+        public List<ProductSellerReferenceClickResponseModel> Results { get; set; } = new();
     }
 }

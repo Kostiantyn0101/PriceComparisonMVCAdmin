@@ -1,0 +1,92 @@
+﻿@model List<SellerResponseModel>
+@{
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+<div class="container my-4">
+    <h2 class="mb-3">Продавці</h2>
+
+    @if (Model.Any())
+    {
+        <ul class="list-group">
+            @foreach (var seller in Model)
+            {
+                <li class="list-group-item">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div class="d-flex align-items-center">
+                            <img src="@seller.LogoImageUrl"
+                                 alt="Логотип"
+                                 class="img-thumbnail me-3"
+                                 style="width: 50px; height: 50px; object-fit: contain;" />
+
+                            <span>
+                                <strong>@seller.StoreName</strong> | @seller.WebsiteUrl
+                            </span>
+                        </div>
+                        <div class="d-flex align-items-center">
+                            <a href="/AdminSeller/Edit/@seller.Id"
+                               class="btn btn-sm btn-link text-primary"
+                               title="Редагувати продавця">
+                                <i class="bi bi-pencil"></i>
+                            </a>
+                            <button type="button"
+                                    class="btn btn-sm btn-link text-info btn-view-seller"
+                                    title="Переглянути інформацію"
+                                    data-id="@seller.Id">
+                                <i class="bi bi-eye"></i>
+                            </button>
+                        </div>
+                    </div>
+                </li>
+            }
+        </ul>
+    }
+    else
+    {
+        <p class="text-muted">Немає жодного продавця.</p>
+    }
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="sellerInfoModal" tabindex="-1" aria-labelledby="sellerInfoModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="sellerInfoModalLabel">Інформація про магазин</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Закрити"></button>
+            </div>
+            <div class="modal-body">
+                <div id="sellerInfoContent">
+                    <p class="text-muted">Завантаження...</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+@section Scripts {
+
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            document.querySelectorAll(".btn-view-seller").forEach(button => {
+                button.addEventListener("click", async () => {
+                    const sellerId = button.getAttribute("data-id");
+                    const contentDiv = document.getElementById("sellerInfoContent");
+
+                    contentDiv.innerHTML = "<p class='text-muted'>Завантаження...</p>";
+
+                    try {
+                        const response = await fetch(`/AdminSeller/GetAdminSellerInfoPartial/${sellerId}`);
+                        if (!response.ok) throw new Error("Помилка завантаження");
+                        const html = await response.text();
+
+                        contentDiv.innerHTML = html;
+
+                        const modal = new bootstrap.Modal(document.getElementById("sellerInfoModal"));
+                        modal.show();
+                    } catch (err) {
+                        contentDiv.innerHTML = `<p class="text-danger">Помилка завантаження інформації продавця.</p>`;
+                    }
+                });
+            });
+        });
+    </script>
+}
