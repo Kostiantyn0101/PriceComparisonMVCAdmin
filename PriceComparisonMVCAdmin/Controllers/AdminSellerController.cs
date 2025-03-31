@@ -49,7 +49,7 @@ namespace PriceComparisonMVCAdmin.Controllers
                 return HandleApiResponse(response!, "Edit");
             }
 
-            return HandleApiResponse(response, "Index");
+            return HandleApiResponse(response, "Edit");
         }
 
         [HttpGet]
@@ -61,7 +61,7 @@ namespace PriceComparisonMVCAdmin.Controllers
                 return NotFound("Продавець не знайдений");
             }    
 
-            return PartialView("_SellerInfoPartial", partialResponse);
+            return PartialView("_SellerRequestInfoPartial", partialResponse);
         }
     }
 }

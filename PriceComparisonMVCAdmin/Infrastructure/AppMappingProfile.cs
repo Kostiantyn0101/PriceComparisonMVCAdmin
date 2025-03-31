@@ -4,6 +4,7 @@ using PriceComparisonMVCAdmin.Models.DTOs.Request.Product;
 using PriceComparisonMVCAdmin.Models.DTOs.Response.Category;
 using PriceComparisonMVCAdmin.Models.DTOs.Response.Product;
 using PriceComparisonMVCAdmin.Models.DTOs.Response.Seller;
+using PriceComparisonMVCAdmin.Models.Request.Seller;
 using PriceComparisonMVCAdmin.Models.ViewModels.ManagerProducts;
 using PriceComparisonMVCAdmin.Models.ViewModels.Seller;
 using System.Reflection;
@@ -32,6 +33,9 @@ namespace PriceComparisonMVCAdmin.Infrastructure
             CreateMap<SellerResponseModel, AdminSellerEditViewModel>()
                 .ForMember(dest => dest.CurrentLogoImageUrl, opt => opt.MapFrom(src => src.LogoImageUrl))
                 .ForMember(dest => dest.NewLogoImage, opt => opt.Ignore());
+
+            CreateMap<SellerRequestResponseModel, SellerRequestUpdateRequestModel>();
+
             //CreateMap<BaseProductCreateRequestModel, BaseProductFormModel>();
         }
     }

@@ -1,0 +1,118 @@
+﻿@model SellerRequestResponseModel
+
+<div id="sellerInfoWrapper" class="container-fluid">
+
+    <div class="row mb-2">
+        <div class="col-4 fw-bold">Назва магазину:</div>
+        <div class="col-8">@Model.StoreName</div>
+    </div>
+
+    <div class="row mb-2">
+        <div class="col-4 fw-bold">Сайт:</div>
+        <div class="col-8 text-break">
+            <a href="@Model.WebsiteUrl" target="_blank">@Model.WebsiteUrl</a>
+        </div>
+    </div>
+
+    <div class="row mb-2">
+        <div class="col-4 fw-bold">Контактна особа:</div>
+        <div class="col-8">@Model.ContactPerson</div>
+    </div>
+
+    <div class="row mb-2">
+        <div class="col-4 fw-bold">Телефон:</div>
+        <div class="col-8">@Model.ContactPhone</div>
+    </div>
+
+    @if (!string.IsNullOrEmpty(Model.StoreComment))
+    {
+        <div class="row mb-2">
+            <div class="col-4 fw-bold">Коментар:</div>
+            <div class="col-8">@Model.StoreComment</div>
+        </div>
+    }
+
+    <div class="row mb-2">
+        <div class="col-4 fw-bold">Дата подачі:</div>
+        <div class="col-8">@Model.CreatedAt.ToString("dd.MM.yyyy HH:mm:ss")</div>
+    </div>
+
+    <div class="row mb-2">
+        <div class="col-4 fw-bold">Статус:</div>
+        <div class="col-8">
+            @(Model.IsProcessed ? "Опрацьований" : "Очікує")
+        </div>
+    </div>
+
+    @if (Model.IsProcessed)
+    {
+        <div class="row mb-2">
+            <div class="col-4 fw-bold">Рішення:</div>
+            <div class="col-8">
+                <span class="badge @(Model.IsApproved ? "bg-success" : "bg-danger text-white")">
+                    @((Model.IsApproved ? "Схвалено" : "Відхилено"))
+                </span>
+            </div>
+        </div>
+
+        @if (!Model.IsApproved && !string.IsNullOrEmpty(Model.RefusalReason))
+        {
+            <div class="row mb-2">
+                <div class="col-4 fw-bold">Причина відмови:</div>
+                <div class="col-8 text-danger text-break">@Model.RefusalReason</div>
+            </div>
+        }
+
+        <div class="row mb-2">
+            <div class="col-4 fw-bold">Дата обробки:</div>
+            <div class="col-8">@Model.ProcessedAt?.ToString("dd.MM.yyyy HH:mm:ss")</div>
+        </div>
+    }
+
+    @if (!Model.IsProcessed)
+    {
+        <div class="row mt-3">
+            <div class="col-12 d-flex justify-content-end gap-2">
+                <button type="button"
+                        class="btn btn-success btn-approve"
+                        data-id="@Model.Id">
+                    Схвалити
+                </button>
+
+                <button class="btn btn-danger"
+                        data-bs-toggle="modal"
+                        data-bs-target="#rejectModal"
+                        data-id="@Model.Id">
+                    Відхилити
+                </button>
+            </div>
+        </div>
+    }
+</div>
+
+
+
+<!-- Modal for rejection -->
+<div class="modal fade" id="rejectModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Причина відмови</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <form id="rejectForm">
+                    <input type="hidden" id="rejectId" />
+                    <div class="mb-3">
+                        <label class="form-label">Причина</label>
+                        <textarea id="refusalReason" class="form-control" required></textarea>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-danger">Відхилити</button>
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Скасувати</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

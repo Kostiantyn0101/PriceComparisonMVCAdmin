@@ -38,8 +38,6 @@ namespace PriceComparisonMVCAdmin.Services.ApiServices
             => SafeRequestAsync<object, GeneralApiResponseModel>(HttpMethod.Delete, $"api/BaseProducts/delete/{id}", null);
 
 
-
-
         //Product Variants
         public Task<ProductResponseModel> GetProductVariantByIdAsync(int id)
             => GetSafeAsync<ProductResponseModel>($"api/Products/{id}");
@@ -99,7 +97,6 @@ namespace PriceComparisonMVCAdmin.Services.ApiServices
             => PostSafeAsync<AuctionClickRateRequestModel, GeneralApiResponseModel>("api/AuctionClickRate/create", model);
         public Task<GeneralApiResponseModel> UpdateAuctionClickRateAsync(AuctionClickRateRequestModel model)
             => SafeRequestAsync<AuctionClickRateRequestModel, GeneralApiResponseModel>(HttpMethod.Put, "api/AuctionClickRate/update", model);
-
 
 
         //Other
@@ -162,6 +159,19 @@ namespace PriceComparisonMVCAdmin.Services.ApiServices
            => SafeRequestAsync<ProductImageDeleteRequestModel, GeneralApiResponseModel>(HttpMethod.Delete, $"api/ProductImage/delete/", model);
         public Task<GeneralApiResponseModel> SetPrimaryImageAsync(ProductImageSetPrimaryRequestModel model)
            => SafeRequestAsync<ProductImageSetPrimaryRequestModel, GeneralApiResponseModel>(HttpMethod.Put, $"api/ProductImage/setprimary/", model);
+
+
+        //SellerRequest
+        public Task<List<SellerRequestResponseModel>> GetAllSellerRequestsAsync()
+            => SafeRequestAsync<object, List<SellerRequestResponseModel>>(HttpMethod.Get, $"/api/SellerRequest/getAll", null);
+        public Task<SellerRequestResponseModel> GetSellerRequestByIdAsync(int id)
+            => SafeRequestAsync<object, SellerRequestResponseModel>(HttpMethod.Get, $"/api/SellerRequest/{id}", null);
+        public Task<List<SellerRequestResponseModel>> GetPendingSellerRequestsAsync()
+            => SafeRequestAsync<object, List<SellerRequestResponseModel>>(HttpMethod.Get, $"/api/SellerRequest/getPending", null);
+        public Task<GeneralApiResponseModel> ProcessSellerRequestAsync(SellerRequestProcessRequestModel model)
+            => SafeRequestAsync<SellerRequestProcessRequestModel, GeneralApiResponseModel>(HttpMethod.Put, $"api/SellerRequest/process/", model);
+        public Task<GeneralApiResponseModel> UpdateSellerRequestAsync(SellerRequestUpdateRequestModel model)
+           => SafeRequestAsync<SellerRequestUpdateRequestModel, GeneralApiResponseModel>(HttpMethod.Put, $"api/SellerRequest/update/", model);
 
 
 

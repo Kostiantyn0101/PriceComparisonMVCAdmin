@@ -1,0 +1,117 @@
+﻿@model SellerRequestResponseModel
+@{
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<div class="container my-4">
+    <h2 class="mb-4">Редагування продавця</h2>
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="alert alert-success">
+            @TempData["SuccessMessage"]
+        </div>
+    }
+    @if (TempData["Error"] != null)
+    {
+        <div class="alert alert-danger">
+            @TempData["Error"]
+        </div>
+    }
+    <div class="card shadow-sm">
+        <div class="card-body">
+            <form asp-action="Edit" method="post">
+                <input type="hidden" asp-for="Id" />
+                <input type="hidden" asp-for="UserId" />
+                <input type="hidden" asp-for="CreatedAt" />
+                <input type="hidden" asp-for="ProcessedAt" />
+
+
+                <div class="row mb-3">
+                    <label asp-for="StoreName" class="col-sm-4 col-form-label fw-bold">Назва магазину:</label>
+                    <div class="col-sm-8">
+                        <input asp-for="StoreName" class="form-control" />
+                        <span asp-validation-for="StoreName" class="text-danger"></span>
+                    </div>
+                </div>
+
+                <div class="row mb-3">
+                    <label asp-for="WebsiteUrl" class="col-sm-4 col-form-label fw-bold">Сайт:</label>
+                    <div class="col-sm-8">
+                        <input asp-for="WebsiteUrl" class="form-control" />
+                        <span asp-validation-for="WebsiteUrl" class="text-danger"></span>
+                    </div>
+                </div>
+
+                <div class="row mb-3">
+                    <label asp-for="ContactPerson" class="col-sm-4 col-form-label fw-bold">Контактна особа:</label>
+                    <div class="col-sm-8">
+                        <input asp-for="ContactPerson" class="form-control" />
+                        <span asp-validation-for="ContactPerson" class="text-danger"></span>
+                    </div>
+                </div>
+
+                <div class="row mb-3">
+                    <label asp-for="ContactPhone" class="col-sm-4 col-form-label fw-bold">Телефон:</label>
+                    <div class="col-sm-8">
+                        <input asp-for="ContactPhone" class="form-control" />
+                        <span asp-validation-for="ContactPhone" class="text-danger"></span>
+                    </div>
+                </div>
+
+                <div class="row mb-3">
+                    <label asp-for="StoreComment" class="col-sm-4 col-form-label fw-bold">Коментар:</label>
+                    <div class="col-sm-8">
+                        <input asp-for="StoreComment" class="form-control" />
+                        <span asp-validation-for="StoreComment" class="text-danger"></span>
+                    </div>
+                </div>
+
+                <div class="row mb-3">
+                    <div class="col-4 fw-bold">Статус:</div>
+                    <div class="col-sm-8">
+                        <span class="badge @(Model.IsProcessed ? "bg-success" : "bg-warning text-dark")">
+                            @(Model.IsProcessed ? "Опрацьований" : "Очікує")
+                        </span>
+                    </div>
+                </div>
+
+                <div class="row mb-3">
+                    <div class="col-4 fw-bold">Рішення:</div>
+                    <div class="col-sm-8">
+                        <span class="badge @(Model.IsApproved ? "bg-success" : "bg-danger text-white")">
+                            @((Model.IsApproved ? "Схвалено" : "Відхилено"))
+                        </span>
+                    </div>
+                </div>
+
+                <div class="row mb-4">
+                    <label asp-for="RefusalReason" class="col-sm-2 col-form-label fw-bold">Причина відмови:</label>
+                    <div class="col-sm-8">
+                        <input asp-for="RefusalReason" class="form-control" />
+                        <span asp-validation-for="RefusalReason" class="text-danger"></span>
+                    </div>
+                </div>
+
+                <div class="row mb-4">
+                    <label asp-for="CreatedAt" class="col-sm-2 col-form-label fw-bold">Дата подачі:</label>
+                    <div class="col-sm-8">
+                        @Model.CreatedAt.ToString("dd.MM.yyyy HH:mm:ss")
+                    </div>
+                </div>
+
+                <div class="row mb-4">
+                    <label asp-for="ProcessedAt" class="col-sm-2 col-form-label fw-bold">Дата обробки:</label>
+                    <div class="col-sm-8">
+                        @Model.ProcessedAt?.ToString("dd.MM.yyyy HH:mm:ss")
+                    </div>
+                </div>
+
+                <div class="d-flex align-items-center justify-content-center">
+                    <button type="submit" class="btn btn-primary btn-main px-4">
+                        Зберегти зміни
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

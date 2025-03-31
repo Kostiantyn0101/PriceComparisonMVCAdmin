@@ -101,5 +101,15 @@ namespace PriceComparisonMVCAdmin.Services.ApiServices
         public Task<GeneralApiResponseModel> AddProductImageAsync(ProductImageCreateRequestModel model);
         public Task<GeneralApiResponseModel> DeleteProductImageAsync(ProductImageDeleteRequestModel model);
         public Task<GeneralApiResponseModel> SetPrimaryImageAsync(ProductImageSetPrimaryRequestModel model);
+
+
+        //SellerRequest
+        public Task<List<SellerRequestResponseModel>> GetAllSellerRequestsAsync();
+        public Task<SellerRequestResponseModel> GetSellerRequestByIdAsync(int id);
+        public Task<List<SellerRequestResponseModel>> GetPendingSellerRequestsAsync();
+        public Task<GeneralApiResponseModel> ProcessSellerRequestAsync(SellerRequestProcessRequestModel model);
+        public Task<GeneralApiResponseModel> UpdateSellerRequestAsync(SellerRequestUpdateRequestModel model);
+
+
     }
 }
