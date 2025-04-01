@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using PriceComparisonMVCAdmin.Models.Constants;
 using PriceComparisonMVCAdmin.Services.ApiServices;
 
@@ -7,10 +8,12 @@ namespace PriceComparisonMVCAdmin.Controllers
 {
     [Authorize(Policy = "AdminRights")]
     [Route("api/products")]
-    public class ProductApiController : Controller
+    public class ProductApiController : BaseController<ProductApiController>
     {
         private readonly IApiRequestService _apiRequestService;
-        public ProductApiController(IApiRequestService apiRequestService)
+        public ProductApiController(IApiRequestService apiRequestService, 
+            IApiService apiService, 
+            ILogger<ProductApiController> logger) : base(apiService, logger)
         {
             _apiRequestService = apiRequestService;
         }

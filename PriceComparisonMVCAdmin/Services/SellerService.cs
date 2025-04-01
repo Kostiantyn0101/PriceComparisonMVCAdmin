@@ -25,33 +25,7 @@ namespace PriceComparisonMVCAdmin.Services
             _mapper = mapper;
         }
 
-        //public async Task<ProductReferenceStatisticsViewModel> GetReferenceStatisticsAsync(DateTime startDate, DateTime endDate, ClaimsPrincipal user)
-        //{
-        //    var model = new ProductReferenceStatisticsViewModel
-        //    {
-        //        StartDate = startDate,
-        //        EndDate = endDate
-        //    };
-
-        //    var userId = user.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-        //    if (!string.IsNullOrEmpty(userId) && int.TryParse(userId, out var sellerId))
-        //    {
-        //        var seller = await _apiRequestService.GetSellerByUserIdAsync(sellerId);
-
-        //        var requestModel = new ProductSellerReferenceClickStaisticRequestModel
-        //        {
-        //            SellerId = seller.Id,
-        //            StartDate = startDate,
-        //            EndDate = endDate
-        //        };
-
-        //        var response = await _apiRequestService.GetProductReferenceClickAsync(requestModel);
-        //        model.Results = response;
-        //    }
-
-        //    return model;
-        //}
-
+       
         public async Task<ProductReferenceStatisticsViewModel> GetReferenceStatisticsAsync(DateTime startDate, DateTime endDate, int sellerId)
         {
             var model = new ProductReferenceStatisticsViewModel
