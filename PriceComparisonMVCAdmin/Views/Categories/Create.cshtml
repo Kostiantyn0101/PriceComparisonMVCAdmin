@@ -1,6 +1,8 @@
-﻿@model PriceComparisonMVCAdmin.Models.DTOs.Request.Categoty.CategoryCreateRequestModel
+﻿@model CategoryCreateRequestModel
 @{
     Layout = "~/Views/Shared/_AdminLayout.cshtml";
+    var parents = ViewBag.Parents as List<CategoryResponseModel>;
+
 }
 
 <h2>Створення категорії</h2>
@@ -21,15 +23,27 @@
         <input asp-for="Icon" type="file" class="form-control" />
         <span asp-validation-for="Icon" class="text-danger"></span>
     </div>
-    <div class="mb-3">
-        <label asp-for="ParentCategoryId" class="form-label">Батьківська категорія (опційно)</label>
-        <input asp-for="ParentCategoryId" class="form-control" />
+
+        <div class="mb-3">
+        <label asp-for="ParentCategoryId" class="form-label">Батьківська категорія</label>
+
+        <select asp-for="ParentCategoryId" class="form-select">
+            <option value="">-- Немає --</option>
+            @foreach (var item in parents)
+            {
+                <option value="@item.Id" selected="@(Model.ParentCategoryId == item.Id)">
+                    @item.Title
+                </option>
+            }
+        </select>
+
         <span asp-validation-for="ParentCategoryId" class="text-danger"></span>
     </div>
+
     <div class="mb-3">
         <label asp-for="DisplayOrder" class="form-label">Порядок відображення</label>
         <input asp-for="DisplayOrder" class="form-control" />
         <span asp-validation-for="DisplayOrder" class="text-danger"></span>
     </div>
-    <button type="submit" class="btn btn-primary">Створити</button>
+    <button type="submit" class="btn btn-primary btn-main">Створити</button>
 </form>

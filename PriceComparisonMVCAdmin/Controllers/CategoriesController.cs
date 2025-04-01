@@ -6,6 +6,8 @@ using PriceComparisonMVCAdmin.Models.Constants;
 using PriceComparisonMVCAdmin.Services.Helper;
 using PriceComparisonMVCAdmin.Services.ApiServices;
 using AutoMapper;
+using PriceComparisonMVCAdmin.Services;
+using PriceComparisonMVCAdmin.Models.ViewModels.Category;
 
 namespace PriceComparisonMVCAdmin.Controllers
 {
@@ -16,9 +18,11 @@ namespace PriceComparisonMVCAdmin.Controllers
         private readonly IValidationErrorProcessor _validationProcessor;
         private readonly IApiRequestService _apiRequestService;
         private readonly IMapper _mapper;
+        private readonly ICategoryService _categoryService;
 
         public CategoriesController(IApiService apiService,
             IMapper mapper,
+            ICategoryService categoryService,
             IApiRequestService apiRequestService,
             IValidationErrorProcessor validationProcessor,
             IApiResponseDeserializerService apiResponseDeserializerService,
@@ -28,22 +32,29 @@ namespace PriceComparisonMVCAdmin.Controllers
             _apiRequestService = apiRequestService;
             _validationProcessor = validationProcessor;
             _mapper = mapper;
+            _categoryService = categoryService;
         }
-
         public async Task<IActionResult> Index()
         {
-            var categories = await _apiRequestService.GetAllCategoriesAsync();
-            return View(categories);
+            var groupedCategories = await _categoryService.GetGroupedCategoriesAsync();
+            return View(groupedCategories);
         }
 
-        public IActionResult Create()
+        [HttpGet]
+        public async Task<IActionResult> Create()
         {
-            return View();
+            var (parents, _) = await _categoryService.GetParentAndChildCategoriesAsync();
+            ViewBag.Parents = parents;
+
+            return View(new CategoryCreateRequestModel());
         }
 
         [HttpPost]
         public async Task<IActionResult> Create(CategoryCreateRequestModel model)
         {
+            var (parents, _) = await _categoryService.GetParentAndChildCategoriesAsync();
+            ViewBag.Parents = parents;
+
             if (!ModelState.IsValid)
             {
                 return View(model);
@@ -59,43 +70,54 @@ namespace PriceComparisonMVCAdmin.Controllers
             if (response.Data != null)
             {
                 var category = _apiResponseDeserializerService.DeserializeData<CategoryResponseModel>(response);
-                TempData["SuccessMessage"] = "Дані збережено успішно.";
+                TempData["SuccessMessage"] = "Категорія створена успішно!";
                 return RedirectToAction("Edit", new { id = category.Id });
             }
 
+            TempData["Error"] = "Сталася помилка при створенні категорії.";
             return View(model);
         }
 
         public async Task<IActionResult> Edit(int id)
         {
             var category = await _apiRequestService.GetCategoryByIdAsync(id);
-            if (category.Id == 0)
+            if (category == null || category.Id == 0)
             {
                 return NotFound();
             }
 
-            var model = _mapper.Map<CategoryUpdateRequestModel>(category);
-            return View(model);
+            var (parents, _) = await _categoryService.GetParentAndChildCategoriesAsync();
+
+            var viewModel = new CategoryEditViewModel
+            {
+                Category = _mapper.Map<CategoryUpdateRequestModel>(category),
+                Parents = parents
+            };
+
+            return View(viewModel);
         }
 
         [HttpPost]
-        public async Task<IActionResult> Edit(CategoryUpdateRequestModel model)
+        public async Task<IActionResult> Edit(CategoryEditViewModel viewModel)
         {
             if (!ModelState.IsValid)
             {
-                return View(model);
+                var (parents, _) = await _categoryService.GetParentAndChildCategoriesAsync();
+                viewModel.Parents = parents;
+                return View(viewModel);
             }
 
-            var response = await _apiRequestService.UpdateCategoryAsync(model);
-            if (_validationProcessor.TryProcessErrors(response, ModelState) ||
-                response.ReturnCode != AppSuccessCodes.UpdateSuccess)
+            var response = await _apiRequestService.UpdateCategoryAsync(viewModel.Category);
+            if (_validationProcessor.TryProcessErrors(response, ModelState) || response.ReturnCode != AppSuccessCodes.UpdateSuccess)
             {
-                TempData["Error"] = response.Message + "Не вдалось відредагувати";
-                return View(model);
+                TempData["Error"] = response.Message + " Не вдалось відредагувати.";
+                var (parents, _) = await _categoryService.GetParentAndChildCategoriesAsync();
+                viewModel.Parents = parents;
+                return View(viewModel);
             }
 
-            TempData["SuccessMessage"] = "Дані змінені успішно.";
-            return RedirectToAction("Edit", new { id = model.Id });
+            TempData["SuccessMessage"] = "Категорію оновлено успішно.";
+            return RedirectToAction("Edit", new { id = viewModel.Category.Id });
         }
 
         [HttpPost]
@@ -104,9 +126,11 @@ namespace PriceComparisonMVCAdmin.Controllers
             var response = await _apiRequestService.DeleteCategoryAsync(id);
             if (response.ReturnCode != AppSuccessCodes.DeleteSuccess)
             {
-                TempData["Error"] = response.Message;
+                TempData["Error"] = response?.Message ?? "Помилка видалення категорії";
+                return RedirectToAction("Edit", new { id });
             }
-            TempData["SuccessMessage"] = "Дані видалено.";
+
+            TempData["SuccessMessage"] = "Категорію успішно видалено.";
             return RedirectToAction("Index");
         }
     }
