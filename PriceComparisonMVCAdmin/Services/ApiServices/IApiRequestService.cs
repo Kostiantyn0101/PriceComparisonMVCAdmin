@@ -8,6 +8,7 @@ using PriceComparisonMVCAdmin.Models.Request.Seller;
 using PriceComparisonMVCAdmin.Models.ViewModels.Seller;
 using PriceComparisonMVCAdmin.Models.DTOs.Request.Auction;
 using PriceComparisonMVCAdmin.Models.DTOs.Response.Seller;
+using PriceComparisonMVCAdmin.Models.DTOs.Response.Characteristics;
 
 namespace PriceComparisonMVCAdmin.Services.ApiServices
 {
@@ -32,6 +33,7 @@ namespace PriceComparisonMVCAdmin.Services.ApiServices
 
 
         //Characteristics
+        public Task<List<CharacteristicResponseModel>> GetAllCharacteristicsAsync();
         public Task<List<CategoryCharacteristicResponseModel>> GetCategoryCharacteristicsAsync(int categoryId);
         public Task<List<ProductCharacteristicUpdateRequestModel>> GetCharacteristicsForProductAsync(int productId);
         public Task<List<ProductCharacteristicUpdateRequestModel>> GetCharacteristicsForBaseProductAsync(int baseProductId);

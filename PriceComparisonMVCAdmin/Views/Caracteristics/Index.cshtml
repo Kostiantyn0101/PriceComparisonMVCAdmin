@@ -1,0 +1,95 @@
+﻿@using PriceComparisonMVCAdmin.Models.DTOs.Response.Characteristics
+@model List<CharacteristicResponseModel>
+@{
+	Layout = "~/Views/Shared/_AdminLayout.cshtml";
+
+	var characteristicGroups = Model
+		.GroupBy(c => c.CharacteristicGroup.Id)
+		.ToDictionary(g => g.Key, g => g.First().CharacteristicGroup.Title);
+}
+
+<div class="container my-4">
+	<div class="row">
+		<h2 class="mb-3 col-5">Характеристики</h2>
+		<div class="col-3">
+			<select name="groupId" id="groupFilter" class="form-select">
+				<option value="" selected>-- Всі групи --</option>
+				@foreach (var group in characteristicGroups)
+				{
+					<option value="@group.Key">@group.Value</option>
+				}
+
+			</select>
+		</div>
+	</div>
+
+	@if (Model != null && Model.Any())
+	{
+		<div class="d-flex flex-column">
+
+			<div class="row fw-bold border-bottom py-2">
+				<div class="col-3 text-center">Назва</div>
+				<div class="col-1 text-center">Тип даних</div>
+				<div class="col-1 text-center">Одиниці виміру</div>
+				<div class="col-3 text-center">Група характеристик</div>
+				<div class="col-1 text-center">Порядок виводу в групі</div>
+				<div class="col-1 text-center">Входить в короткий опис</div>
+				<div class="col-2 text-center">Дії</div>
+			</div>
+
+			@foreach (var item in Model)
+			{
+				<div class="row align-items-center border-bottom py-2 category-row" data-group-id="@item.CharacteristicGroupId">
+					<div class="col-3 text-lg-start">@item.Title</div>
+					<div class="col-1 text-center">@item.DataType</div>
+					<div class="col-1 text-center">@item.Unit</div>
+					<div class="col-3 text-center">@item.CharacteristicGroup.Title</div>
+					<div class="col-1 text-center">@item.DisplayOrder</div>
+					<div class="col-1 text-center">@item.IncludeInShortDescription</div>
+					<div class="col-2 text-center">
+						<a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-link" title="Редагувати">
+							<i class="bi bi-pencil"></i>
+						</a>
+						<form asp-action="Delete" asp-route-id="@item.Id" method="post"
+							  class="d-inline" onsubmit="return confirm('Видалити категорію?');">
+							<button type="submit" class="btn btn-sm btn-link cancel-btn text-danger ms-2" title="Видалити">
+								<i class="bi bi-trash"></i>
+							</button>
+						</form>
+					</div>
+				</div>
+			}
+		</div>
+	}
+	else
+	{
+		<p>Немає характеристик</p>
+	}
+
+	<div class="text-center">
+		<a asp-action="Create" class="btn btn-primary d-inline-flex align-items-center justify-content-center mt-3">
+			Створити характеристику
+		</a>
+	</div>
+</div>
+
+<script>
+	document.getElementById("groupFilter").addEventListener("change", function () {
+		var selectedGroupId = this.value;
+		var rows = document.querySelectorAll(".category-row");
+
+		rows.forEach(function(row) {
+			// Show all lines ff filter is not selected
+			if (!selectedGroupId) {
+				row.style.display = "";
+			} else {
+				// Show rows with selected characteristic group only 
+				if (row.getAttribute("data-group-id") === selectedGroupId) {
+					row.style.display = "";
+				} else {
+					row.style.display = "none";
+				}
+			}
+		});
+	});
+</script>

@@ -1,69 +1,69 @@
 ﻿@model List<PriceComparisonMVCAdmin.Models.DTOs.Response.Category.CategoryResponseModel>
 @{
-    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+	Layout = "~/Views/Shared/_AdminLayout.cshtml";
 
-    var categoryTitleMap = Model.ToDictionary(cat => cat.Id, cat => cat.Title);
+	var categoryTitleMap = Model.ToDictionary(cat => cat.Id, cat => cat.Title);
 }
 
 <div class="container my-4">
-    <h2 class="mb-3">Категорії</h2>
+	<h2 class="mb-3">Категорії</h2>
 
-    @if (Model != null && Model.Any())
-    {
-        <div class="d-flex flex-column">
+	@if (Model != null && Model.Any())
+	{
+		<div class="d-flex flex-column">
 
-            <div class="row fw-bold border-bottom py-2">
-                <div class="col-1 text-center">Id</div>
-                <div class="col-3 text-center">Назва</div>
-                <div class="col-2 text-center">Батьківська ID</div>
-                <div class="col-3 text-center">Батьківська</div>
-                <div class="col-1 text-center">Порядок</div>
-                <div class="col-2 text-center">Дії</div>
-            </div>
+			<div class="row fw-bold border-bottom py-2">
+				<div class="col-1 text-center">Id</div>
+				<div class="col-3 text-center">Назва</div>
+				<div class="col-2 text-center">Батьківська ID</div>
+				<div class="col-3 text-center">Батьківська</div>
+				<div class="col-1 text-center">Порядок</div>
+				<div class="col-2 text-center">Дії</div>
+			</div>
 
-            @foreach (var item in Model)
-            {
-                <div class="row align-items-center border-bottom py-2">
-                    <div class="col-1 text-center">@item.Id</div>
-                    <div class="col-3 text-center">@item.Title</div>
-                    <div class="col-2 text-center">
-                        @(item.ParentCategoryId.HasValue ? item.ParentCategoryId.ToString() : "Немає")
-                    </div>
+			@foreach (var item in Model)
+			{
+				<div class="row align-items-center border-bottom py-2">
+					<div class="col-1 text-center">@item.Id</div>
+					<div class="col-3 text-center">@item.Title</div>
+					<div class="col-2 text-center">
+						@(item.ParentCategoryId.HasValue ? item.ParentCategoryId.ToString() : "Немає")
+					</div>
 
-                    <div class="col-3 text-center">
-                        @if (item.ParentCategoryId.HasValue && categoryTitleMap.TryGetValue(item.ParentCategoryId.Value, out var parentTitle))
-                        {
-                            @parentTitle
-                        }
-                        else
-                        {
-                            <text>Немає</text>
-                        }
-                    </div>
-                    <div class="col-1 text-center">@item.DisplayOrder</div>
-                    <div class="col-2 text-center">
-                        <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-link" title="Редагувати">
-                            <i class="bi bi-pencil"></i>
-                        </a>
-                        <form asp-action="Delete" asp-route-id="@item.Id" method="post"
-                              class="d-inline" onsubmit="return confirm('Видалити категорію?');">
-                            <button type="submit" class="btn btn-sm btn-link cancel-btn text-danger ms-2" title="Видалити">
-                                <i class="bi bi-trash"></i>
-                            </button>
-                        </form>
-                    </div>
-                </div>
-            }
-        </div>
-    }
-    else
-    {
-        <p>Немає категорій</p>
-    }
+					<div class="col-3 text-center">
+						@if (item.ParentCategoryId.HasValue && categoryTitleMap.TryGetValue(item.ParentCategoryId.Value, out var parentTitle))
+						{
+							@parentTitle
+						}
+						else
+						{
+							<text>Немає</text>
+						}
+					</div>
+					<div class="col-1 text-center">@item.DisplayOrder</div>
+					<div class="col-2 text-center">
+						<a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-link" title="Редагувати">
+							<i class="bi bi-pencil"></i>
+						</a>
+						<form asp-action="Delete" asp-route-id="@item.Id" method="post"
+							  class="d-inline" onsubmit="return confirm('Видалити категорію?');">
+							<button type="submit" class="btn btn-sm btn-link cancel-btn text-danger ms-2" title="Видалити">
+								<i class="bi bi-trash"></i>
+							</button>
+						</form>
+					</div>
+				</div>
+			}
+		</div>
+	}
+	else
+	{
+		<p>Немає категорій</p>
+	}
 
-    <div class="text-center">
-        <a asp-action="Create" class="btn btn-primary d-inline-flex align-items-center justify-content-center mt-3">
-            Створити категорію
-        </a>
-    </div>
+	<div class="text-center">
+		<a asp-action="Create" class="btn btn-primary d-inline-flex align-items-center justify-content-center mt-3">
+			Створити категорію
+		</a>
+	</div>
 </div>

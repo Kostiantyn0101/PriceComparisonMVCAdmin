@@ -4,6 +4,7 @@ using PriceComparisonMVCAdmin.Models.DTOs.Request.Product;
 using PriceComparisonMVCAdmin.Models.DTOs.Request.Seller;
 using PriceComparisonMVCAdmin.Models.DTOs.Response;
 using PriceComparisonMVCAdmin.Models.DTOs.Response.Category;
+using PriceComparisonMVCAdmin.Models.DTOs.Response.Characteristics;
 using PriceComparisonMVCAdmin.Models.DTOs.Response.Product;
 using PriceComparisonMVCAdmin.Models.DTOs.Response.Seller;
 using PriceComparisonMVCAdmin.Models.Request.Seller;
@@ -54,6 +55,8 @@ namespace PriceComparisonMVCAdmin.Services.ApiServices
 
 
         //Characteristics
+        public Task<List<CharacteristicResponseModel>> GetAllCharacteristicsAsync()
+            => GetSafeAsync<List<CharacteristicResponseModel>>($"api/Characteristics/getall");
         public Task<List<CategoryCharacteristicResponseModel>> GetCategoryCharacteristicsAsync(int categoryId)
             => GetSafeAsync<List<CategoryCharacteristicResponseModel>>($"api/CategoryCharacteristics/{categoryId}");
         public Task<List<ProductCharacteristicUpdateRequestModel>> GetCharacteristicsForProductAsync(int productId)
