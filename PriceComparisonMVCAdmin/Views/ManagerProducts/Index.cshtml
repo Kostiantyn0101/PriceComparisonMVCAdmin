@@ -2,92 +2,220 @@
 @{
     Layout = "~/Views/Shared/_AdminLayout.cshtml";
 }
+<h2 class="mb-3">Модерація</h2>
 
-<div class="container my-4">
-    <h2 class="mb-3">На модерації — базові продукти</h2>
-
-    @if (Model.BaseProducts.Any())
-    {
-        <ul class="list-group">
-            @foreach (var product in Model.BaseProducts)
-            {
-                <li class="list-group-item">
-                    <div class="d-flex justify-content-between align-items-center">
-                        <span>@product.Title</span>
-                        <div class="d-flex align-items-center gap-2">
-                            <a href="/ManagerProducts/EditBaseProduct/@product.Id"
-                               class="btn btn-sm btn-link text-primary"
-                               title="Редагувати базовий продукт">
-                                <i class="bi bi-pencil"></i>
-                            </a>
-                            <a href="/ProductCharacteristics/Edit?baseProductId=@product.Id"
-                               class="btn btn-sm btn-link text-success"
-                               title="Додати/редагувати характеристики">
-                                <i class="bi bi-list-check"></i>
-                            </a>
-                            <a href="/ManagerProducts/CreateVariant?baseProductId=@product.Id"
-                               class="btn btn-sm btn-link text-success"
-                               title="Додати варіант продукту">
-                                <i class="bi bi-plus-lg"></i>
-                            </a>
-                        </div>
-                    </div>
-                </li>
-            }
-        </ul>
-    }
-    else
-    {
-        <p class="text-muted">Немає базових продуктів на модерації.</p>
-    }
+<div class="row mb-4">
+    <div class="col-md-4">
+        <div class="card text-bg-light shadow-sm">
+            <div class="card-body text-center">
+                <h6 class="card-title">Базові продукти</h6>
+                <h3 class="fw-bold">@Model.BaseProducts.Count</h3>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card text-bg-light shadow-sm">
+            <div class="card-body text-center">
+                <h6 class="card-title">Варіанти продуктів</h6>
+                <h3 class="fw-bold">@Model.ProductVariants.Count</h3>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card text-bg-light shadow-sm">
+            <div class="card-body text-center">
+                <h6 class="card-title">Заявки продавців</h6>
+                <h3 class="fw-bold">@Model.SellerRequests.Count</h3>
+            </div>
+        </div>
+    </div>
 </div>
 
-<hr />
 
-<div class="container my-4">
-    <h2 class="mb-3">На модерації — варіанти продуктів</h2>
-
-    @if (Model.ProductVariants.Any())
-    {
-        <ul class="list-group">
-            @foreach (var variant in Model.ProductVariants)
-            {
-                <li class="list-group-item">
-                    <div class="d-flex justify-content-between align-items-center">
-                        <span>
-                            @(variant.ProductGroup?.Name ?? "Група?")
-                            @if (!string.IsNullOrEmpty(variant.ModelNumber))
-                            {
-                                <text>| модель - @variant.ModelNumber</text>;
-                            }
-                            @if (!string.IsNullOrEmpty(variant.GTIN))
-                            {
-                                <text> | GTIN - @variant.GTIN</text>;
-                            }
-                            else if (!string.IsNullOrEmpty(variant.UPC))
-                            {
-                                <text> | UPC - @variant.UPC</text>;
-                            }
-                        </span>
-                        <div class="d-flex align-items-center">
-                            <a href="/ManagerProducts/EditVariant/@variant.Id"
-                               class="btn btn-sm btn-link text-primary"
-                               title="Редагувати варіант продукту">
-                                <i class="bi bi-pencil"></i>
-                            </a>
-                            <a href="/ProductCharacteristics/Edit?productId=@variant.Id"
-                               class="btn btn-sm btn-link text-success"
-                               title="Додати/редагувати характеристики">
-                                <i class="bi bi-list-check"></i>
-                            </a>
+<div class="card mb-4 shadow-sm">
+    <div class="card-header border-bg-primary-light border-start border-5 d-flex align-items-center gap-2">
+        <i class="bi bi-box-seam fs-5 text-info"></i>
+        <h5 class="mb-0">Базові продукти</h5>
+    </div>
+    <div class="card-body">
+        @if (Model.BaseProducts.Any())
+        {
+            <ul class="list-group">
+                @foreach (var product in Model.BaseProducts)
+                {
+                    <li class="list-group-item">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span>@product.Title</span>
+                            <div class="d-flex align-items-center gap-2">
+                                <a href="/ManagerProducts/EditBaseProduct/@product.Id"
+                                   class="btn btn-sm btn-link text-primary"
+                                   title="Редагувати базовий продукт">
+                                    <i class="bi bi-pencil"></i>
+                                </a>
+                                <a href="/ProductCharacteristics/Edit?baseProductId=@product.Id"
+                                   class="btn btn-sm btn-link text-success"
+                                   title="Додати/редагувати характеристики">
+                                    <i class="bi bi-list-check"></i>
+                                </a>
+                                <a href="/ManagerProducts/CreateVariant?baseProductId=@product.Id"
+                                   class="btn btn-sm btn-link text-success"
+                                   title="Додати варіант продукту">
+                                    <i class="bi bi-plus-lg"></i>
+                                </a>
+                            </div>
                         </div>
-                    </div>
-                </li>
-            }
-        </ul>
-    }
-    else
-    {
-        <p class="text-muted">Немає варіантів продуктів на модерації.</p>
-    }
+                    </li>
+                }
+            </ul>
+        }
+        else
+        {
+            <p class="text-muted">Немає базових продуктів на модерації.</p>
+        }
+    </div>
 </div>
+
+<div class="card mb-4 shadow-sm">
+    <div class="card-header border-bg-primary-light border-start border-5 d-flex align-items-center gap-2">
+        <i class="bi bi-grid fs-5 text-info"></i>
+        <h5 class="mb-0">Варіанти продуктів</h5>
+    </div>
+    <div class="card-body">
+        @if (Model.ProductVariants.Any())
+        {
+            <ul class="list-group">
+                @foreach (var variant in Model.ProductVariants)
+                {
+                    <li class="list-group-item">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span>
+                                @(variant.ProductGroup?.Name ?? "Група?")
+                                @if (!string.IsNullOrEmpty(variant.ModelNumber))
+                                {
+                                    <text>| модель - @variant.ModelNumber</text>
+                                    ;
+                                }
+                                @if (!string.IsNullOrEmpty(variant.GTIN))
+                                {
+                                    <text> | GTIN - @variant.GTIN</text>
+                                    ;
+                                }
+                                else if (!string.IsNullOrEmpty(variant.UPC))
+                                {
+                                    <text> | UPC - @variant.UPC</text>
+                                    ;
+                                }
+                            </span>
+                            <div class="d-flex align-items-center">
+                                <a href="/ManagerProducts/EditVariant/@variant.Id"
+                                   class="btn btn-sm btn-link text-primary"
+                                   title="Редагувати варіант продукту">
+                                    <i class="bi bi-pencil"></i>
+                                </a>
+                                <a href="/ProductCharacteristics/Edit?productId=@variant.Id"
+                                   class="btn btn-sm btn-link text-success"
+                                   title="Додати/редагувати характеристики">
+                                    <i class="bi bi-list-check"></i>
+                                </a>
+                            </div>
+                        </div>
+                    </li>
+                }
+            </ul>
+        }
+        else
+        {
+            <p class="text-muted">Немає варіантів продуктів на модерації.</p>
+        }
+    </div>
+</div>
+
+<div class="card mb-4 shadow-sm">
+    <div class="card-header border-bg-primary-light border-start border-5 d-flex align-items-center gap-2">
+        <i class="bi bi-person-lines-fill fs-5 text-info"></i>
+        <h5 class="mb-0">Заявки продавців</h5>
+    </div>
+    <div class="card-body">
+        @if (Model.SellerRequests.Any())
+        {
+            <div class="row fw-bold py-2">
+                <div class="col-2">Назва</div>
+                <div class="col-3">Вебсайт</div>
+                <div class="col-3">Статус</div>
+                <div class="col-2">Дата подачі</div>
+                <div class="col-2">Дії</div>
+            </div>
+            <ul class="list-group">
+                @foreach (var seller in Model.SellerRequests)
+                {
+                    <li class="list-group-item">
+                        <div class="row align-items-center py-2">
+                            <div class="col-2">
+                                <strong>@seller.StoreName</strong>
+                            </div>
+                            <div class="col-3 text-truncate" title="@seller.WebsiteUrl" style="max-width: 100%;">
+                                <a href="@seller.WebsiteUrl" target="_blank">@seller.WebsiteUrl</a>
+                            </div>
+                            <div class="col-3">
+                                @if (seller.IsProcessed)
+                                {
+                                    <span class="badge bg-success">
+                                        <i class="bi bi-check-circle"></i> Опрацьовано
+                                    </span>
+                                }
+                                else
+                                {
+                                    <span class="badge bg-warning text-dark">
+                                        <i class="bi bi-hourglass-split"></i> Очікує
+                                    </span>
+                                }
+                            </div>
+                            <div class="col-2">
+                                @seller.CreatedAt.ToString("dd.MM.yyyy HH:mm:ss")
+                            </div>
+                            <div class="col-2">
+                                <div class="d-flex gap-2">
+                                    <a href="/SellerRequest/Edit/@seller.Id"
+                                       class="btn btn-sm btn-link text-primary"
+                                       title="Редагувати заявку">
+                                        <i class="bi bi-pencil"></i>
+                                    </a>
+                                    <button type="button"
+                                            class="btn btn-sm btn-link text-info btn-view-seller-request"
+                                            title="Переглянути інформацію"
+                                            data-id="@seller.Id">
+                                        <i class="bi bi-eye"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </li>
+                }
+            </ul>
+        }
+        else
+        {
+            <p class="text-muted">Немає жодного продавця.</p>
+        }
+    </div>
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="sellerInfoModal" tabindex="-1" aria-labelledby="sellerInfoModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="sellerInfoModalLabel">Інформація про магазин</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Закрити"></button>
+            </div>
+            <div class="modal-body">
+                <div id="sellerInfoContent">
+                    <p class="text-muted">Завантаження...</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+@section Scripts {
+    <script src="~/js/sellerRequestModal.js" asp-append-version="true"></script>
+}

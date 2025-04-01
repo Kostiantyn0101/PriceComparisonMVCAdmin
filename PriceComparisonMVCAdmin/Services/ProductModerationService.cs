@@ -16,8 +16,10 @@ namespace PriceComparisonMVCAdmin.Services
             return new ModerationViewModel
             {
                 BaseProducts = await _apiRequestService.GetBaseProductsOnModerationAsync(),
-                ProductVariants = await _apiRequestService.GetProductVariantsOnModerationAsync()
+                ProductVariants = await _apiRequestService.GetProductVariantsOnModerationAsync(),
+                SellerRequests = await _apiRequestService.GetPendingSellerRequestsAsync()
             };
+
         }
     }
 }
