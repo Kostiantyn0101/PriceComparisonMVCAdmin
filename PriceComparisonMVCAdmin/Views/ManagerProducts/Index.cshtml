@@ -32,107 +32,113 @@
 </div>
 
 
-<div class="card mb-4 shadow-sm">
-    <div class="card-header border-bg-primary-light border-start border-5 d-flex align-items-center gap-2">
-        <i class="bi bi-box-seam fs-5 text-info"></i>
-        <h5 class="mb-0">Базові продукти</h5>
-    </div>
-    <div class="card-body">
-        @if (Model.BaseProducts.Any())
-        {
-            <ul class="list-group">
-                @foreach (var product in Model.BaseProducts)
+<div class="row">
+    <div class="col-lg-6 mb-4">
+        <div class="card h-100 shadow-sm">
+            <div class="card-header border-bg-primary-light border-start border-5 d-flex align-items-center gap-2">
+                <i class="bi bi-box-seam fs-5 text-primary-light"></i>
+                <h5 class="mb-0">Базові продукти</h5>
+            </div>
+            <div class="card-body">
+                @* Вміст базових продуктів *@
+                @if (Model.BaseProducts.Any())
                 {
-                    <li class="list-group-item">
-                        <div class="d-flex justify-content-between align-items-center">
-                            <span>@product.Title</span>
-                            <div class="d-flex align-items-center gap-2">
-                                <a href="/ManagerProducts/EditBaseProduct/@product.Id"
-                                   class="btn btn-sm btn-link text-primary"
-                                   title="Редагувати базовий продукт">
-                                    <i class="bi bi-pencil"></i>
-                                </a>
-                                <a href="/ProductCharacteristics/Edit?baseProductId=@product.Id"
-                                   class="btn btn-sm btn-link text-success"
-                                   title="Додати/редагувати характеристики">
-                                    <i class="bi bi-list-check"></i>
-                                </a>
-                                <a href="/ManagerProducts/CreateVariant?baseProductId=@product.Id"
-                                   class="btn btn-sm btn-link text-success"
-                                   title="Додати варіант продукту">
-                                    <i class="bi bi-plus-lg"></i>
-                                </a>
-                            </div>
-                        </div>
-                    </li>
+                    <ul class="list-group">
+                        @foreach (var product in Model.BaseProducts)
+                        {
+                            <li class="list-group-item">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <span>@product.Title</span>
+                                    <div class="d-flex align-items-center gap-2">
+                                        <a href="/ManagerProducts/EditBaseProduct/@product.Id"
+                                           class="btn btn-sm btn-link text-primary"
+                                           title="Редагувати базовий продукт">
+                                            <i class="bi bi-pencil"></i>
+                                        </a>
+                                        <a href="/ProductCharacteristics/Edit?baseProductId=@product.Id"
+                                           class="btn btn-sm btn-link text-success"
+                                           title="Додати/редагувати характеристики">
+                                            <i class="bi bi-list-check"></i>
+                                        </a>
+                                        <a href="/ManagerProducts/CreateVariant?baseProductId=@product.Id"
+                                           class="btn btn-sm btn-link text-success"
+                                           title="Додати варіант продукту">
+                                            <i class="bi bi-plus-lg"></i>
+                                        </a>
+                                    </div>
+                                </div>
+                            </li>
+                        }
+                    </ul>
                 }
-            </ul>
-        }
-        else
-        {
-            <p class="text-muted">Немає базових продуктів на модерації.</p>
-        }
+                else
+                {
+                    <p class="text-muted">Немає базових продуктів на модерації.</p>
+                }
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-6 mb-4">
+        <div class="card h-100 shadow-sm">
+            <div class="card-header border-bg-primary-light border-start border-5 d-flex align-items-center gap-2">
+                <i class="bi bi-grid fs-5 text-primary-light"></i>
+                <h5 class="mb-0">Варіанти продуктів</h5>
+            </div>
+            <div class="card-body">
+                @* Вміст варіантів продуктів *@
+                @if (Model.ProductVariants.Any())
+                {
+                    <ul class="list-group">
+                        @foreach (var variant in Model.ProductVariants)
+                        {
+                            <li class="list-group-item">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <span>
+                                        @(variant.ProductGroup?.Name ?? "Група?")
+                                        @if (!string.IsNullOrEmpty(variant.ModelNumber))
+                                        {
+                                            <text>| модель - @variant.ModelNumber</text>
+                                        }
+                                        @if (!string.IsNullOrEmpty(variant.GTIN))
+                                        {
+                                            <text> | GTIN - @variant.GTIN</text>
+                                        }
+                                        else if (!string.IsNullOrEmpty(variant.UPC))
+                                        {
+                                            <text> | UPC - @variant.UPC</text>
+                                        }
+                                    </span>
+                                    <div class="d-flex align-items-center">
+                                        <a href="/ManagerProducts/EditVariant/@variant.Id"
+                                           class="btn btn-sm btn-link text-primary"
+                                           title="Редагувати варіант продукту">
+                                            <i class="bi bi-pencil"></i>
+                                        </a>
+                                        <a href="/ProductCharacteristics/Edit?productId=@variant.Id"
+                                           class="btn btn-sm btn-link text-success"
+                                           title="Додати/редагувати характеристики">
+                                            <i class="bi bi-list-check"></i>
+                                        </a>
+                                    </div>
+                                </div>
+                            </li>
+                        }
+                    </ul>
+                }
+                else
+                {
+                    <p class="text-muted">Немає варіантів продуктів на модерації.</p>
+                }
+            </div>
+        </div>
     </div>
 </div>
 
-<div class="card mb-4 shadow-sm">
-    <div class="card-header border-bg-primary-light border-start border-5 d-flex align-items-center gap-2">
-        <i class="bi bi-grid fs-5 text-info"></i>
-        <h5 class="mb-0">Варіанти продуктів</h5>
-    </div>
-    <div class="card-body">
-        @if (Model.ProductVariants.Any())
-        {
-            <ul class="list-group">
-                @foreach (var variant in Model.ProductVariants)
-                {
-                    <li class="list-group-item">
-                        <div class="d-flex justify-content-between align-items-center">
-                            <span>
-                                @(variant.ProductGroup?.Name ?? "Група?")
-                                @if (!string.IsNullOrEmpty(variant.ModelNumber))
-                                {
-                                    <text>| модель - @variant.ModelNumber</text>
-                                    ;
-                                }
-                                @if (!string.IsNullOrEmpty(variant.GTIN))
-                                {
-                                    <text> | GTIN - @variant.GTIN</text>
-                                    ;
-                                }
-                                else if (!string.IsNullOrEmpty(variant.UPC))
-                                {
-                                    <text> | UPC - @variant.UPC</text>
-                                    ;
-                                }
-                            </span>
-                            <div class="d-flex align-items-center">
-                                <a href="/ManagerProducts/EditVariant/@variant.Id"
-                                   class="btn btn-sm btn-link text-primary"
-                                   title="Редагувати варіант продукту">
-                                    <i class="bi bi-pencil"></i>
-                                </a>
-                                <a href="/ProductCharacteristics/Edit?productId=@variant.Id"
-                                   class="btn btn-sm btn-link text-success"
-                                   title="Додати/редагувати характеристики">
-                                    <i class="bi bi-list-check"></i>
-                                </a>
-                            </div>
-                        </div>
-                    </li>
-                }
-            </ul>
-        }
-        else
-        {
-            <p class="text-muted">Немає варіантів продуктів на модерації.</p>
-        }
-    </div>
-</div>
 
 <div class="card mb-4 shadow-sm">
     <div class="card-header border-bg-primary-light border-start border-5 d-flex align-items-center gap-2">
-        <i class="bi bi-person-lines-fill fs-5 text-info"></i>
+        <i class="bi bi-person-lines-fill fs-5 text-primary-light"></i>
         <h5 class="mb-0">Заявки продавців</h5>
     </div>
     <div class="card-body">

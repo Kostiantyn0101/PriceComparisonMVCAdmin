@@ -68,32 +68,6 @@ namespace PriceComparisonMVCAdmin.Controllers
             return RedirectToAction("Login", "Account");
         }
 
-
-        [HttpGet]
-        public IActionResult Register()
-        {
-            return View();
-        }
-
-        [HttpPost]
-        public async Task<IActionResult> Register(RegisterModel model)
-        {
-            if (!ModelState.IsValid)
-            {
-                return View(model);
-            }
-
-            var errorMessage = await _authService.RegisterAsync(model);
-
-            if (!string.IsNullOrEmpty(errorMessage))
-            {
-                ModelState.AddModelError(string.Empty, errorMessage);
-                return View(model);
-            }
-
-            return RedirectToAction("Login", "Account");
-        }
-
         [HttpGet]
         public IActionResult NoAccess()
         {
