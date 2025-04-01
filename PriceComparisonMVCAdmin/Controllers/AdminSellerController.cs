@@ -61,7 +61,7 @@ namespace PriceComparisonMVCAdmin.Controllers
                 return NotFound("Продавець не знайдений");
             }    
 
-            return PartialView("_SellerRequestInfoPartial", partialResponse);
+            return PartialView("_SellerInfoPartial", partialResponse);
         }
     }
 }

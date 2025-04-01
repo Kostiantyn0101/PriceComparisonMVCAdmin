@@ -1,5 +1,6 @@
 ﻿:root {
     --primary-color: #2C509A;
+    --primary-color-rgb: 44, 80, 154;
     --primary-text-color: white;
     --primary-hover-color: #244374;
     --success-color: #0B8E00;
@@ -46,10 +47,19 @@
     color: var(--primary-text-color);
 }
 
+.border-bg-primary-light {
+    border-color: rgba(var(--primary-color-rgb), 0.56) !important;
+}
+
+.card-header {
+    background-color: rgba(var(--primary-color-rgb), 0.05) !important;
+}
+.text-info {
+    color: var(--primary-color) !important;
+}
+
 @media (max-width: 576px) {
-    .btn-primary,
-    .btn-primary-add,
-    .btn-primary-remove {
+    .btn-primary, .btn-primary-add, .btn-primary-remove {
         width: 100% !important;
         margin: 0 !important;
     }
