@@ -1,6 +1,7 @@
 ﻿@model ModerationViewModel
 @{
     Layout = "~/Views/Shared/_AdminLayout.cshtml";
+    ViewData["Title"] = "Головна - Модерація";
 }
 <h2 class="mb-3">Модерація</h2>
 
@@ -40,7 +41,6 @@
                 <h5 class="mb-0">Базові продукти</h5>
             </div>
             <div class="card-body">
-                @* Вміст базових продуктів *@
                 @if (Model.BaseProducts.Any())
                 {
                     <ul class="list-group">
@@ -86,7 +86,6 @@
                 <h5 class="mb-0">Варіанти продуктів</h5>
             </div>
             <div class="card-body">
-                @* Вміст варіантів продуктів *@
                 @if (Model.ProductVariants.Any())
                 {
                     <ul class="list-group">
@@ -144,7 +143,7 @@
     <div class="card-body">
         @if (Model.SellerRequests.Any())
         {
-            <div class="row fw-bold py-2">
+            <div class="row fw-bold py-2 d-none d-md-flex">
                 <div class="col-2">Назва</div>
                 <div class="col-3">Вебсайт</div>
                 <div class="col-3">Статус</div>
@@ -155,14 +154,17 @@
                 @foreach (var seller in Model.SellerRequests)
                 {
                     <li class="list-group-item">
-                        <div class="row align-items-center py-2">
-                            <div class="col-2">
+                        <div class="row align-items-center py-3">
+                            <div class="col-12 col-md-2">
+                                <div class="d-md-none text-muted small">Назва</div>
                                 <strong>@seller.StoreName</strong>
                             </div>
-                            <div class="col-3 text-truncate" title="@seller.WebsiteUrl" style="max-width: 100%;">
+                            <div class="col-12 col-md-3 text-truncate" title="@seller.WebsiteUrl" style="max-width: 100%;">
+                                <div class="d-md-none text-muted small">Вебсайт</div>
                                 <a href="@seller.WebsiteUrl" target="_blank">@seller.WebsiteUrl</a>
                             </div>
-                            <div class="col-3">
+                            <div class="col-12 col-md-3 mt-2 mt-md-0">
+                                <div class="d-md-none text-muted small">Статус</div>
                                 @if (seller.IsProcessed)
                                 {
                                     <span class="badge bg-success">
@@ -176,10 +178,12 @@
                                     </span>
                                 }
                             </div>
-                            <div class="col-2">
+                            <div class="col-12 col-md-2 mt-2 mt-md-0">
+                                <div class="d-md-none text-muted small">Дата подачі</div>
                                 @seller.CreatedAt.ToString("dd.MM.yyyy HH:mm:ss")
                             </div>
-                            <div class="col-2">
+                            <div class="col-12 col-md-2 mt-2 mt-md-0">
+                                <div class="d-md-none text-muted small">Дії</div>
                                 <div class="d-flex gap-2">
                                     <a href="/SellerRequest/Edit/@seller.Id"
                                        class="btn btn-sm btn-link text-primary"

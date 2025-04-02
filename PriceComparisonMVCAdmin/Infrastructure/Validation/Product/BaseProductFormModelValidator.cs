@@ -1,7 +1,7 @@
 ﻿using FluentValidation;
 using PriceComparisonMVCAdmin.Models.ViewModels.ManagerProducts;
 
-namespace PriceComparisonWebAPI.Infrastructure.Validation.Product
+namespace PriceComparisonMVCAdmin.Infrastructure.Validation.Product
 {
     public class BaseProductFormModelValidator : AbstractValidator<BaseProductFormModel>
     {
