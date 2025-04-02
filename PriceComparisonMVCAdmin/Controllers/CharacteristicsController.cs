@@ -6,23 +6,26 @@ using PriceComparisonMVCAdmin.Models.Constants;
 using PriceComparisonMVCAdmin.Services.Helper;
 using PriceComparisonMVCAdmin.Services.ApiServices;
 using AutoMapper;
+using PriceComparisonMVCAdmin.Models.ViewModels.Category;
+using PriceComparisonMVCAdmin.Models.DTOs.Request.Characteristic;
+using PriceComparisonMVCAdmin.Models.ViewModels.Characteristic;
 
 namespace PriceComparisonMVCAdmin.Controllers
 {
     [Authorize(Policy = "AdminRights")]
-    public class CaracteristicsController : BaseController<CaracteristicsController>
+    public class CharacteristicsController : BaseController<CharacteristicsController>
     {
         private readonly IApiResponseDeserializerService _apiResponseDeserializerService;
         private readonly IValidationErrorProcessor _validationProcessor;
         private readonly IApiRequestService _apiRequestService;
         private readonly IMapper _mapper;
 
-        public CaracteristicsController(IApiService apiService,
+        public CharacteristicsController(IApiService apiService,
             IMapper mapper,
             IApiRequestService apiRequestService,
             IValidationErrorProcessor validationProcessor,
             IApiResponseDeserializerService apiResponseDeserializerService,
-            ILogger<CaracteristicsController> logger) : base(apiService, logger)
+            ILogger<CharacteristicsController> logger) : base(apiService, logger)
         {
             _apiResponseDeserializerService = apiResponseDeserializerService;
             _apiRequestService = apiRequestService;
@@ -68,34 +71,46 @@ namespace PriceComparisonMVCAdmin.Controllers
 
         public async Task<IActionResult> Edit(int id)
         {
-            var category = await _apiRequestService.GetCategoryByIdAsync(id);
-            if (category.Id == 0)
+            var characreristic = await _apiRequestService.GetCharacteristicByIdAsync(id);
+            if (characreristic == null || characreristic.Id == 0)
             {
                 return NotFound();
             }
 
-            var model = _mapper.Map<CategoryUpdateRequestModel>(category);
-            return View(model);
+            var groups = await _apiRequestService.GetAllCharacteristicGroupsAsync();
+            var dataTypes = await _apiRequestService.GetCharacteristicDataTypesAsync();
+
+            var viewModel = new CharacteristicEditViewModel
+            {
+                Characteristic = _mapper.Map<CharacteristicUpdateRequestModel>(characreristic),
+                CharacteristicGroups = groups,
+                DataTypes = dataTypes
+            };
+
+            return View(viewModel);
         }
 
         [HttpPost]
-        public async Task<IActionResult> Edit(CategoryUpdateRequestModel model)
+        public async Task<IActionResult> Edit(CharacteristicEditViewModel viewModel)
         {
             if (!ModelState.IsValid)
             {
-                return View(model);
+                viewModel.CharacteristicGroups = await _apiRequestService.GetAllCharacteristicGroupsAsync();
+                viewModel.DataTypes = await _apiRequestService.GetCharacteristicDataTypesAsync();
+                return View(viewModel);
             }
 
-            var response = await _apiRequestService.UpdateCategoryAsync(model);
-            if (_validationProcessor.TryProcessErrors(response, ModelState) ||
-                response.ReturnCode != AppSuccessCodes.UpdateSuccess)
+            var response = await _apiRequestService.UpdateCharacteristicAsync(viewModel.Characteristic);
+            if (_validationProcessor.TryProcessErrors(response, ModelState) || response.ReturnCode != AppSuccessCodes.UpdateSuccess)
             {
-                TempData["Error"] = response.Message + "Не вдалось відредагувати";
-                return View(model);
+                TempData["Error"] = response.Message + " Не вдалось відредагувати.";
+                viewModel.CharacteristicGroups = await _apiRequestService.GetAllCharacteristicGroupsAsync();
+                viewModel.DataTypes = await _apiRequestService.GetCharacteristicDataTypesAsync();
+                return View(viewModel);
             }
 
-            TempData["SuccessMessage"] = "Дані змінені успішно.";
-            return RedirectToAction("Edit", new { id = model.Id });
+            TempData["SuccessMessage"] = "Характеристику оновлено успішно.";
+            return RedirectToAction("Edit", new { id = viewModel.Characteristic.Id });
         }
 
         [HttpPost]

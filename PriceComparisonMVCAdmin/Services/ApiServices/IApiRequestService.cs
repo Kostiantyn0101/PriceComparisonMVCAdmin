@@ -9,6 +9,7 @@ using PriceComparisonMVCAdmin.Models.ViewModels.Seller;
 using PriceComparisonMVCAdmin.Models.DTOs.Request.Auction;
 using PriceComparisonMVCAdmin.Models.DTOs.Response.Seller;
 using PriceComparisonMVCAdmin.Models.DTOs.Response.Characteristics;
+using PriceComparisonMVCAdmin.Models.DTOs.Request.Characteristic;
 
 namespace PriceComparisonMVCAdmin.Services.ApiServices
 {
@@ -34,12 +35,20 @@ namespace PriceComparisonMVCAdmin.Services.ApiServices
 
         //Characteristics
         public Task<List<CharacteristicResponseModel>> GetAllCharacteristicsAsync();
+        public Task<CharacteristicResponseModel> GetCharacteristicByIdAsync(int id);
+        public Task<List<string>> GetCharacteristicDataTypesAsync();
+        public Task<GeneralApiResponseModel> CreateCharacteristicAsync(CharacteristicCreateRequestModel model);
+        public Task<GeneralApiResponseModel> UpdateCharacteristicAsync(CharacteristicUpdateRequestModel model);
+        public Task<GeneralApiResponseModel> DeleteCharacteristicAsync(int id);
+        
+        public Task<List<CharacteristicGroupResponseModel>> GetAllCharacteristicGroupsAsync();
+        
         public Task<List<CategoryCharacteristicResponseModel>> GetCategoryCharacteristicsAsync(int categoryId);
         public Task<List<ProductCharacteristicUpdateRequestModel>> GetCharacteristicsForProductAsync(int productId);
         public Task<List<ProductCharacteristicUpdateRequestModel>> GetCharacteristicsForBaseProductAsync(int baseProductId);
-        public Task<GeneralApiResponseModel> CreateCharacteristicAsync(ProductCharacteristicCreateRequestModel model);
-        public Task<GeneralApiResponseModel> UpdateCharacteristicAsync(ProductCharacteristicUpdateRequestModel model);
-        public Task<GeneralApiResponseModel> DeleteCharacteristicAsync(int id);
+        public Task<GeneralApiResponseModel> CreateProductCharacteristicAsync(ProductCharacteristicCreateRequestModel model);
+        public Task<GeneralApiResponseModel> UpdateProductCharacteristicAsync(ProductCharacteristicUpdateRequestModel model);
+        public Task<GeneralApiResponseModel> DeleteProductCharacteristicAsync(int id);
 
 
         //Seller
