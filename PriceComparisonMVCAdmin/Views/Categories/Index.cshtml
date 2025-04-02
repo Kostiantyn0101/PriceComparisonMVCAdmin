@@ -1,69 +1,68 @@
-﻿@model List<PriceComparisonMVCAdmin.Models.DTOs.Response.Category.CategoryResponseModel>
+﻿@model Dictionary<CategoryResponseModel, List<CategoryResponseModel>>
 @{
-	Layout = "~/Views/Shared/_AdminLayout.cshtml";
-
-	var categoryTitleMap = Model.ToDictionary(cat => cat.Id, cat => cat.Title);
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
 }
-
 <div class="container my-4">
-	<h2 class="mb-3">Категорії</h2>
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h2 class="mb-0">Категорії</h2>
+        <a href="/Categories/Create" class="btn btn-success btn-main">
+            <i class="bi bi-plus-lg"></i> Додати категорію
+        </a>
+    </div>
 
-	@if (Model != null && Model.Any())
-	{
-		<div class="d-flex flex-column">
+    @if (Model != null && Model.Any())
+    {
+        <ul class="list-group">
+            @foreach (var parent in Model)
+            {
+                <li class="list-group-item">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <button class="btn btn-link category-toggle d-flex align-items-center p-0"
+                                data-target="subcategories-@parent.Key.Id">
+                            <i class="bi bi-chevron-right toggle-icon me-2"></i>
+                            <span>@parent.Key.Title</span>
+                        </button>
+                        <a href="/Categories/Edit/@parent.Key.Id" class="btn btn-sm btn-link text-primary" title="Редагувати категорію">
+                            <i class="bi bi-pencil"></i>
+                        </a>
+                    </div>
 
-			<div class="row fw-bold border-bottom py-2">
-				<div class="col-1 text-center">Id</div>
-				<div class="col-3 text-center">Назва</div>
-				<div class="col-2 text-center">Батьківська ID</div>
-				<div class="col-3 text-center">Батьківська</div>
-				<div class="col-1 text-center">Порядок</div>
-				<div class="col-2 text-center">Дії</div>
-			</div>
-
-			@foreach (var item in Model)
-			{
-				<div class="row align-items-center border-bottom py-2">
-					<div class="col-1 text-center">@item.Id</div>
-					<div class="col-3 text-center">@item.Title</div>
-					<div class="col-2 text-center">
-						@(item.ParentCategoryId.HasValue ? item.ParentCategoryId.ToString() : "Немає")
-					</div>
-
-					<div class="col-3 text-center">
-						@if (item.ParentCategoryId.HasValue && categoryTitleMap.TryGetValue(item.ParentCategoryId.Value, out var parentTitle))
-						{
-							@parentTitle
-						}
-						else
-						{
-							<text>Немає</text>
-						}
-					</div>
-					<div class="col-1 text-center">@item.DisplayOrder</div>
-					<div class="col-2 text-center">
-						<a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-link" title="Редагувати">
-							<i class="bi bi-pencil"></i>
-						</a>
-						<form asp-action="Delete" asp-route-id="@item.Id" method="post"
-							  class="d-inline" onsubmit="return confirm('Видалити категорію?');">
-							<button type="submit" class="btn btn-sm btn-link cancel-btn text-danger ms-2" title="Видалити">
-								<i class="bi bi-trash"></i>
-							</button>
-						</form>
-					</div>
-				</div>
-			}
-		</div>
-	}
-	else
-	{
-		<p>Немає категорій</p>
-	}
-
-	<div class="text-center">
-		<a asp-action="Create" class="btn btn-primary d-inline-flex align-items-center justify-content-center mt-3">
-			Створити категорію
-		</a>
-	</div>
+                    <ul id="subcategories-@parent.Key.Id" class="list-group mt-2 ms-4 d-none">
+                        @foreach (var sub in parent.Value)
+                        {
+                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                <span>@sub.Title</span>
+                                <a href="/Categories/Edit/@sub.Id" class="btn btn-sm btn-link text-primary" title="Редагувати підкатегорію">
+                                    <i class="bi bi-pencil"></i>
+                                </a>
+                            </li>
+                        }
+                    </ul>
+                </li>
+            }
+        </ul>
+    }
+    else
+    {
+        <p class="text-muted">Немає категорій.</p>
+    }
 </div>
+@section Scripts {
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            document.querySelectorAll(".category-toggle").forEach(button => {
+                button.addEventListener("click", () => {
+                    const icon = button.querySelector(".toggle-icon");
+                    const targetId = button.getAttribute("data-target");
+                    const target = document.getElementById(targetId);
+
+                    if (target) {
+                        target.classList.toggle("d-none");
+                        icon.classList.toggle("bi-chevron-right");
+                        icon.classList.toggle("bi-chevron-down");
+                    }
+                });
+            });
+        });
+    </script>
+}

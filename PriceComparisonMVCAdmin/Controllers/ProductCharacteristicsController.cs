@@ -2,16 +2,19 @@
 using Microsoft.AspNetCore.Mvc;
 using PriceComparisonMVCAdmin.Models.DTOs;
 using PriceComparisonMVCAdmin.Services;
+using PriceComparisonMVCAdmin.Services.ApiServices;
 
 namespace PriceComparisonMVCAdmin.Controllers;
 
 [Authorize(Policy = "AdminRights")]
-public class ProductCharacteristicsController : Controller
+public class ProductCharacteristicsController : BaseController<ProductCharacteristicsController>
 {
     private readonly IProductCharacteristicService _characteristicService;
 
     public ProductCharacteristicsController(
-        IProductCharacteristicService characteristicService)
+        IProductCharacteristicService characteristicService,
+           IApiService apiService,
+            ILogger<ProductCharacteristicsController> logger) : base(apiService, logger)
     {
         _characteristicService = characteristicService;
     }

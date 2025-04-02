@@ -9,6 +9,14 @@
     --danger-color: #BD1B10;
 }
 
+body {
+    background-color: #f9f9f9;
+    font-family: 'Roboto', sans-serif;
+    margin: 0;
+    padding: 0;
+    max-width: 1920px;
+}
+
 .btn-main {
     width: 214px;
     height: 48px;
@@ -27,7 +35,6 @@
 }
 
 .btn-primary {
-    
     background-color: var(--primary-color);
     color: var(--primary-text-color);
 }
@@ -51,10 +58,20 @@
     border-color: rgba(var(--primary-color-rgb), 0.56) !important;
 }
 
+.text-primary-light {
+    color: rgba(var(--primary-color-rgb), 0.56) !important;
+}
+
 .card-header {
     background-color: rgba(var(--primary-color-rgb), 0.05) !important;
 }
-.text-info {
+
+.card-body {
+    background-color: rgba(var(--primary-color-rgb), 0.05) !important;
+    color: var(--primary-color) !important;
+}
+
+h5 {
     color: var(--primary-color) !important;
 }
 

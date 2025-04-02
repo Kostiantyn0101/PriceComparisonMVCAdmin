@@ -1,4 +1,5 @@
 ﻿using PriceComparisonMVCAdmin.Models.DTOs.Response.Category;
+using PriceComparisonMVCAdmin.Models.ViewModels.Category;
 using PriceComparisonMVCAdmin.Services.ApiServices;
 
 namespace PriceComparisonMVCAdmin.Services
@@ -47,5 +48,6 @@ namespace PriceComparisonMVCAdmin.Services
         {
             return await _apiRequestService.GetAllCategoriesAsync();
         }
+
     }
 }

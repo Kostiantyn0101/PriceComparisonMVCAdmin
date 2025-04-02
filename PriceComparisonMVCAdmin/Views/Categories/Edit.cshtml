@@ -1,6 +1,7 @@
-﻿@model PriceComparisonMVCAdmin.Models.DTOs.Request.Categoty.CategoryUpdateRequestModel
+﻿@model CategoryEditViewModel
 @{
     Layout = "~/Views/Shared/_AdminLayout.cshtml";
+    var cat = Model.Category;
 }
 
 <h2>Редагування категорії</h2>
@@ -16,40 +17,69 @@
         @TempData["Error"]
     </div>
 }
+
 <form asp-action="Edit" method="post" enctype="multipart/form-data">
-    <input type="hidden" asp-for="Id" />
+    <input type="hidden" asp-for="Category.Id" />
+
     <div class="mb-3">
-        <label asp-for="Title" class="form-label">Назва категорії</label>
-        <input asp-for="Title" class="form-control" />
-        <span asp-validation-for="Title" class="text-danger"></span>
+        <label asp-for="Category.Title" class="form-label">Назва категорії</label>
+        <input asp-for="Category.Title" class="form-control" />
+        <span asp-validation-for="Category.Title" class="text-danger"></span>
     </div>
+
     <div class="mb-3">
-        <label asp-for="NewImage" class="form-label">Новий образ</label>
-        <input asp-for="NewImage" type="file" class="form-control" />
-        <span asp-validation-for="NewImage" class="text-danger"></span>
+        <label asp-for="Category.NewImage" class="form-label">Новий образ</label>
+        <input asp-for="Category.NewImage" type="file" class="form-control" />
+        <span asp-validation-for="Category.NewImage" class="text-danger"></span>
         <div class="form-check mt-2">
-            <input asp-for="DeleteCurrentImage" class="form-check-input" type="checkbox" />
-            <label asp-for="DeleteCurrentImage" class="form-check-label">Видалити поточне зображення</label>
+            <input asp-for="Category.DeleteCurrentImage" class="form-check-input" type="checkbox" />
+            <label asp-for="Category.DeleteCurrentImage" class="form-check-label">Видалити поточне зображення</label>
         </div>
     </div>
     <div class="mb-3">
-        <label asp-for="NewIcon" class="form-label">Нова іконка</label>
-        <input asp-for="NewIcon" type="file" class="form-control" />
-        <span asp-validation-for="NewIcon" class="text-danger"></span>
+        <label asp-for="Category.NewIcon" class="form-label">Нова іконка</label>
+        <input asp-for="Category.NewIcon" type="file" class="form-control" />
+        <span asp-validation-for="Category.NewIcon" class="text-danger"></span>
         <div class="form-check mt-2">
-            <input asp-for="DeleteCurrentIcon" class="form-check-input" type="checkbox" />
-            <label asp-for="DeleteCurrentIcon" class="form-check-label">Видалити поточну іконку</label>
+            <input asp-for="Category.DeleteCurrentIcon" class="form-check-input" type="checkbox" />
+            <label asp-for="Category.DeleteCurrentIcon" class="form-check-label">Видалити поточну іконку</label>
         </div>
     </div>
+
     <div class="mb-3">
-        <label asp-for="ParentCategoryId" class="form-label">Батьківська категорія (опційно)</label>
-        <input asp-for="ParentCategoryId" class="form-control" />
-        <span asp-validation-for="ParentCategoryId" class="text-danger"></span>
+        <label asp-for="Category.ParentCategoryId" class="form-label">Батьківська категорія</label>
+
+        <select asp-for="Category.ParentCategoryId" class="form-select">
+            <option value="">-- Немає --</option>
+            @foreach (var item in Model.Parents.Where(c => c.Id != Model.Category.Id))
+            {
+                <option value="@item.Id" selected="@(Model.Category.ParentCategoryId == item.Id)">
+                    @item.Title
+                </option>
+            }
+        </select>
+
+        <span asp-validation-for="Category.ParentCategoryId" class="text-danger"></span>
     </div>
+
+
     <div class="mb-3">
-        <label asp-for="DisplayOrder" class="form-label">Порядок відображення</label>
-        <input asp-for="DisplayOrder" class="form-control" />
-        <span asp-validation-for="DisplayOrder" class="text-danger"></span>
+        <label asp-for="Category.DisplayOrder" class="form-label">Порядок відображення</label>
+        <input asp-for="Category.DisplayOrder" class="form-control" />
+        <span asp-validation-for="Category.DisplayOrder" class="text-danger"></span>
     </div>
-    <button type="submit" class="btn btn-primary">Зберегти зміни</button>
+
+    <div class="d-flex flex-column align-items-center gap-3 mt-4">
+        <button type="submit" class="btn btn-primary btn-main">Зберегти зміни</button>
+
+    </div>
 </form>
+<div class="d-flex flex-column align-items-center gap-3 mt-4">
+    <form asp-controller="Categories" asp-action="Delete" method="post"
+          onsubmit="return confirm('Видалити категорію?');" class="d-inline-block">
+        <input type="hidden" name="id" value="@Model.Category.Id" />
+        <button type="submit" class="btn btn-danger btn-main">
+            <i class="bi bi-trash me-1"></i> Видалити
+        </button>
+    </form>
+</div>

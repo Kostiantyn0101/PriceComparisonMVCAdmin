@@ -1,10 +1,10 @@
 ﻿.main-container {
-    width: 564px;
-    height: 619px;
+    max-width: 564px;
+    width: 100%;
+    height: auto;
     background-color: #FDFDFD;
-    padding: 40px;
-    margin: auto;
-    margin-top: 50px; /* Центрування по вертикалі */
+    padding: 40px 24px;
+    margin: 50px auto; 
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     border-radius: 8px;
 }
@@ -72,4 +72,31 @@
     height: auto;
     margin-bottom: 16px;
     object-fit: contain;
+    filter: drop-shadow(0 2px 4px rgba(0,0,0,0.1));
+}
+
+
+@media (max-width: 576px) {
+    .btn-primary {
+        width: 100%;
+    }
+
+    .button-block {
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+
+        .button-block .btn {
+            width: 100%;
+            margin: 0;
+        }
+
+    .text-primary {
+        font-size: 28px;
+        line-height: 32px;
+    }
+
+    .logo {
+        max-width: 100%;
+    }
 }
