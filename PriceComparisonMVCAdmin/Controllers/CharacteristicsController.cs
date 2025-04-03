@@ -9,6 +9,8 @@ using AutoMapper;
 using PriceComparisonMVCAdmin.Models.ViewModels.Category;
 using PriceComparisonMVCAdmin.Models.DTOs.Request.Characteristic;
 using PriceComparisonMVCAdmin.Models.ViewModels.Characteristic;
+using PriceComparisonMVCAdmin.Models.DTOs.Response.Characteristics;
+using System.Reflection.PortableExecutable;
 
 namespace PriceComparisonMVCAdmin.Controllers
 {
@@ -39,34 +41,42 @@ namespace PriceComparisonMVCAdmin.Controllers
             return View(characteristrics);
         }
 
-        public IActionResult Create()
+        public async Task<IActionResult> Create()
         {
-            return View();
+            var groups = await _apiRequestService.GetAllCharacteristicGroupsAsync();
+            var dataTypes = await _apiRequestService.GetCharacteristicDataTypesAsync();
+
+            var viewModel = new CharacteristicCreateViewModel
+            {
+                Characteristic = new(),
+                CharacteristicGroups = groups,
+                DataTypes = dataTypes
+            };
+            return View(viewModel);
         }
 
         [HttpPost]
-        public async Task<IActionResult> Create(CategoryCreateRequestModel model)
+        public async Task<IActionResult> Create(CharacteristicCreateViewModel viewModel)
         {
             if (!ModelState.IsValid)
             {
-                return View(model);
+                viewModel.CharacteristicGroups = await _apiRequestService.GetAllCharacteristicGroupsAsync();
+                viewModel.DataTypes = await _apiRequestService.GetCharacteristicDataTypesAsync();
+                return View(viewModel);
             }
 
-            var response = await _apiRequestService.CreateCategoryAsync(model);
-
-            if (_validationProcessor.TryProcessErrors(response, ModelState))
+            var response = await _apiRequestService.CreateCharacteristicAsync(viewModel.Characteristic);
+            if (_validationProcessor.TryProcessErrors(response, ModelState) || response.ReturnCode != AppSuccessCodes.CreateSuccess || response.Data == null)
             {
-                return View(model);
+                TempData["Error"] = response.Message + " Не вдалось створити.";
+                viewModel.CharacteristicGroups = await _apiRequestService.GetAllCharacteristicGroupsAsync();
+                viewModel.DataTypes = await _apiRequestService.GetCharacteristicDataTypesAsync();
+                return View(viewModel);
             }
 
-            if (response.Data != null)
-            {
-                var category = _apiResponseDeserializerService.DeserializeData<CategoryResponseModel>(response);
-                TempData["SuccessMessage"] = "Дані збережено успішно.";
-                return RedirectToAction("Edit", new { id = category.Id });
-            }
-
-            return View(model);
+            var characteristic = _apiResponseDeserializerService.DeserializeData<CharacteristicResponseModel>(response);
+            TempData["SuccessMessage"] = "Характеристика створена успішно!";
+            return RedirectToAction("Edit", new { id = characteristic.Id });
         }
 
         public async Task<IActionResult> Edit(int id)
@@ -80,7 +90,7 @@ namespace PriceComparisonMVCAdmin.Controllers
             var groups = await _apiRequestService.GetAllCharacteristicGroupsAsync();
             var dataTypes = await _apiRequestService.GetCharacteristicDataTypesAsync();
 
-            var viewModel = new CharacteristicEditViewModel
+            var viewModel = new CharacteristicUpdateViewModel
             {
                 Characteristic = _mapper.Map<CharacteristicUpdateRequestModel>(characreristic),
                 CharacteristicGroups = groups,
@@ -91,7 +101,7 @@ namespace PriceComparisonMVCAdmin.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Edit(CharacteristicEditViewModel viewModel)
+        public async Task<IActionResult> Edit(CharacteristicUpdateViewModel viewModel)
         {
             if (!ModelState.IsValid)
             {
@@ -116,7 +126,7 @@ namespace PriceComparisonMVCAdmin.Controllers
         [HttpPost]
         public async Task<IActionResult> Delete(int id)
         {
-            var response = await _apiRequestService.DeleteCategoryAsync(id);
+            var response = await _apiRequestService.DeleteCharacteristicAsync(id);
             if (response.ReturnCode != AppSuccessCodes.DeleteSuccess)
             {
                 TempData["Error"] = response.Message;

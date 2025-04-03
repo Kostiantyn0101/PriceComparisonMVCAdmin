@@ -1,5 +1,4 @@
-﻿@using PriceComparisonMVCAdmin.Models.DTOs.Response.Characteristics
-@model List<CharacteristicResponseModel>
+﻿@model List<CharacteristicResponseModel>
 @{
 	Layout = "~/Views/Shared/_AdminLayout.cshtml";
 
@@ -51,7 +50,7 @@
 							<i class="bi bi-pencil"></i>
 						</a>
 						<form asp-action="Delete" asp-route-id="@item.Id" method="post"
-							  class="d-inline" onsubmit="return confirm('Видалити категорію?');">
+							  class="d-inline" onsubmit="return confirm('Видалити характеристику?');">
 							<button type="submit" class="btn btn-sm btn-link cancel-btn text-danger ms-2" title="Видалити">
 								<i class="bi bi-trash"></i>
 							</button>

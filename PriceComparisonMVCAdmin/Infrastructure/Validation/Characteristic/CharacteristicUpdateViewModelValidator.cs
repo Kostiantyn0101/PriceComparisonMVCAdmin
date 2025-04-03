@@ -3,9 +3,9 @@ using PriceComparisonMVCAdmin.Models.ViewModels.Characteristic;
 
 namespace PriceComparisonMVCAdmin.Infrastructure.Validation.Characteristic
 {
-    public class CharacteristicEditViewModelValidator : AbstractValidator<CharacteristicEditViewModel>
+    public class CharacteristicUpdateViewModelValidator : AbstractValidator<CharacteristicUpdateViewModel>
     {
-        public CharacteristicEditViewModelValidator()
+        public CharacteristicUpdateViewModelValidator()
         {
             RuleFor(x => x.Characteristic)
                 .SetValidator(new CharacteristicUpdateRequestModelValidator());

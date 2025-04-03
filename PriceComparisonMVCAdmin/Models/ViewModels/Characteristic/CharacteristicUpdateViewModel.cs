@@ -3,7 +3,7 @@ using PriceComparisonMVCAdmin.Models.DTOs.Response.Characteristics;
 
 namespace PriceComparisonMVCAdmin.Models.ViewModels.Characteristic
 {
-    public class CharacteristicEditViewModel
+    public class CharacteristicUpdateViewModel
     {
         public CharacteristicUpdateRequestModel Characteristic { get; set; } = new();
         public List<CharacteristicGroupResponseModel> CharacteristicGroups { get; set; } = new();

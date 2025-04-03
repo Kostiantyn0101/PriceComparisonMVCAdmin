@@ -1,10 +1,9 @@
-﻿@using PriceComparisonMVCAdmin.Models.ViewModels.Characteristic
-@model CharacteristicEditViewModel
+﻿@model CharacteristicUpdateViewModel
 @{
 	Layout = "~/Views/Shared/_AdminLayout.cshtml";
 }
 
-<h2>Редагування характеристики</h2>
+@Model.IsEditMode ? <h2>Редагування характеристики</h2> : <h2>Створення характеристики</h2>
 
 @if (TempData["SuccessMessage"] != null)
 {
