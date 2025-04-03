@@ -24,41 +24,42 @@
 
 	@if (Model != null && Model.Any())
 	{
-		<div class="d-flex flex-column">
+		<div class="row fw-bold py-2">
+			<div class="col-3 text-center">Назва</div>
+			<div class="col-1 text-center">Тип даних</div>
+			<div class="col-1 text-center">Одиниці виміру</div>
+			<div class="col-3 text-center">Група характеристик</div>
+			<div class="col-1 text-center">Порядок виводу в групі</div>
+			<div class="col-1 text-center">Входить в короткий опис</div>
+			<div class="col-2 text-center">Дії</div>
+		</div>
 
-			<div class="row fw-bold border-bottom py-2">
-				<div class="col-3 text-center">Назва</div>
-				<div class="col-1 text-center">Тип даних</div>
-				<div class="col-1 text-center">Одиниці виміру</div>
-				<div class="col-3 text-center">Група характеристик</div>
-				<div class="col-1 text-center">Порядок виводу в групі</div>
-				<div class="col-1 text-center">Входить в короткий опис</div>
-				<div class="col-2 text-center">Дії</div>
-			</div>
-
+		<ul class="list-group">
 			@foreach (var item in Model)
 			{
-				<div class="row align-items-center border-bottom py-2 category-row" data-group-id="@item.CharacteristicGroupId">
-					<div class="col-3 text-lg-start">@item.Title</div>
-					<div class="col-1 text-center">@item.DataType</div>
-					<div class="col-1 text-center">@item.Unit</div>
-					<div class="col-3 text-center">@item.CharacteristicGroup.Title</div>
-					<div class="col-1 text-center">@item.DisplayOrder</div>
-					<div class="col-1 text-center">@item.IncludeInShortDescription</div>
-					<div class="col-2 text-center">
-						<a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-link" title="Редагувати">
-							<i class="bi bi-pencil"></i>
-						</a>
-						<form asp-action="Delete" asp-route-id="@item.Id" method="post"
-							  class="d-inline" onsubmit="return confirm('Видалити характеристику?');">
-							<button type="submit" class="btn btn-sm btn-link cancel-btn text-danger ms-2" title="Видалити">
-								<i class="bi bi-trash"></i>
-							</button>
-						</form>
+				<li class="list-group-item category-row" data-group-id="@item.CharacteristicGroupId">
+					<div class="row align-items-center py-2">
+						<div class="col-3 text-lg-start">@item.Title</div>
+						<div class="col-1 text-center">@item.DataType</div>
+						<div class="col-1 text-center">@item.Unit</div>
+						<div class="col-3 text-center">@item.CharacteristicGroup.Title</div>
+						<div class="col-1 text-center">@item.DisplayOrder</div>
+						<div class="col-1 text-center">@item.IncludeInShortDescription</div>
+						<div class="col-2 text-center">
+							<a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-link" title="Редагувати">
+								<i class="bi bi-pencil"></i>
+							</a>
+							<form asp-action="Delete" asp-route-id="@item.Id" method="post"
+								  class="d-inline" onsubmit="return confirm('Видалити характеристику?');">
+								<button type="submit" class="btn btn-sm btn-link cancel-btn text-danger ms-2" title="Видалити">
+									<i class="bi bi-trash"></i>
+								</button>
+							</form>
+						</div>
 					</div>
-				</div>
+				</li>
 			}
-		</div>
+		</ul>
 	}
 	else
 	{
@@ -82,7 +83,7 @@
 			if (!selectedGroupId) {
 				row.style.display = "";
 			} else {
-				// Show rows with selected characteristic group only 
+				// Show rows with selected characteristic group only
 				if (row.getAttribute("data-group-id") === selectedGroupId) {
 					row.style.display = "";
 				} else {
