@@ -1,7 +1,7 @@
 ﻿using FluentValidation;
 using PriceComparisonMVCAdmin.Models.ViewModels.ManagerProducts;
 
-namespace PriceComparisonWebAPI.Infrastructure.Validation.Product
+namespace PriceComparisonMVCAdmin.Infrastructure.Validation.Product
 {
     public class BaseProductFormModelValidator : AbstractValidator<BaseProductFormModel>
     {
@@ -20,7 +20,7 @@ namespace PriceComparisonWebAPI.Infrastructure.Validation.Product
                 .WithMessage("Опис не може містити більше 500 символів.");
 
             RuleFor(x => x.CategoryId)
-                .GreaterThan(0).WithMessage("Ідентифікатор категорії повинен бути більшим за 0.");
+                .GreaterThan(0).WithMessage("Категорія повинна бути обраною.");
         }
     }
 }

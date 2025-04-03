@@ -5,7 +5,7 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - PriceComparisonMVC</title>
+    <title>@ViewData["Title"] | MarketMap - Admin</title>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet" />
@@ -49,23 +49,31 @@
     </header>
     <div class="container-fluid">
         <div class="row">
+
+            @{
+                string currentController = ViewContext.RouteData.Values["controller"]?.ToString();
+                string currentAction = ViewContext.RouteData.Values["action"]?.ToString();
+                Func<string, string, string> isActive = (ctrl, act) =>
+                (currentController == ctrl && (act == null || currentAction == act)) ? "active" : "";
+            }
+
             <nav class="col-12 col-md-2 bg-light border-end d-flex flex-row flex-md-column align-items-center align-items-md-start p-2">
                 <h4 class="d-none d-md-block mb-3">Адмін-панель</h4>
-                <ul class="nav nav-pills flex-row flex-md-column gap-2">
-                    <li class="nav-item">
-                        <a asp-controller="ManagerProducts" asp-action="Index" class="nav-link px-2">Головна</a>
+                <ul class="nav nav-pills nav-admin flex-row flex-md-column gap-2 w-100">
+                    <li class="nav-item w-100">
+                        <a asp-controller="ManagerProducts" asp-action="Index" class="nav-link @isActive("ManagerProducts", "Index")">Головна</a>
                     </li>
-                    <li class="nav-item">
-                        <a asp-controller="AdminSeller" asp-action="Index" class="nav-link px-2">Продавці</a>
+                    <li class="nav-item w-100">
+                        <a asp-controller="AdminSeller" asp-action="Index" class="nav-link @isActive("AdminSeller", "Index")">Продавці</a>
                     </li>
-                    <li class="nav-item">
-                        <a asp-controller="SellerRequest" asp-action="Index" class="nav-link px-2">Запити продавців</a>
+                    <li class="nav-item w-100">
+                        <a asp-controller="SellerRequest" asp-action="Index" class="nav-link @isActive("SellerRequest", "Index")">Запити продавців</a>
                     </li>
-                    <li class="nav-item">
-                        <a asp-controller="ManagerProducts" asp-action="IndexBaseProducts" class="nav-link px-2">Продукти</a>
+                    <li class="nav-item w-100">
+                        <a asp-controller="ManagerProducts" asp-action="IndexBaseProducts" class="nav-link @isActive("ManagerProducts", "IndexBaseProducts")">Каталог продуктів</a>
                     </li>
-                    <li class="nav-item">
-                        <a asp-controller="Categories" asp-action="Index" class="nav-link px-2">Категорії</a>
+                    <li class="nav-item w-100">
+                        <a asp-controller="Categories" asp-action="Index" class="nav-link @isActive("Categories", "Index")">Категорії</a>
                     </li>
                     <li class="nav-item">
                         <a asp-controller="Characteristics" asp-action="Index" class="nav-link px-2">Характеристики</a>

@@ -10,14 +10,12 @@ namespace PriceComparisonMVCAdmin.Controllers
     [Authorize(Policy = "AdminRights")]
     public class ManagerProductsController : BaseController<ManagerProductsController>
     {
-        private readonly IProductCharacteristicService _characteristicService;
         private readonly IProductModerationService _productModerationService;
         private readonly IVariantProductService _variantProductService;
         private readonly IBaseProductService _baseProductService;
         private readonly IApiRequestService _apiRequestService;
         private readonly ICategoryService _categoryService;
         public ManagerProductsController(
-            IProductCharacteristicService characteristicService,
             IProductModerationService productModerationService,
             IVariantProductService variantProductService,
             ILogger<ManagerProductsController> logger,
@@ -28,7 +26,6 @@ namespace PriceComparisonMVCAdmin.Controllers
                : base(apiService, logger)
         {
             _productModerationService = productModerationService;
-            _characteristicService = characteristicService;
             _variantProductService = variantProductService;
             _baseProductService = baseProductService;
             _apiRequestService = apiRequestService;

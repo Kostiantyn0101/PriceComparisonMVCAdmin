@@ -1,5 +1,6 @@
 ﻿@model CategoryEditViewModel
 @{
+    ViewData["Title"] = "Категорії - Редагування";
     Layout = "~/Views/Shared/_AdminLayout.cshtml";
     var cat = Model.Category;
 }
@@ -74,11 +75,12 @@
 
     </div>
 </form>
-<div class="d-flex flex-column align-items-center gap-3 mt-4">
+<div class="d-flex flex-wrap gap-2 mt-4 justify-content-center justify-content-sm-between align-items-center">
     <form asp-controller="Categories" asp-action="Delete" method="post"
-          onsubmit="return confirm('Видалити категорію?');" class="d-inline-block">
+          onsubmit="return confirm('Видалити категорію?');" 
+          class="d-inline-flex align-items-center justify-content-center flex-fill">
         <input type="hidden" name="id" value="@Model.Category.Id" />
-        <button type="submit" class="btn btn-danger btn-main">
+        <button type="submit" class="btn btn-danger btn-primary-remove btn-main d-inline-flex align-items-center justify-content-center">
             <i class="bi bi-trash me-1"></i> Видалити
         </button>
     </form>
