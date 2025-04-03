@@ -9,6 +9,7 @@ namespace PriceComparisonMVCAdmin.Infrastructure
         {
             builder.AddConfiguration();
             builder.AddFluentValidation();
+            builder.AddRazorRuntimeCompilation();
             builder.AddAutoMapper();
             builder.AddServices();
             builder.AddOthers();

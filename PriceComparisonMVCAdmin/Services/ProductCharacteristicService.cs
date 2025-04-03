@@ -33,7 +33,7 @@ namespace PriceComparisonMVCAdmin.Services
                     ? model.ValueBoolean : null
             };
 
-            var response = await _apiRequestService.CreateCharacteristicAsync(createModel);
+            var response = await _apiRequestService.CreateProductCharacteristicAsync(createModel);
             if (response.ReturnCode != AppSuccessCodes.CreateSuccess && response.ReturnCode != AppSuccessCodes.GerneralSuccess)
             {
                 return (false, null, response.Message);
@@ -58,7 +58,7 @@ namespace PriceComparisonMVCAdmin.Services
                     ? model.ValueBoolean : null
             };
 
-            var response = await _apiRequestService.UpdateCharacteristicAsync(updateModel);
+            var response = await _apiRequestService.UpdateProductCharacteristicAsync(updateModel);
             if (response.ReturnCode != AppSuccessCodes.UpdateSuccess)
             {
                 return (false, null, response.Message);
@@ -70,7 +70,7 @@ namespace PriceComparisonMVCAdmin.Services
 
         public async Task<(bool success, string? errorMessage)> DeleteCharacteristicAsync(int id)
         {
-            var response = await _apiRequestService.DeleteCharacteristicAsync(id);
+            var response = await _apiRequestService.DeleteProductCharacteristicAsync(id);
             if (response.ReturnCode != AppSuccessCodes.DeleteSuccess)
             {
                 return (false, response.Message);

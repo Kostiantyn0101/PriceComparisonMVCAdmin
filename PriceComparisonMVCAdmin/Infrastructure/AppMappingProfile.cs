@@ -1,7 +1,9 @@
 ﻿using AutoMapper;
 using PriceComparisonMVCAdmin.Models.DTOs.Request.Categoty;
+using PriceComparisonMVCAdmin.Models.DTOs.Request.Characteristic;
 using PriceComparisonMVCAdmin.Models.DTOs.Request.Product;
 using PriceComparisonMVCAdmin.Models.DTOs.Response.Category;
+using PriceComparisonMVCAdmin.Models.DTOs.Response.Characteristics;
 using PriceComparisonMVCAdmin.Models.DTOs.Response.Product;
 using PriceComparisonMVCAdmin.Models.DTOs.Response.Seller;
 using PriceComparisonMVCAdmin.Models.Request.Seller;
@@ -26,6 +28,8 @@ namespace PriceComparisonMVCAdmin.Infrastructure
                 .ForMember(dest => dest.NewIcon, opt => opt.Ignore())
                 .ForMember(dest => dest.DeleteCurrentImage, opt => opt.Ignore())
                 .ForMember(dest => dest.DeleteCurrentIcon, opt => opt.Ignore());
+
+            CreateMap<CharacteristicResponseModel, CharacteristicUpdateRequestModel>();
 
             CreateMap<SellerResponseModel, SellerEditViewModel>()
                 .ForMember(dest => dest.CurrentLogoImageUrl, opt => opt.MapFrom(src => src.LogoImageUrl))

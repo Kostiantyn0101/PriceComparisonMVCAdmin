@@ -1,0 +1,97 @@
+﻿@model List<CharacteristicResponseModel>
+@{
+	Layout = "~/Views/Shared/_AdminLayout.cshtml";
+	ViewData["Title"] = "Характеристики";
+
+	var characteristicGroups = Model
+		.GroupBy(c => c.CharacteristicGroup.Id)
+		.ToDictionary(g => g.Key, g => g.First().CharacteristicGroup.Title);
+}
+
+<div class="container my-4">
+	<div class="row mb-2">
+		<h2 class="mb-0 col-5">Характеристики</h2>
+		<div class="col-3">
+			<select name="groupId" id="groupFilter" class="form-select">
+				<option value="" selected>-- Всі групи --</option>
+				@foreach (var group in characteristicGroups)
+				{
+					<option value="@group.Key">@group.Value</option>
+				}
+
+			</select>
+		</div>
+		<div class="col-4 d-flex justify-content-end">
+			<a asp-action="Create" class="btn btn-success btn-main btn-primary-add m-0">
+				<i class="bi bi-plus-lg"></i> Додати характеристику
+			</a>
+		</div>
+	</div>
+
+	@if (Model != null && Model.Any())
+	{
+		<div class="row fw-bold py-2">
+			<div class="col-3 text-start">Назва</div>
+			<div class="col-1 text-center">Тип даних</div>
+			<div class="col-1 text-center">Одиниці виміру</div>
+			<div class="col-3 text-center">Група характеристик</div>
+			<div class="col-1 text-center">Порядок виводу в групі</div>
+			<div class="col-1 text-center">Входить в короткий опис</div>
+			<div class="col-2 text-center">Дії</div>
+		</div>
+
+		<ul class="list-group">
+			@foreach (var item in Model)
+			{
+				<li class="list-group-item category-row" data-group-id="@item.CharacteristicGroupId">
+					<div class="row align-items-center py-2">
+						<div class="col-3 text-lg-start">@item.Title</div>
+						<div class="col-1 text-center">@item.DataType</div>
+						<div class="col-1 text-center">@item.Unit</div>
+						<div class="col-3 text-center">@item.CharacteristicGroup.Title</div>
+						<div class="col-1 text-center">@item.DisplayOrder</div>
+						<div class="col-1 text-center">
+							<input type="checkbox" @(item.IncludeInShortDescription ? "checked" : "") disabled>
+						</div>
+						<div class="col-2 text-center">
+							<a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-link" title="Редагувати">
+								<i class="bi bi-pencil"></i>
+							</a>
+							<form asp-action="Delete" asp-route-id="@item.Id" method="post"
+								  class="d-inline" onsubmit="return confirm('Видалити характеристику?');">
+								<button type="submit" class="btn btn-sm btn-link cancel-btn text-danger ms-2" title="Видалити">
+									<i class="bi bi-trash"></i>
+								</button>
+							</form>
+						</div>
+					</div>
+				</li>
+			}
+		</ul>
+	}
+	else
+	{
+		<p>Немає характеристик</p>
+	}
+</div>
+
+<script>
+	document.getElementById("groupFilter").addEventListener("change", function () {
+		var selectedGroupId = this.value;
+		var rows = document.querySelectorAll(".category-row");
+
+		rows.forEach(function(row) {
+			// Show all lines ff filter is not selected
+			if (!selectedGroupId) {
+				row.style.display = "";
+			} else {
+				// Show rows with selected characteristic group only
+				if (row.getAttribute("data-group-id") === selectedGroupId) {
+					row.style.display = "";
+				} else {
+					row.style.display = "none";
+				}
+			}
+		});
+	});
+</script>
