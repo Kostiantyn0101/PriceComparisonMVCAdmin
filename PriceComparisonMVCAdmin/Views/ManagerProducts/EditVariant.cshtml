@@ -10,104 +10,133 @@
         @TempData["SuccessMessage"]
     </div>
 }
-<div class="card shadow-sm mb-4">
-    <div class="card-body">
-        <h3 class="card-title text-dark">
-            Редагування продукту: <span class="text-primary">@Model.BaseProduct.Title</span>
-        </h3>
-    </div>
-</div>
+<h3 class="card-title text-dark">
+    Редагування продукту: <span class="text-primary">@Model.BaseProduct.Title</span>
+</h3>
 
-<form asp-action="EditVariant" method="post">
-    <input type="hidden" asp-for="@Model.ProductVariant.Id" />
+<div class="container my-4">
+    <div class="card shadow-sm">
+        <div class="card-body">
+            <form asp-action="EditVariant" method="post">
+                <input type="hidden" asp-for="@Model.ProductVariant.Id" />
 
-    <div class="mb-3">
-        <label asp-for="@Model.ProductVariant.BaseProductId" class="form-label" hidden></label>
-        <input asp-for="@Model.ProductVariant.BaseProductId" class="form-control" hidden />
-        <span asp-validation-for="@Model.ProductVariant.BaseProductId" class="text-danger"></span>
-    </div>
+                <div class="row mb-3">
+                    <label asp-for="@Model.ProductVariant.BaseProductId" class="col-sm-2 col-form-label fw-bold" hidden></label>
+                    <input asp-for="@Model.ProductVariant.BaseProductId" class="form-control" hidden />
+                    <span asp-validation-for="@Model.ProductVariant.BaseProductId" class="text-danger"></span>
+                </div>
 
-    <div class="mb-3">
-        <label for="groupTypeSelect" class="form-label">Тип групи продуктів</label>
-        <select id="groupTypeSelect" class="form-select">
-            <option value="">-- Оберіть тип групи --</option>
-            @foreach (var type in @Model.GroupTypes)
-            {
-                <option value="@type.Id" selected="@(Model.SelectedGroupTypeId == type.Id ? "selected" : null)">@type.Name</option>
-            }
-        </select>
-    </div>
+                <div class="row mb-3">
+                    <label for="groupTypeSelect" class="col-sm-2 col-form-label fw-bold">Тип групи продуктів</label>
+                    <div class="col-sm-10">
 
-    <div class="mb-3">
-        <label for="groupSelect" class="form-label">Група продукту</label>
-        <select id="groupSelect" asp-for="@Model.ProductVariant.ProductGroupId" class="form-select">
-            <option value="">-- Оберіть групу --</option>
-        </select>
-        <input type="hidden" id="currentGroupId" value="@Model.ProductVariant.ProductGroupId" />
-        <span asp-validation-for="@Model.ProductVariant.ProductGroupId" class="text-danger"></span>
-    </div>
+                        <select id="groupTypeSelect" class="form-select">
+                            <option value="">-- Оберіть тип групи --</option>
+                            @foreach (var type in @Model.GroupTypes)
+                            {
+                                <option value="@type.Id" selected="@(Model.SelectedGroupTypeId == type.Id ? "selected" : null)">@type.Name</option>
+                            }
+                        </select>
+                    </div>
+                </div>
 
-    <div class="mb-3">
-        <label asp-for="@Model.ProductVariant.ColorId" class="form-label">Колір</label>
-        <select asp-for="@Model.ProductVariant.ColorId" class="form-select">
-            <option value="">-- Оберіть колір --</option>
-            @foreach (var c in @Model.Colors)
-            {
-                <option value="@c.Id" selected="@(Model.ProductVariant.ColorId == c.Id ? "selected" : null)">@c.Name</option>
-            }
-        </select>
-        <span asp-validation-for="@Model.ProductVariant.ColorId" class="text-danger"></span>
-    </div>
+                <div class="row mb-3">
+                    <label for="groupSelect" class="col-sm-2 col-form-label fw-bold">Група продукту</label>
+                    <div class="col-sm-10">
 
-    <div class="mb-3">
-        <label asp-for="@Model.ProductVariant.ModelNumber" class="form-label">Model Number</label>
-        <input asp-for="@Model.ProductVariant.ModelNumber" class="form-control" />
-        <span asp-validation-for="@Model.ProductVariant.ModelNumber" class="text-danger"></span>
-    </div>
+                        <select id="groupSelect" asp-for="@Model.ProductVariant.ProductGroupId" class="form-select">
+                            <option value="">-- Оберіть групу --</option>
+                        </select>
+                        <input type="hidden" id="currentGroupId" value="@Model.ProductVariant.ProductGroupId" />
+                        <span asp-validation-for="@Model.ProductVariant.ProductGroupId" class="text-danger"></span>
+                    </div>
+                </div>
 
-    <div class="mb-3">
-        <label asp-for="@Model.ProductVariant.GTIN" class="form-label">GTIN</label>
-        <input asp-for="@Model.ProductVariant.GTIN" class="form-control" />
-        <span asp-validation-for="@Model.ProductVariant.GTIN" class="text-danger"></span>
-    </div>
+                <div class="row mb-3">
+                    <label asp-for="@Model.ProductVariant.ColorId" class="col-sm-2 col-form-label fw-bold">Колір</label>
+                    <div class="col-sm-10">
 
-    <div class="mb-3">
-        <label asp-for="@Model.ProductVariant.UPC" class="form-label">UPC</label>
-        <input asp-for="@Model.ProductVariant.UPC" class="form-control" />
-        <span asp-validation-for="@Model.ProductVariant.UPC" class="text-danger"></span>
-    </div>
-    <div class="form-check mb-3">
-        <input asp-for="@Model.ProductVariant.IsUnderModeration" class="form-check-input" />
-        <label asp-for="@Model.ProductVariant.IsUnderModeration" class="form-check-label">Під модерацією</label>
-    </div>
-    <div class="form-check mb-3">
-        <input asp-for="@Model.ProductVariant.IsDefault" class="form-check-input" />
-        <label asp-for="@Model.ProductVariant.IsDefault" class="form-check-label">За замовчуванням</label>
-    </div>
-    <div class="text-center">
-        <button type="submit" class="btn btn-main btn-primary d-inline-flex align-items-center justify-content-center mt-3">Зберегти зміни</button>
-    </div>
+                        <select asp-for="@Model.ProductVariant.ColorId" class="form-select">
+                            <option value="">-- Оберіть колір --</option>
+                            @foreach (var c in @Model.Colors)
+                            {
+                                <option value="@c.Id" selected="@(Model.ProductVariant.ColorId == c.Id ? "selected" : null)">@c.Name</option>
+                            }
+                        </select>
+                        <span asp-validation-for="@Model.ProductVariant.ColorId" class="text-danger"></span>
+                    </div>
+                </div>
 
-</form>
-<div class="d-flex flex-wrap gap-2 mt-4 justify-content-center justify-content-sm-between align-items-center">
-    <a asp-controller="ProductCharacteristics" asp-action="Edit"
-       asp-route-productId="@Model.ProductVariant.Id"
-       class="btn btn-main btn-success btn-primary-add d-flex align-items-center justify-content-center">
-        <i class="bi bi-list-check me-2"></i> Додати/редагувати характеристики
-    </a>
-    <a asp-controller="ProductContent" asp-action="IndexVariantProduct"
-       asp-route-id="@Model.ProductVariant.Id"
-       class="btn btn-main btn-success btn-primary-add d-flex align-items-center justify-content-center">
-        <i class="bi bi-folder-plus me-2"></i> Додати контент
-    </a>
-    <form asp-controller="ManagerProducts" asp-action="DeleteVariant" method="post"
-          class="d-inline-flex align-items-center justify-content-center flex-fill"
-          onsubmit="return confirm('Видалити продукт?');">
-        <input type="hidden" name="id" value="@Model.ProductVariant.Id" />
-        <button type="submit" class="btn btn-main btn-danger btn-primary-remove d-inline-flex align-items-center justify-content-center">
-            <i class="bi bi-trash me-2"></i> Видалити продукт
-        </button>
-    </form>
+                <div class="row mb-3">
+                    <label asp-for="@Model.ProductVariant.ModelNumber" class="col-sm-2 col-form-label fw-bold">Model Number</label>
+                    <div class="col-sm-10">
+
+                        <input asp-for="@Model.ProductVariant.ModelNumber" class="form-control" />
+                        <span asp-validation-for="@Model.ProductVariant.ModelNumber" class="text-danger"></span>
+                    </div>
+                </div>
+
+                <div class="row mb-3">
+                    <label asp-for="@Model.ProductVariant.GTIN" class="col-sm-2 col-form-label fw-bold">GTIN</label>                <div class="col-sm-10">
+
+                        <input asp-for="@Model.ProductVariant.GTIN" class="form-control" />
+                        <span asp-validation-for="@Model.ProductVariant.GTIN" class="text-danger"></span>
+                    </div>
+                </div>
+
+                <div class="row mb-3">
+                    <label asp-for="@Model.ProductVariant.UPC" class="col-sm-2 col-form-label fw-bold">UPC</label>                <div class="col-sm-10">
+
+                        <input asp-for="@Model.ProductVariant.UPC" class="form-control" />
+                        <span asp-validation-for="@Model.ProductVariant.UPC" class="text-danger"></span>
+                    </div>
+                </div>
+
+                <div class="row mb-3">
+                    <label asp-for="@Model.ProductVariant.IsUnderModeration" class="col-sm-2 col-form-label fw-bold">Під модерацією</label>
+                    <div class="col-sm-10">
+                        <div class="form-check form-switch">
+                            <input asp-for="@Model.ProductVariant.IsUnderModeration" class="form-check-input" />
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row mb-3">
+                    <label asp-for="@Model.ProductVariant.IsDefault" class="col-sm-2 col-form-label fw-bold">За замовчуванням</label>
+                    <div class="col-sm-10">
+                        <div class="form-check form-switch">
+                            <input asp-for="@Model.ProductVariant.IsDefault" class="form-check-input" />
+                        </div>
+                    </div>
+                </div>
+
+                <div class="text-center">
+                    <button type="submit" class="btn btn-main btn-primary d-inline-flex align-items-center justify-content-center mt-3">Зберегти зміни</button>
+                </div>
+
+            </form>
+            <div class="d-flex flex-wrap gap-2 mt-4 justify-content-center justify-content-sm-between align-items-center">
+                <a asp-controller="ProductCharacteristics" asp-action="Edit"
+                   asp-route-productId="@Model.ProductVariant.Id"
+                   class="btn btn-main btn-success btn-primary-add d-flex align-items-center justify-content-center">
+                    <i class="bi bi-list-check me-2"></i> Додати/редагувати характеристики
+                </a>
+                <a asp-controller="ProductContent" asp-action="IndexVariantProduct"
+                   asp-route-id="@Model.ProductVariant.Id"
+                   class="btn btn-main btn-success btn-primary-add d-flex align-items-center justify-content-center">
+                    <i class="bi bi-folder-plus me-2"></i> Додати контент
+                </a>
+                <form asp-controller="ManagerProducts" asp-action="DeleteVariant" method="post"
+                      class="d-inline-flex align-items-center justify-content-center flex-fill"
+                      onsubmit="return confirm('Видалити продукт?');">
+                    <input type="hidden" name="id" value="@Model.ProductVariant.Id" />
+                    <button type="submit" class="btn btn-main btn-danger btn-primary-remove d-inline-flex align-items-center justify-content-center">
+                        <i class="bi bi-trash me-2"></i> Видалити продукт
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
 </div>
 @section Scripts {
     <script>

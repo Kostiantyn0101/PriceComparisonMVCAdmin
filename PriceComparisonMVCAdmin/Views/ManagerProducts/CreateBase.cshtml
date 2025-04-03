@@ -3,4 +3,12 @@
     ViewData["Title"] = "Продукти - Створення - Базового";
     Layout = "~/Views/Shared/_AdminLayout.cshtml";
 }
-<partial name="_BaseProductForm" model="Model" />
+<h2 class="mb-4">Створення базового продукту</h2>
+
+<div class="container my-4">
+    <div class="card shadow-sm">
+        <div class="card-body">
+            <partial name="_BaseProductForm" model="Model" />
+        </div>
+    </div>
+</div>

@@ -4,20 +4,21 @@
     Layout = "~/Views/Shared/_AdminLayout.cshtml";
 }
 
+<h2 class="mb-4">Редагування продавця</h2>
+@if (TempData["SuccessMessage"] != null)
+{
+    <div class="alert alert-success">
+        @TempData["SuccessMessage"]
+    </div>
+}
+@if (TempData["Error"] != null)
+{
+    <div class="alert alert-danger">
+        @TempData["Error"]
+    </div>
+}
+
 <div class="container my-4">
-    <h2 class="mb-4">Редагування продавця</h2>
-    @if (TempData["SuccessMessage"] != null)
-    {
-        <div class="alert alert-success">
-            @TempData["SuccessMessage"]
-        </div>
-    }
-    @if (TempData["Error"] != null)
-    {
-        <div class="alert alert-danger">
-            @TempData["Error"]
-        </div>
-    }
     <div class="card shadow-sm">
         <div class="card-body">
             <form asp-action="Edit" method="post">

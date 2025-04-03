@@ -4,20 +4,20 @@
     Layout = "~/Views/Shared/_AdminLayout.cshtml";
 }
 
+<h2 class="mb-4">Редагування продавця</h2>
+@if (TempData["SuccessMessage"] != null)
+{
+    <div class="alert alert-success">
+        @TempData["SuccessMessage"]
+    </div>
+}
+@if (TempData["Error"] != null)
+{
+    <div class="alert alert-danger">
+        @TempData["Error"]
+    </div>
+}
 <div class="container my-4">
-    <h2 class="mb-4">Редагування продавця</h2>
-    @if (TempData["SuccessMessage"] != null)
-    {
-        <div class="alert alert-success">
-            @TempData["SuccessMessage"]
-        </div>
-    }
-    @if (TempData["Error"] != null)
-    {
-        <div class="alert alert-danger">
-            @TempData["Error"]
-        </div>
-    }
     <div class="card shadow-sm">
         <div class="card-body">
             <form asp-action="Edit" method="post" enctype="multipart/form-data">
@@ -49,7 +49,7 @@
                 <div class="row mb-3">
                     <label asp-for="AccountBalance" class="col-sm-2 col-form-label fw-bold">Баланс</label>
                     <div class="col-sm-10">
-                        <input asp-for="AccountBalance" class="form-control"/>
+                        <input asp-for="AccountBalance" class="form-control" />
                     </div>
                 </div>
 
