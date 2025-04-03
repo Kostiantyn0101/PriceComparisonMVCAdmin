@@ -21,7 +21,6 @@ namespace PriceComparisonWebAPI.Infrastructure.Validation.Category
 
             RuleFor(x => x.DisplayOrder)
                 .GreaterThan(0).WithMessage("Порядок відображення має бути більшим за 0.");
-
         }
     }
 }

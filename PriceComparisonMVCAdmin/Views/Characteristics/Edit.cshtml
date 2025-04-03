@@ -1,0 +1,86 @@
+﻿@model CharacteristicUpdateViewModel
+@{
+	Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+@Model.IsEditMode ? <h2>Редагування характеристики</h2> : <h2>Створення характеристики</h2>
+
+@if (TempData["SuccessMessage"] != null)
+{
+	<div class="alert alert-success">
+		@TempData["SuccessMessage"]
+	</div>
+}
+@if (TempData["Error"] != null)
+{
+	<div class="alert alert-danger">
+		@TempData["Error"]
+	</div>
+}
+
+<form asp-action="Edit" method="post" enctype="multipart/form-data">
+	<input type="hidden" asp-for="Characteristic.Id" />
+
+	<div class="mb-3">
+		<label asp-for="Characteristic.Title" class="form-label">Назва характеристики</label>
+		<input asp-for="Characteristic.Title" class="form-control" />
+		<span asp-validation-for="Characteristic.Title" class="text-danger"></span>
+	</div>
+
+	<div class="mb-3">
+		<label asp-for="Characteristic.DataType" class="form-label">Тип даних</label>
+		<select asp-for="Characteristic.DataType" class="form-select">
+			@foreach (var dt in Model.DataTypes)
+			{
+				<option value="@dt" selected="@(Model.Characteristic.DataType == dt)">@dt</option>
+			}
+		</select>
+		<span asp-validation-for="Characteristic.DataType" class="text-danger"></span>
+	</div>
+
+	<div class="mb-3">
+		<label asp-for="Characteristic.Unit" class="form-label">Одиниця виміру</label>
+		<input asp-for="Characteristic.Unit" class="form-control" />
+		<span asp-validation-for="Characteristic.Unit" class="text-danger"></span>
+	</div>
+
+	<div class="mb-3">
+		<label asp-for="Characteristic.CharacteristicGroupId" class="form-label">Група характеристик</label>
+		<select asp-for="Characteristic.CharacteristicGroupId" class="form-select">
+			@foreach (var group in Model.CharacteristicGroups)
+			{
+				<option value="@group.Id" selected="@(Model.Characteristic.CharacteristicGroupId == group.Id)">
+					@group.Title
+				</option>
+			}
+		</select>
+		<span asp-validation-for="Characteristic.CharacteristicGroupId" class="text-danger"></span>
+	</div>
+
+	<div class="mb-3">
+		<label asp-for="Characteristic.DisplayOrder" class="form-label">Порядок відображення</label>
+		<input asp-for="Characteristic.DisplayOrder" class="form-control" />
+		<span asp-validation-for="Characteristic.DisplayOrder" class="text-danger"></span>
+	</div>
+
+	<div class="mb-3 form-check">
+		<input asp-for="Characteristic.IncludeInShortDescription" class="form-check-input" type="checkbox" />
+		<label asp-for="Characteristic.IncludeInShortDescription" class="form-check-label">
+			Включати в короткий опис
+		</label>
+	</div>
+
+	<div class="d-flex flex-column align-items-center gap-3 mt-4">
+		<button type="submit" class="btn btn-primary btn-main">Зберегти зміни</button>
+	</div>
+</form>
+
+<div class="d-flex flex-column align-items-center gap-3 mt-4">
+	<form asp-controller="Characteristics" asp-action="Delete" method="post"
+		  onsubmit="return confirm('Видалити характеристику?');" class="d-inline-block">
+		<input type="hidden" name="id" value="@Model.Characteristic.Id" />
+		<button type="submit" class="btn btn-danger btn-main">
+			<i class="bi bi-trash me-1"></i> Видалити
+		</button>
+	</form>
+</div>

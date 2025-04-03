@@ -7,8 +7,8 @@ namespace PriceComparisonMVCAdmin.Infrastructure.DependencyInjection
     {
         public static void AddFluentValidation(this WebApplicationBuilder builder)
         {
-            builder.Services.
-                AddFluentValidationAutoValidation(config =>
+            builder.Services
+                .AddFluentValidationAutoValidation(config =>
                 {
                     config.DisableDataAnnotationsValidation = true; // Отключаем DataAnnotations
                 })

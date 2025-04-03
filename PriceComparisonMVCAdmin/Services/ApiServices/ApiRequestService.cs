@@ -1,9 +1,11 @@
 ﻿using PriceComparisonMVCAdmin.Models.DTOs.Request.Auction;
 using PriceComparisonMVCAdmin.Models.DTOs.Request.Categoty;
+using PriceComparisonMVCAdmin.Models.DTOs.Request.Characteristic;
 using PriceComparisonMVCAdmin.Models.DTOs.Request.Product;
 using PriceComparisonMVCAdmin.Models.DTOs.Request.Seller;
 using PriceComparisonMVCAdmin.Models.DTOs.Response;
 using PriceComparisonMVCAdmin.Models.DTOs.Response.Category;
+using PriceComparisonMVCAdmin.Models.DTOs.Response.Characteristics;
 using PriceComparisonMVCAdmin.Models.DTOs.Response.Product;
 using PriceComparisonMVCAdmin.Models.DTOs.Response.Seller;
 using PriceComparisonMVCAdmin.Models.Request.Seller;
@@ -54,17 +56,33 @@ namespace PriceComparisonMVCAdmin.Services.ApiServices
 
 
         //Characteristics
+        public Task<List<CharacteristicResponseModel>> GetAllCharacteristicsAsync()
+            => GetSafeAsync<List<CharacteristicResponseModel>>($"api/Characteristics/getall");
+        public Task<CharacteristicResponseModel> GetCharacteristicByIdAsync(int id)
+            => GetSafeAsync<CharacteristicResponseModel>($"/api/Characteristics/{id}");
+        public Task<List<string>> GetCharacteristicDataTypesAsync()
+            => GetSafeAsync<List<string>>($"/api/Characteristics/datatypes");
+        public Task<GeneralApiResponseModel> CreateCharacteristicAsync(CharacteristicCreateRequestModel model)
+             => PostSafeAsync<CharacteristicCreateRequestModel, GeneralApiResponseModel>("/api/Characteristics/create", model);
+        public Task<GeneralApiResponseModel> UpdateCharacteristicAsync(CharacteristicUpdateRequestModel model)
+            => SafeRequestAsync<CharacteristicUpdateRequestModel, GeneralApiResponseModel>(HttpMethod.Put, "/api/Characteristics/update", model);
+        public Task<GeneralApiResponseModel> DeleteCharacteristicAsync(int id)
+             => SafeRequestAsync<object, GeneralApiResponseModel>(HttpMethod.Delete, $"/api/Characteristics/delete/{id}", null);
+        
+        public Task<List<CharacteristicGroupResponseModel>> GetAllCharacteristicGroupsAsync()
+            => GetSafeAsync<List<CharacteristicGroupResponseModel>>($"/api/CharacteristicGroups/getall");
+        
         public Task<List<CategoryCharacteristicResponseModel>> GetCategoryCharacteristicsAsync(int categoryId)
             => GetSafeAsync<List<CategoryCharacteristicResponseModel>>($"api/CategoryCharacteristics/{categoryId}");
         public Task<List<ProductCharacteristicUpdateRequestModel>> GetCharacteristicsForProductAsync(int productId)
             => GetSafeAsync<List<ProductCharacteristicUpdateRequestModel>>($"api/ProductCharacteristics/{productId}");
         public Task<List<ProductCharacteristicUpdateRequestModel>> GetCharacteristicsForBaseProductAsync(int baseProductId)
             => GetSafeAsync<List<ProductCharacteristicUpdateRequestModel>>($"api/ProductCharacteristics/baseproduct/{baseProductId}");
-        public Task<GeneralApiResponseModel> CreateCharacteristicAsync(ProductCharacteristicCreateRequestModel model)
+        public Task<GeneralApiResponseModel> CreateProductCharacteristicAsync(ProductCharacteristicCreateRequestModel model)
             => PostSafeAsync<ProductCharacteristicCreateRequestModel, GeneralApiResponseModel>("api/ProductCharacteristics/create", model);
-        public Task<GeneralApiResponseModel> UpdateCharacteristicAsync(ProductCharacteristicUpdateRequestModel model)
+        public Task<GeneralApiResponseModel> UpdateProductCharacteristicAsync(ProductCharacteristicUpdateRequestModel model)
             => SafeRequestAsync<ProductCharacteristicUpdateRequestModel, GeneralApiResponseModel>(HttpMethod.Put, "api/ProductCharacteristics/update", model);
-        public Task<GeneralApiResponseModel> DeleteCharacteristicAsync(int id)
+        public Task<GeneralApiResponseModel> DeleteProductCharacteristicAsync(int id)
             => SafeRequestAsync<object, GeneralApiResponseModel>(HttpMethod.Delete, $"api/ProductCharacteristics/delete/{id}", null);
 
 
