@@ -81,3 +81,38 @@ h5 {
         margin: 0 !important;
     }
 }
+
+.nav-admin .nav-link {
+    width: 100%;
+    text-align: left;
+    border-radius: 0.5rem;
+    padding: 0.5rem 1rem;
+    transition: background-color 0.2s ease-in-out;
+    color: var(--primary-color) !important;
+}
+
+    .nav-admin .nav-link:hover,
+    .nav-admin .nav-link:focus {
+        background-color: rgba(var(--primary-color-rgb), 0.1) !important;
+        color: var(--primary-color) !important;
+    }
+
+    .nav-admin .nav-link.active {
+        background-color: rgba(var(--primary-color-rgb), 0.56) !important;
+        color: white !important;
+        border: 1px solid rgba(var(--primary-color-rgb), 0.7);
+    }
+
+@media (max-width: 767.98px) {
+    .nav-admin .nav-link {
+        border: 1px solid rgba(var(--primary-color-rgb), 0.2);
+        background-color: white;
+        border-radius: 0.375rem;
+        text-align: center;
+    }
+
+        .nav-admin .nav-link.active {
+            background-color: rgba(var(--primary-color-rgb), 0.56) !important;
+            color: white !important;
+        }
+}

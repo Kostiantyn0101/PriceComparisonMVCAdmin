@@ -75,23 +75,31 @@
     </header>
     <div class="container-fluid">
         <div class="row">
+
+            @{
+                string currentController = ViewContext.RouteData.Values["controller"]?.ToString();
+                string currentAction = ViewContext.RouteData.Values["action"]?.ToString();
+                Func<string, string, string> isActive = (ctrl, act) =>
+                (currentController == ctrl && (act == null || currentAction == act)) ? "active" : "";
+            }
+
             <nav class="col-12 col-md-2 bg-light border-end d-flex flex-row flex-md-column align-items-center align-items-md-start p-2">
                 <h4 class="d-none d-md-block mb-3">Адмін-панель</h4>
-                <ul class="nav nav-pills flex-row flex-md-column gap-2">
-                    <li class="nav-item">
-                        <a asp-controller="Seller" asp-action="Index" class="nav-link px-2">Головна</a>
+                <ul class="nav nav-pills nav-admin flex-row flex-md-column gap-2 w-100">
+                    <li class="nav-item w-100">
+                        <a asp-controller="Seller" asp-action="Index" class="nav-link @isActive("Seller", "Index")">Головна</a>
                     </li>
-                    <li class="nav-item">
-                        <a asp-controller="Seller" asp-action="UploadPrice" class="nav-link px-2">Завантаження прайсу</a>
+                    <li class="nav-item w-100">
+                        <a asp-controller="Seller" asp-action="UploadPrice" class="nav-link @isActive("Seller", "UploadPrice")">Завантаження прайсу</a>
                     </li>
-                    <li class="nav-item">
-                        <a asp-controller="Seller" asp-action="AuctionRates" class="nav-link px-2">Редагування ціни за клік</a>
+                    <li class="nav-item w-100">
+                        <a asp-controller="Seller" asp-action="AuctionRates" class="nav-link @isActive("Seller", "AuctionRates")">Редагування ціни за клік</a>
                     </li>
-                    <li class="nav-item">
-                        <a asp-controller="Seller" asp-action="Statistics" class="nav-link px-2">Статистика</a>
+                    <li class="nav-item w-100">
+                        <a asp-controller="Seller" asp-action="Statistics" class="nav-link @isActive("Seller", "Statistics")">Статистика</a>
                     </li>
-                    <li class="nav-item">
-                        <a asp-controller="Seller" asp-action="Settings" class="nav-link px-2">Налаштування</a>
+                    <li class="nav-item w-100">
+                        <a asp-controller="Seller" asp-action="Settings" class="nav-link @isActive("Seller", "Settings")">Налаштування</a>
                     </li>
                 </ul>
             </nav>
