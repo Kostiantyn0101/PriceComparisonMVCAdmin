@@ -1,4 +1,4 @@
-﻿@model List<SellerResponseModel>
+﻿    @model List<SellerResponseModel>
 @{
     ViewData["Title"] = "Продавці";
     Layout = "~/Views/Shared/_AdminLayout.cshtml";
@@ -14,11 +14,17 @@
                 <li class="list-group-item">
                     <div class="d-flex justify-content-between align-items-center">
                         <div class="d-flex align-items-center">
-                            <img src="@seller.LogoImageUrl"
-                                 alt="Логотип"
+                            @{
+                                var defaultLogoUrl = "/images/image.png";
+                                var logoUrl = string.IsNullOrWhiteSpace(seller.LogoImageUrl)
+                                ? defaultLogoUrl
+                                : seller.LogoImageUrl;
+                            }
+                            <img src="@logoUrl"
+                                 alt="@seller.StoreName"
                                  class="img-thumbnail me-3"
-                                 style="width: 50px; height: 50px; object-fit: contain;" />
-
+                                 style="width: 50px; height: 50px; object-fit: contain;"
+                                 onerror="this.onerror=null;this.src='@defaultLogoUrl';" />
                             <span>
                                 <strong>@seller.StoreName</strong> | @seller.WebsiteUrl
                             </span>
@@ -90,4 +96,4 @@
             });
         });
     </script>
-}
+    }

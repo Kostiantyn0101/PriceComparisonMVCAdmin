@@ -25,7 +25,6 @@
 <div class="card">
     <div class="card-body">
         <h3 class="card-title mb-3">Список зображень</h3>
-
         @if (Model.Images.Any())
         {
             <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-3">
@@ -53,7 +52,7 @@
                                           method="post" class="d-inline-block flex-fill">
                                         <input type="hidden" name="ProductId" value="@Model.ProductId" />
                                         <input type="hidden" name="ProductImageId" value="@image.Id" />
-                                        <button type="submit" class="btn btn-sm btn-success btn-primary-add w-100">
+                                        <button type="submit" class="btn btn-sm btn-success btn-primary-add btn-primary-add w-100">
                                             Встановити основною
                                         </button>
                                     </form>
