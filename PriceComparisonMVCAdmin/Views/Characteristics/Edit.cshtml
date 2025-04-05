@@ -3,7 +3,7 @@
 	Layout = "~/Views/Shared/_AdminLayout.cshtml";
 }
 
-@Model.IsEditMode ? <h2>Редагування характеристики</h2> : <h2>Створення характеристики</h2>
+<h2>@(Model.IsEditMode ? "Редагування характеристики" : "Створення характеристики")</h2>
 
 @if (TempData["SuccessMessage"] != null)
 {
